@@ -58,6 +58,19 @@ export function mapPipeline(pipeline: GitLabPipeline | null): MRPipeline | null 
   };
 }
 
+export interface MRDetail extends MRSummary {
+  description: string | null;
+  diffRefs: {
+    baseSha: string;
+    headSha: string;
+    startSha: string;
+  } | null;
+  approvalsRequired: number;
+  approvalsGiven: number;
+  approvedBy: MRUser[];
+  userNotesCount: number;
+}
+
 export function mapMRSummary(mr: GitLabMergeRequest, repoSlug: string, repoUrl: string): MRSummary {
   return {
     id: mr.id,

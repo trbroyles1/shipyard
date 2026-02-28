@@ -1,0 +1,25 @@
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.pill {
+  padding: 3px 10px;
+  border-radius: 99px;
+  font-size: 11px;
+  font-weight: 500;
+  background: var(--bg-sa);
+  color: var(--t2);
+}
+
+.draft {
+  background: var(--yel-d);
+  color: var(--yel);
+}
+
+.conflicts {
+  background: var(--red-d);
+  color: var(--red);
+}

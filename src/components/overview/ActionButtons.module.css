@@ -1,0 +1,41 @@
+.actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.btn {
+  padding: 7px 14px;
+  border-radius: var(--rs);
+  border: 1px solid var(--brd);
+  background: var(--bg-sr);
+  color: var(--t1);
+  font-size: 12px;
+  font-weight: 500;
+  font-family: var(--sans);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s;
+  text-decoration: none;
+}
+
+.btn:hover { background: var(--bg-sh); border-color: var(--tm); }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.approve { border-color: var(--grn); color: var(--grn); }
+.approve:hover:not(:disabled) { background: var(--grn-d); }
+
+.requestChanges { border-color: var(--red); color: var(--red); }
+.requestChanges:hover:not(:disabled) { background: var(--red-d); }
+
+.merge {
+  background: var(--acc);
+  color: #0a0c10;
+  border-color: var(--acc);
+  font-weight: 600;
+}
+.merge:hover:not(:disabled) { background: #5cc8f8; }
+
+.external { margin-left: auto; }

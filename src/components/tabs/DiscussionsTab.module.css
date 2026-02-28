@@ -1,0 +1,76 @@
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.thread {
+  border: 1px solid var(--brd);
+  border-radius: var(--r);
+  background: var(--bg-sr);
+  overflow: hidden;
+}
+
+.resolved {
+  opacity: 0.6;
+}
+
+.filePath {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--acc);
+  padding: 6px 12px;
+  background: var(--bg-s);
+  border-bottom: 1px solid var(--brd-s);
+}
+
+.resolvedBadge {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--grn);
+  padding: 4px 12px;
+  background: var(--grn-d);
+  border-bottom: 1px solid var(--brd-s);
+}
+
+.note {
+  padding: 10px 12px;
+}
+
+.note + .note {
+  border-top: 1px solid var(--brd-s);
+}
+
+.noteHeader {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.authorName {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--t1);
+}
+
+.noteTime {
+  font-size: 11px;
+  color: var(--tm);
+  margin-left: auto;
+}
+
+.noteBody {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--t2);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.empty {
+  color: var(--t2);
+  font-size: 13px;
+  text-align: center;
+  padding: 40px;
+}

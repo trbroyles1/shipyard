@@ -1,0 +1,54 @@
+.container {
+  display: flex;
+  gap: 0;
+  height: 100%;
+  margin: -16px;
+}
+
+.tree {
+  width: 260px;
+  min-width: 260px;
+  border-right: 1px solid var(--brd);
+  overflow-y: auto;
+  background: var(--bg-s);
+}
+
+.diffArea {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  position: relative;
+}
+
+.allFiles {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.showTree {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: var(--bg-sr);
+  border: 1px solid var(--brd);
+  border-radius: var(--rs);
+  padding: 6px;
+  cursor: pointer;
+  color: var(--t2);
+  z-index: 2;
+  display: flex;
+  align-items: center;
+}
+
+.showTree:hover {
+  color: var(--t1);
+  background: var(--bg-sh);
+}
+
+.empty {
+  color: var(--t2);
+  font-size: 13px;
+  text-align: center;
+  padding: 40px;
+}

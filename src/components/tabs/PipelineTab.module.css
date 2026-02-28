@@ -1,0 +1,139 @@
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.pipeline {
+  border: 1px solid var(--brd);
+  border-radius: var(--rs);
+  background: var(--bg-sr);
+  overflow: hidden;
+}
+
+.pipelineHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.pipelineHeader:hover {
+  background: var(--bg-sh);
+}
+
+.status {
+  font-size: 14px;
+  width: 16px;
+  text-align: center;
+}
+
+.pipelineId {
+  font-family: var(--mono);
+  color: var(--t2);
+  font-size: 11px;
+}
+
+.pipelineStatus {
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: capitalize;
+}
+
+.pipelineRef {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--tm);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 200px;
+}
+
+.pipelineTime {
+  margin-left: auto;
+  font-size: 11px;
+  color: var(--tm);
+}
+
+.pipelineLink {
+  color: var(--t2);
+  display: flex;
+  align-items: center;
+}
+
+.pipelineLink:hover { color: var(--acc); }
+
+.chevron {
+  color: var(--tm);
+  transition: transform 0.2s;
+}
+
+.chevronOpen {
+  transform: rotate(180deg);
+}
+
+.jobs {
+  border-top: 1px solid var(--brd-s);
+  background: var(--bg-s);
+}
+
+.job {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 12px 7px 28px;
+  font-size: 12px;
+}
+
+.job + .job {
+  border-top: 1px solid var(--brd-s);
+}
+
+.jobStatus {
+  font-size: 12px;
+  width: 14px;
+  text-align: center;
+}
+
+.jobStage {
+  color: var(--tm);
+  font-size: 11px;
+  min-width: 80px;
+}
+
+.jobName {
+  color: var(--t1);
+  font-weight: 500;
+}
+
+.jobDuration {
+  margin-left: auto;
+  color: var(--tm);
+  font-family: var(--mono);
+  font-size: 11px;
+}
+
+.jobLink {
+  color: var(--t2);
+  display: flex;
+  align-items: center;
+}
+
+.jobLink:hover { color: var(--acc); }
+
+.jobLoading {
+  padding: 12px;
+  text-align: center;
+  font-size: 12px;
+  color: var(--tm);
+}
+
+.empty {
+  color: var(--t2);
+  font-size: 13px;
+  text-align: center;
+  padding: 40px;
+}

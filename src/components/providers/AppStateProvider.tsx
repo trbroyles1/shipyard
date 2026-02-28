@@ -6,6 +6,7 @@ import type { MRSummary } from "@/lib/types/mr";
 export type FilterMode = "mine" | "to-review" | "all";
 export type SortField = "age" | "repo";
 export type SortDirection = "asc" | "desc";
+export type TabId = "changes" | "commits" | "discussions" | "pipeline" | "history";
 
 interface AppState {
   selectedMR: MRSummary | null;
@@ -17,6 +18,8 @@ interface AppState {
   toggleSort: () => void;
   sidebarOpen: boolean;
   setSidebarOpen: (open: boolean) => void;
+  activeTab: TabId;
+  setActiveTab: (tab: TabId) => void;
 }
 
 const AppStateContext = createContext<AppState | null>(null);
@@ -27,6 +30,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
   const [sortField, setSortField] = useState<SortField>("age");
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [activeTab, setActiveTab] = useState<TabId>("changes");
 
   const selectMR = useCallback((mr: MRSummary | null) => {
     setSelectedMR(mr);
@@ -67,6 +71,8 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
         toggleSort,
         sidebarOpen,
         setSidebarOpen,
+        activeTab,
+        setActiveTab,
       }}
     >
       {children}

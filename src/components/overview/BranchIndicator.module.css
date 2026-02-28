@@ -1,0 +1,9 @@
+.branches {
+  font-size: 12px;
+  color: var(--tm);
+  font-family: var(--mono);
+  margin-bottom: 10px;
+}
+
+.branch { color: var(--acc); }
+.arrow { margin: 0 6px; }

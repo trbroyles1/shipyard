@@ -1,0 +1,132 @@
+.file {
+  border: 1px solid var(--brd);
+  border-radius: var(--r);
+  overflow: hidden;
+  background: var(--bg-sr);
+}
+
+.fileHeader {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: var(--bg-sr);
+  border-bottom: 1px solid var(--brd-s);
+  font-size: 13px;
+  font-family: var(--mono);
+  cursor: pointer;
+  user-select: none;
+}
+
+.fileHeader:hover {
+  background: var(--bg-sh);
+}
+
+.chevron {
+  transition: transform 0.2s;
+  color: var(--tm);
+  flex-shrink: 0;
+}
+
+.chevronOpen {
+  transform: rotate(90deg);
+}
+
+.filePath {
+  color: var(--t1);
+  font-weight: 500;
+}
+
+.rename {
+  font-size: 11px;
+  color: var(--tm);
+}
+
+/* +/- stats */
+.stats {
+  font-size: 11px;
+  margin-left: auto;
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.additions { color: var(--grn); }
+.deletions { color: var(--red); }
+
+.diffContent {
+  overflow-x: auto;
+  font-family: var(--mono);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+/* Override react-diff-view colors for dark theme */
+.diffContent :global(.diff) {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.diffContent :global(.diff-gutter) {
+  width: 50px;
+  padding: 0 8px;
+  color: var(--tm);
+  text-align: right;
+  user-select: none;
+  background: var(--bg-s);
+  border-right: 1px solid var(--brd-s);
+}
+
+.diffContent :global(.diff-code) {
+  padding: 0 12px;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.diffContent :global(.diff-line) {
+  border: none;
+}
+
+.diffContent :global(.diff-code-insert) {
+  background: rgba(52, 211, 153, 0.08);
+  color: var(--t1);
+}
+
+.diffContent :global(.diff-code-delete) {
+  background: rgba(248, 113, 113, 0.08);
+  color: var(--t1);
+}
+
+.diffContent :global(.diff-gutter-insert) {
+  background: rgba(52, 211, 153, 0.12);
+  color: var(--grn);
+}
+
+.diffContent :global(.diff-gutter-delete) {
+  background: rgba(248, 113, 113, 0.12);
+  color: var(--red);
+}
+
+.diffContent :global(.diff-hunk-header) {
+  background: var(--bg-sa);
+}
+
+.diffContent :global(.diff-hunk-header-gutter) {
+  background: var(--bg-sa);
+}
+
+.diffContent :global(.diff-hunk-header-content) {
+  color: var(--tm);
+  padding: 4px 12px;
+  font-size: 11px;
+}
+
+.noContent {
+  padding: 20px;
+  text-align: center;
+  color: var(--tm);
+  font-size: 12px;
+}

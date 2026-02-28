@@ -1,0 +1,11 @@
+.body {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.jiraLink {
+  color: var(--acc);
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+}

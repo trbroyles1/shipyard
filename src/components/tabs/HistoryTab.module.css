@@ -1,0 +1,59 @@
+.timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.entry {
+  padding: 8px 12px;
+  border-radius: var(--rs);
+}
+
+.system {
+  background: transparent;
+}
+
+.system .body {
+  font-size: 12px;
+  color: var(--tm);
+  font-style: italic;
+}
+
+.comment {
+  background: var(--bg-sr);
+  border: 1px solid var(--brd-s);
+}
+
+.entryHeader {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.authorName {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--t1);
+}
+
+.time {
+  font-size: 11px;
+  color: var(--tm);
+  margin-left: auto;
+}
+
+.body {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--t2);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.empty {
+  color: var(--t2);
+  font-size: 13px;
+  text-align: center;
+  padding: 40px;
+}
