@@ -1,0 +1,7 @@
+/* Extended color utilities */
+.text-accent { color: var(--acc); }
+.text-muted { color: var(--tm); }
+.text-secondary { color: var(--t2); }
+.text-success { color: var(--grn); }
+.text-warning { color: var(--yel); }
+.text-danger { color: var(--red); }

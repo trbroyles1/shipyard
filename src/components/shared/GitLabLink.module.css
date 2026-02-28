@@ -1,0 +1,10 @@
+.link {
+  color: var(--t2);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.link:hover {
+  color: var(--acc);
+  text-decoration: underline;
+}

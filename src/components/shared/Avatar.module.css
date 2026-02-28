@@ -1,0 +1,16 @@
+.avatar {
+  border-radius: 50%;
+  flex-shrink: 0;
+  object-fit: cover;
+}
+
+.fallback {
+  border-radius: 50%;
+  background: var(--bg-sa);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: var(--t2);
+  flex-shrink: 0;
+}

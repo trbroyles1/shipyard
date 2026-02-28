@@ -1,0 +1,32 @@
+:root {
+  /* Backgrounds */
+  --bg-root: #0a0c10;
+  --bg-s: #12151c;
+  --bg-sr: #181c26;
+  --bg-sh: #1e2330;
+  --bg-sa: #242a38;
+
+  /* Borders */
+  --brd: #2a3040;
+  --brd-s: #1e2430;
+
+  /* Text */
+  --t1: #e2e8f0;
+  --t2: #94a3b8;
+  --tm: #5a6577;
+
+  /* Accent (cyan/sky) */
+  --acc: #38bdf8;
+  --acc-d: rgba(56, 189, 248, 0.15);
+  --acc-g: rgba(56, 189, 248, 0.08);
+
+  /* Semantic colors */
+  --grn: #34d399;
+  --grn-d: rgba(52, 211, 153, 0.15);
+  --yel: #facc15;
+  --yel-d: rgba(250, 204, 21, 0.12);
+  --red: #f87171;
+  --red-d: rgba(248, 113, 113, 0.12);
+  --org: #fb923c;
+  --org-d: rgba(251, 146, 60, 0.12);
+}

@@ -1,0 +1,5 @@
+/* Font families — values set by next/font CSS variables, with fallbacks */
+:root {
+  --sans: var(--font-outfit, 'Outfit', sans-serif);
+  --mono: var(--font-jetbrains, 'JetBrains Mono', monospace);
+}

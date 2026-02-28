@@ -1,0 +1,6 @@
+/* Border radii */
+:root {
+  --r: 8px;
+  --rs: 5px;
+  --rl: 12px;
+}

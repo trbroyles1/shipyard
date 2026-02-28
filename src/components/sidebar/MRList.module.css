@@ -1,0 +1,42 @@
+.list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 6px;
+}
+
+.empty {
+  padding: 24px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--tm);
+}
+
+.skeleton {
+  padding: 10px 12px;
+  margin-bottom: 4px;
+  border-radius: var(--r);
+}
+
+.skeletonTitle {
+  height: 14px;
+  background: var(--bg-sh);
+  border-radius: var(--rs);
+  margin-bottom: 8px;
+  width: 80%;
+  animation: shimmer 1.5s infinite;
+}
+
+.skeletonMeta {
+  height: 10px;
+  background: var(--bg-sh);
+  border-radius: var(--rs);
+  width: 50%;
+  animation: shimmer 1.5s infinite;
+  animation-delay: 0.2s;
+}
+
+@keyframes shimmer {
+  0% { opacity: 0.5; }
+  50% { opacity: 1; }
+  100% { opacity: 0.5; }
+}
