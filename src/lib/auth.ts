@@ -86,8 +86,8 @@ export const authConfig: NextAuthConfig = {
     strategy: "jwt",
   },
   callbacks: {
-    async jwt({ token, account }) {
-      // Initial sign-in: store tokens
+    async jwt({ token, account, profile }) {
+      // Initial sign-in: store tokens + GitLab identity
       if (account) {
         log.info(`User signed in: ${token.name}`);
         return {
@@ -95,6 +95,8 @@ export const authConfig: NextAuthConfig = {
           accessToken: account.access_token,
           refreshToken: account.refresh_token,
           expiresAt: account.expires_at,
+          gitlabUserId: (profile as unknown as { id: number })?.id,
+          gitlabUsername: (profile as unknown as { username: string })?.username,
         };
       }
 
@@ -109,6 +111,8 @@ export const authConfig: NextAuthConfig = {
     async session({ session, token }) {
       session.accessToken = token.accessToken as string;
       session.error = token.error as string | undefined;
+      session.gitlabUserId = token.gitlabUserId as number;
+      session.gitlabUsername = token.gitlabUsername as string;
       return session;
     },
   },

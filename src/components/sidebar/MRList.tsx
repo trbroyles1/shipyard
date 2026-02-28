@@ -16,22 +16,22 @@ export function MRList({ mrs, isLoading }: MRListProps) {
   const { data: session } = useSession();
   const { filter, sortField, sortDirection } = useAppState();
 
-  const currentUserEmail = session?.user?.email;
+  const currentUserId = session?.gitlabUserId;
 
   const filteredAndSorted = useMemo(() => {
     let filtered = mrs;
 
-    if (filter === "mine") {
-      // MRs where the current user is the author (assignee in the plan's terms)
+    if (filter === "mine" && currentUserId) {
+      // MRs where the current user is the author or assignee
       filtered = mrs.filter((mr) =>
-        mr.author.username === currentUserEmail?.split("@")[0] ||
-        mr.assignees.some((a) => a.username === currentUserEmail?.split("@")[0])
+        mr.author.id === currentUserId ||
+        mr.assignees.some((a) => a.id === currentUserId)
       );
-    } else if (filter === "to-review") {
+    } else if (filter === "to-review" && currentUserId) {
       // MRs where the current user is a reviewer but not the author
       filtered = mrs.filter((mr) =>
-        mr.reviewers.some((r) => r.username === currentUserEmail?.split("@")[0]) &&
-        mr.author.username !== currentUserEmail?.split("@")[0]
+        mr.reviewers.some((r) => r.id === currentUserId) &&
+        mr.author.id !== currentUserId
       );
     }
 
@@ -46,7 +46,7 @@ export function MRList({ mrs, isLoading }: MRListProps) {
     });
 
     return sorted;
-  }, [mrs, filter, sortField, sortDirection, currentUserEmail]);
+  }, [mrs, filter, sortField, sortDirection, currentUserId]);
 
   if (isLoading) {
     return (
