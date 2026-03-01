@@ -106,12 +106,15 @@ export function useMRDetail(selected: MRSummary | null, detailVersion = 0) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [detailVersion]);
 
-  // Merge mr+approvals patch from SSE detail-update (no full refetch)
+  // Apply mr+approvals patch from SSE detail-update, then full refetch for discussions etc.
   useEffect(() => {
     if (detailPatchVersion === 0) return;
     const patch = consumeDetailPatch();
     if (!patch) return;
+    // Immediately patch mr+approvals for snappy approval state updates
     setData((prev) => (prev ? { ...prev, mr: patch.mr, approvals: patch.approvals } : prev));
+    // Full refetch to pick up discussion/note changes (e.g. new replies)
+    if (selected) silentRefetch(selected);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [detailPatchVersion]);
 

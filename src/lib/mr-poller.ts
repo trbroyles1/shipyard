@@ -158,6 +158,7 @@ export function startPoller(
             approved_by: approvals.approved_by.map((a) => a.user.id).sort(),
             merge_status: mr.detailed_merge_status,
             state: mr.state,
+            user_notes_count: mr.user_notes_count,
           });
 
           if (lastApprovalKey && approvalKey !== lastApprovalKey) {
