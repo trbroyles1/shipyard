@@ -1,21 +1,30 @@
 "use client";
 
-import { useMemo, useState, useCallback, type ReactNode } from "react";
+import { useMemo, useState, useCallback, useEffect, useRef, type ReactNode, type KeyboardEvent } from "react";
 import { parseDiff, Diff, Hunk, getChangeKey, findChangeByNewLineNumber, computeNewLineNumber } from "react-diff-view";
-import type { HunkData, ChangeData } from "react-diff-view";
-import type { GitLabDiscussion } from "@/lib/types/gitlab";
+import type { ChangeData } from "react-diff-view";
+import type { GitLabDiscussion, GitLabDiffPosition } from "@/lib/types/gitlab";
 import type { FileWithStats } from "./diff-stats";
 import { DiscussionThread } from "@/components/shared/DiscussionThread";
+import { useGutterLineSelect, buildPosition } from "@/hooks/use-gutter-line-select";
 import styles from "./DiffViewer.module.css";
 import "react-diff-view/style/index.css";
+
+interface DiffRefs {
+  base_sha: string;
+  head_sha: string;
+  start_sha: string;
+}
 
 interface Props {
   file: FileWithStats;
   discussions: GitLabDiscussion[];
   projectId: number;
   iid: number;
+  diffRefs?: DiffRefs | null;
   onReply?: (discussionId: string, body: string) => Promise<void>;
   onResolve?: (discussionId: string, resolved: boolean) => Promise<void>;
+  onNewComment?: (body: string, position?: GitLabDiffPosition) => Promise<void>;
 }
 
 /** Get the anchor line for a discussion (where the widget renders). */
@@ -31,7 +40,85 @@ function getAnchorLine(discussion: GitLabDiscussion): number | null {
   return pos.new_line ?? pos.old_line;
 }
 
-export function DiffViewer({ file: initialFile, discussions, projectId, iid, onReply, onResolve }: Props) {
+/* ─── Inline comment form (co-located) ─── */
+
+function InlineCommentForm({
+  lineCount,
+  onSubmit,
+  onCancel,
+}: {
+  lineCount: number;
+  onSubmit: (body: string) => void;
+  onCancel: () => void;
+}) {
+  const [text, setText] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const ref = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    ref.current?.focus();
+  }, []);
+
+  const handleSubmit = useCallback(async () => {
+    if (!text.trim() || submitting) return;
+    setSubmitting(true);
+    try {
+      await onSubmit(text.trim());
+      setText("");
+    } finally {
+      setSubmitting(false);
+    }
+  }, [text, submitting, onSubmit]);
+
+  const handleKeyDown = useCallback(
+    (e: KeyboardEvent<HTMLTextAreaElement>) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        onCancel();
+      } else if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
+        e.preventDefault();
+        handleSubmit();
+      }
+    },
+    [onCancel, handleSubmit],
+  );
+
+  return (
+    <div className={styles.inlineCommentForm}>
+      {lineCount > 1 && (
+        <span className={styles.commentFormLabel}>Comment on {lineCount} lines</span>
+      )}
+      <div className={styles.commentFormBox}>
+        <textarea
+          ref={ref}
+          className={styles.commentFormInput}
+          placeholder="Write a comment... (Ctrl+Enter to send)"
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          onKeyDown={handleKeyDown}
+          rows={3}
+          disabled={submitting}
+        />
+        <div className={styles.commentFormActions}>
+          <button className={styles.commentFormCancel} onClick={onCancel}>
+            Cancel
+          </button>
+          <button
+            className={styles.commentFormSubmit}
+            onClick={handleSubmit}
+            disabled={submitting || !text.trim()}
+          >
+            {submitting ? "Sending..." : "Comment"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─── DiffViewer ─── */
+
+export function DiffViewer({ file: initialFile, discussions, projectId, iid, diffRefs, onReply, onResolve, onNewComment }: Props) {
   const [collapsed, setCollapsed] = useState(false);
   const [loadedDiff, setLoadedDiff] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -51,6 +138,23 @@ export function DiffViewer({ file: initialFile, discussions, projectId, iid, onR
     }
   }, [diffText, initialFile.old_path, initialFile.new_path]);
 
+  const allHunks = useMemo(
+    () => parsedFiles.flatMap((pf) => pf.hunks),
+    [parsedFiles],
+  );
+
+  // Gutter line selection
+  const canComment = !!diffRefs && !!onNewComment;
+  const { selection, commentFormOpen, gutterEvents, cancelSelection, finishDragOutside } =
+    useGutterLineSelect(allHunks);
+
+  // Global mouseup to finish drag outside gutter
+  useEffect(() => {
+    if (!canComment) return;
+    window.addEventListener("mouseup", finishDragOutside);
+    return () => window.removeEventListener("mouseup", finishDragOutside);
+  }, [canComment, finishDragOutside]);
+
   // Filter discussions for this file
   const fileDiscussions = useMemo(() => {
     const filePaths = new Set([initialFile.new_path, initialFile.old_path].filter(Boolean));
@@ -62,20 +166,15 @@ export function DiffViewer({ file: initialFile, discussions, projectId, iid, onR
   }, [discussions, initialFile.new_path, initialFile.old_path]);
 
   // Build widgets map: changeKey → ReactNode
-  const widgets = useMemo(() => {
+  const threadWidgets = useMemo(() => {
     if (fileDiscussions.length === 0 || parsedFiles.length === 0) return {};
 
-    const allHunks: HunkData[] = parsedFiles.flatMap((pf) => pf.hunks);
     const allChanges: ChangeData[] = allHunks.flatMap((h) => h.changes);
 
-    // Find the best change to anchor a widget to for a given new-side line number.
-    // First tries exact match, then falls back to the closest preceding change in the hunk.
     function findAnchorChange(targetLine: number): ChangeData | null {
-      // Exact match
       const exact = findChangeByNewLineNumber(allHunks, targetLine);
       if (exact) return exact;
 
-      // Fallback: find the closest change whose new line number ≤ targetLine
       let best: ChangeData | null = null;
       let bestLine = -1;
       allChanges.forEach((c) => {
@@ -107,17 +206,61 @@ export function DiffViewer({ file: initialFile, discussions, projectId, iid, onR
       );
     });
 
-    // Merge arrays into single ReactNode per key
-    const result: Record<string, ReactNode> = {};
+    const result: Record<string, ReactNode[]> = {};
     Object.entries(widgetMap).forEach(([key, threads]) => {
+      result[key] = threads;
+    });
+    return result;
+  }, [fileDiscussions, parsedFiles, allHunks, onReply, onResolve]);
+
+  // Handle inline comment submission
+  const handleInlineSubmit = useCallback(
+    async (body: string) => {
+      if (!diffRefs || !onNewComment || !selection) return;
+      const position = buildPosition(selection.changes, diffRefs, {
+        old_path: initialFile.old_path,
+        new_path: initialFile.new_path,
+      });
+      await onNewComment(body, position);
+      cancelSelection();
+    },
+    [diffRefs, onNewComment, selection, initialFile.old_path, initialFile.new_path, cancelSelection],
+  );
+
+  // Merge thread widgets + inline comment form
+  const mergedWidgets = useMemo(() => {
+    const result: Record<string, ReactNode> = {};
+
+    // Copy thread widgets
+    Object.entries(threadWidgets).forEach(([key, threads]) => {
       result[key] = (
         <div className={styles.inlineThreads}>
           {threads}
         </div>
       );
     });
+
+    // Add inline comment form if selection is active
+    if (canComment && commentFormOpen && selection && selection.changes.length > 0) {
+      const lastChange = selection.changes[selection.changes.length - 1];
+      const formKey = getChangeKey(lastChange);
+      const existingThreads = threadWidgets[formKey];
+      result[formKey] = (
+        <>
+          {existingThreads && (
+            <div className={styles.inlineThreads}>{existingThreads}</div>
+          )}
+          <InlineCommentForm
+            lineCount={selection.changes.length}
+            onSubmit={handleInlineSubmit}
+            onCancel={cancelSelection}
+          />
+        </>
+      );
+    }
+
     return result;
-  }, [fileDiscussions, parsedFiles, onReply, onResolve]);
+  }, [threadWidgets, canComment, commentFormOpen, selection, handleInlineSubmit, cancelSelection]);
 
   const handleLoad = useCallback(async () => {
     setLoading(true);
@@ -138,8 +281,19 @@ export function DiffViewer({ file: initialFile, discussions, projectId, iid, onR
     }
   }, [projectId, iid, path]);
 
+  const renderGutter = useMemo(() => {
+    if (!canComment) return undefined;
+    return ({ renderDefault, inHoverState }: { renderDefault: () => ReactNode; inHoverState: boolean }) => (
+      <>
+        {renderDefault()}
+        {inHoverState && <span className={styles.addCommentIcon}>+</span>}
+      </>
+    );
+  }, [canComment]);
+
   const noDiff = !diffText && !isTruncated;
-  const hasWidgets = Object.keys(widgets).length > 0;
+  const hasWidgets = Object.keys(mergedWidgets).length > 0;
+  const selectedKeys = selection?.keys;
 
   return (
     <div className={styles.file}>
@@ -197,7 +351,10 @@ export function DiffViewer({ file: initialFile, discussions, projectId, iid, onR
                 viewType="unified"
                 diffType={pf.type}
                 hunks={pf.hunks}
-                widgets={hasWidgets ? widgets : undefined}
+                widgets={hasWidgets ? mergedWidgets : undefined}
+                selectedChanges={selectedKeys}
+                gutterEvents={canComment ? gutterEvents : undefined}
+                renderGutter={renderGutter}
               >
                 {(hunks) => hunks.map((hunk) => (
                   <Hunk key={hunk.content} hunk={hunk} />

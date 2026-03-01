@@ -196,6 +196,138 @@
   border-bottom: 1px solid var(--brd-s);
 }
 
+/* Gutter add-comment icon */
+.diffContent :global(.diff-gutter) {
+  position: relative;
+  cursor: pointer;
+}
+
+.addCommentIcon {
+  position: absolute;
+  top: 50%;
+  left: 4px;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+  background: var(--acc);
+  color: #0a0c10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.1s;
+}
+
+.diffContent :global(.diff-gutter:hover) .addCommentIcon {
+  opacity: 1;
+}
+
+/* Selected gutter + code rows */
+.diffContent :global(.diff-gutter-selected) {
+  background: rgba(79, 172, 254, 0.18) !important;
+}
+
+.diffContent :global(.diff-code-selected) {
+  background: rgba(79, 172, 254, 0.10) !important;
+}
+
+/* Inline comment form (rendered as a widget) */
+.inlineCommentForm {
+  padding: 8px 12px 8px 62px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: var(--bg-s);
+  border-top: 1px solid var(--brd-s);
+  border-bottom: 1px solid var(--brd-s);
+}
+
+.commentFormLabel {
+  font-size: 11px;
+  color: var(--tm);
+  font-family: var(--sans);
+}
+
+.commentFormBox {
+  border: 1px solid var(--brd);
+  border-radius: var(--r);
+  background: var(--bg-sr);
+  padding: 10px;
+}
+
+.commentFormInput {
+  width: 100%;
+  min-height: 60px;
+  max-height: 200px;
+  padding: 8px;
+  border: 1px solid var(--brd);
+  border-radius: var(--rs);
+  background: var(--bg-s);
+  color: var(--t1);
+  font-size: 13px;
+  font-family: var(--sans);
+  resize: vertical;
+  line-height: 1.5;
+  box-sizing: border-box;
+}
+
+.commentFormInput::placeholder {
+  color: var(--tm);
+}
+
+.commentFormInput:focus {
+  outline: none;
+  border-color: var(--acc);
+}
+
+.commentFormActions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+
+.commentFormCancel {
+  padding: 6px 12px;
+  border-radius: var(--rs);
+  border: 1px solid var(--brd);
+  background: transparent;
+  color: var(--t2);
+  font-size: 12px;
+  font-family: var(--sans);
+  cursor: pointer;
+}
+
+.commentFormCancel:hover {
+  background: var(--bg-sh);
+}
+
+.commentFormSubmit {
+  padding: 6px 14px;
+  border-radius: var(--rs);
+  border: 1px solid var(--acc);
+  background: var(--acc);
+  color: #0a0c10;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: var(--sans);
+  cursor: pointer;
+}
+
+.commentFormSubmit:hover:not(:disabled) {
+  background: #5cc8f8;
+}
+
+.commentFormSubmit:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
 /* Override react-diff-view widget row to remove default styling */
 .diffContent :global(.diff-widget) {
   background: none;

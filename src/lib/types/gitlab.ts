@@ -64,6 +64,22 @@ export interface GitLabApprovals {
   approved_by: { user: GitLabUser }[];
 }
 
+/** Position payload for creating diff-anchored discussions. */
+export interface GitLabDiffPosition {
+  position_type: "text";
+  base_sha: string;
+  head_sha: string;
+  start_sha: string;
+  old_path: string;
+  new_path: string;
+  old_line: number | null;
+  new_line: number | null;
+  line_range?: {
+    start: { type: "new" | "old"; new_line: number | null; old_line: number | null };
+    end: { type: "new" | "old"; new_line: number | null; old_line: number | null };
+  };
+}
+
 export interface GitLabDiffFile {
   old_path: string;
   new_path: string;

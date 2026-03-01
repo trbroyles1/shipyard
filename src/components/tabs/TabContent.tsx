@@ -19,7 +19,7 @@ export function TabContent({ data, onRefetch }: Props) {
 
   return (
     <div className={styles.tabContent}>
-      {activeTab === "changes" && <ChangesTab diffs={data.diffs} discussions={data.discussions} projectId={data.mr.project_id} iid={data.mr.iid} onRefetch={onRefetch} />}
+      {activeTab === "changes" && <ChangesTab diffs={data.diffs} discussions={data.discussions} projectId={data.mr.project_id} iid={data.mr.iid} diffRefs={data.mr.diff_refs} onRefetch={onRefetch} />}
       {activeTab === "commits" && <CommitsTab commits={data.commits} />}
       {activeTab === "discussions" && <DiscussionsTab discussions={data.discussions} projectId={data.mr.project_id} iid={data.mr.iid} onRefetch={onRefetch} />}
       {activeTab === "pipeline" && <PipelineTab pipelines={data.pipelines} mr={data.mr} />}
