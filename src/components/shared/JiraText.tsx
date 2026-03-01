@@ -30,6 +30,7 @@ export function JiraText({ text, jiraBaseUrl, className }: Props) {
           href={`${baseUrl}/browse/${ticket}`}
           target="_blank"
           rel="noopener noreferrer"
+          onClick={(e) => e.stopPropagation()}
         >
           {ticket}
         </a>,
