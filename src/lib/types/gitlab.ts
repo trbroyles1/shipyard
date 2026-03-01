@@ -107,6 +107,10 @@ export interface GitLabNote {
     new_path: string;
     old_line: number | null;
     new_line: number | null;
+    line_range?: {
+      start: { new_line: number | null; old_line: number | null };
+      end: { new_line: number | null; old_line: number | null };
+    };
   };
 }
 

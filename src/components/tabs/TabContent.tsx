@@ -18,7 +18,7 @@ export function TabContent({ data }: Props) {
 
   return (
     <div className={styles.tabContent}>
-      {activeTab === "changes" && <ChangesTab diffs={data.diffs} projectId={data.mr.project_id} iid={data.mr.iid} />}
+      {activeTab === "changes" && <ChangesTab diffs={data.diffs} discussions={data.discussions} projectId={data.mr.project_id} iid={data.mr.iid} />}
       {activeTab === "commits" && <CommitsTab commits={data.commits} />}
       {activeTab === "discussions" && <DiscussionsTab discussions={data.discussions} />}
       {activeTab === "pipeline" && <PipelineTab pipelines={data.pipelines} mr={data.mr} />}

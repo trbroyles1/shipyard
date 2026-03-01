@@ -173,3 +173,34 @@
   font-size: 12px;
   color: var(--red);
 }
+
+/* Comment badge in file header */
+.commentBadge {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 11px;
+  font-family: var(--sans);
+  color: var(--acc);
+  flex-shrink: 0;
+}
+
+/* Inline discussion threads (rendered as react-diff-view widgets) */
+.inlineThreads {
+  padding: 6px 12px 6px 62px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: var(--bg-s);
+  border-top: 1px solid var(--brd-s);
+  border-bottom: 1px solid var(--brd-s);
+}
+
+/* Override react-diff-view widget row to remove default styling */
+.diffContent :global(.diff-widget) {
+  background: none;
+}
+
+.diffContent :global(.diff-widget td) {
+  padding: 0;
+}

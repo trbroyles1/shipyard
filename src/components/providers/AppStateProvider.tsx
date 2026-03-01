@@ -22,6 +22,8 @@ interface AppState {
   setSidebarOpen: (open: boolean) => void;
   activeTab: TabId;
   setActiveTab: (tab: TabId) => void;
+  scrollToFile: string | null;
+  setScrollToFile: (path: string | null) => void;
 }
 
 const AppStateContext = createContext<AppState | null>(null);
@@ -34,6 +36,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [activeTab, setActiveTab] = useState<TabId>("changes");
+  const [scrollToFile, setScrollToFile] = useState<string | null>(null);
 
   const selectMR = useCallback((mr: MRSummary | null) => {
     setSelectedMR(mr);
@@ -87,6 +90,8 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
         setSidebarOpen,
         activeTab,
         setActiveTab,
+        scrollToFile,
+        setScrollToFile,
       }}
     >
       {children}

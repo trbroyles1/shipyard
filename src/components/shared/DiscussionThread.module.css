@@ -1,0 +1,200 @@
+.thread {
+  border: 1px solid var(--brd);
+  border-radius: var(--r);
+  background: var(--bg-sr);
+  overflow: hidden;
+}
+
+.compact {
+  font-size: 12px;
+}
+
+.resolved {
+  opacity: 0.55;
+}
+
+.resolved:hover {
+  opacity: 0.85;
+}
+
+/* Header — collapsed summary row */
+.header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  cursor: pointer;
+  user-select: none;
+  min-height: 32px;
+}
+
+.header:hover {
+  background: var(--bg-sh);
+}
+
+.compact .header {
+  padding: 6px 8px;
+  gap: 5px;
+}
+
+.chevron {
+  flex-shrink: 0;
+  color: var(--tm);
+  transition: transform 0.15s ease;
+}
+
+.chevronOpen {
+  transform: rotate(90deg);
+}
+
+.authorName {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--t1);
+  flex-shrink: 0;
+}
+
+.compact .authorName {
+  font-size: 11px;
+}
+
+.fileLink {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--acc);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 1px 4px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.fileLink:hover {
+  background: var(--acc-d);
+  text-decoration: underline;
+}
+
+.preview {
+  font-size: 12px;
+  color: var(--t2);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+  min-width: 0;
+}
+
+.compact .preview {
+  font-size: 11px;
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.resolvedBadge {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--grn);
+  background: var(--grn-d);
+  padding: 1px 6px;
+  border-radius: 3px;
+}
+
+.replyCount {
+  font-size: 11px;
+  color: var(--tm);
+}
+
+.time {
+  font-size: 11px;
+  color: var(--tm);
+}
+
+/* Expanded notes */
+.notes {
+  border-top: 1px solid var(--brd-s);
+}
+
+.note {
+  display: flex;
+  gap: 8px;
+  padding: 10px 12px;
+  position: relative;
+}
+
+.compact .note {
+  padding: 7px 8px;
+  gap: 6px;
+}
+
+.note + .note {
+  border-top: 1px solid var(--brd-s);
+}
+
+/* Vertical connector line between notes */
+.connector {
+  position: absolute;
+  left: 22px;
+  top: 32px;
+  bottom: -2px;
+  width: 2px;
+  background: var(--brd);
+}
+
+.compact .connector {
+  left: 17px;
+  top: 27px;
+}
+
+.noteAvatar {
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.noteContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.noteHeader {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.noteAuthor {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--t1);
+}
+
+.compact .noteAuthor {
+  font-size: 11px;
+}
+
+.noteTime {
+  font-size: 11px;
+  color: var(--tm);
+  margin-left: auto;
+}
+
+.noteBody {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--t2);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.compact .noteBody {
+  font-size: 12px;
+  line-height: 1.45;
+}
