@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 
 export interface Notification {
   id: number;
@@ -10,7 +10,6 @@ export interface Notification {
 }
 
 const MAX_NOTIFICATIONS = 50;
-let nextId = 1;
 
 export function useNotifications() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -19,11 +18,13 @@ export function useNotifications() {
     const match = document.cookie.match(/notificationsReadAt=(\d+)/);
     return match ? parseInt(match[1], 10) : 0;
   });
+  const idRef = useRef(0);
 
   const unreadCount = notifications.filter((n) => n.timestamp > readAt).length;
 
   const addNotification = useCallback((title: string, message: string) => {
-    const id = nextId++;
+    idRef.current += 1;
+    const id = idRef.current;
     const timestamp = Date.now();
     setNotifications((prev) => {
       const next = [{ id, title, message, timestamp }, ...prev];

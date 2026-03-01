@@ -112,3 +112,7 @@
   background: var(--bg-sh);
   color: var(--t1);
 }
+
+.dropdownAnchor {
+  position: relative;
+}

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAuthenticatedSession, extractAccessToken } from "@/lib/auth-helpers";
+import { getAuthenticatedSession, extractAccessToken, parseBody } from "@/lib/auth-helpers";
 import { gitlabFetch, GitLabApiError } from "@/lib/gitlab-client";
 import { createLogger } from "@/lib/logger";
 
@@ -14,7 +14,9 @@ export async function PUT(
     const token = extractAccessToken(session);
     const { projectId, iid } = params;
 
-    const body = await req.json();
+    const parsed = await parseBody<{ sha?: string; squash?: boolean; should_remove_source_branch?: boolean; merge_when_pipeline_succeeds?: boolean }>(req);
+    if ("error" in parsed) return parsed.error;
+    const body = parsed.data;
     if (!body.sha) {
       return NextResponse.json({ error: "sha is required" }, { status: 400 });
     }

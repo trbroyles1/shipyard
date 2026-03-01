@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback } from "react";
 import type { GitLabMergeRequest, GitLabApprovals } from "@/lib/types/gitlab";
 import { useToastContext } from "@/components/providers/ToastProvider";
+import { CheckIcon, DoubleCheckIcon, XIcon, MergeIcon, ExternalLinkIcon } from "@/components/shared/icons";
 import { MergeDialog } from "./MergeDialog";
 import styles from "./ActionButtons.module.css";
 
@@ -17,7 +18,6 @@ export function ActionButtons({ mr, approvals, currentUserId, onRefetch }: Props
   const { addToast } = useToastContext();
   const [approving, setApproving] = useState(false);
   const [mergeOpen, setMergeOpen] = useState(false);
-  const mergeBtnRef = useRef<HTMLButtonElement>(null);
 
   const hasApproved = currentUserId != null && approvals.approved_by.some((a) => a.user.id === currentUserId);
   const mergeable = mr.detailed_merge_status === "mergeable" && !mr.draft;
@@ -51,30 +51,28 @@ export function ActionButtons({ mr, approvals, currentUserId, onRefetch }: Props
         {approving ? (
           <span className={styles.spinner} />
         ) : hasApproved ? (
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12l5 5L21 4"/><line x1="3" y1="12" x2="8" y2="17"/></svg>
+          <DoubleCheckIcon />
         ) : (
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          <CheckIcon />
         )}
         {hasApproved ? "Unapprove" : "Approve"}
       </button>
       <button className={`${styles.btn} ${styles.requestChanges}`} disabled title="Requires GraphQL — coming soon">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        <XIcon />
         Request Changes
       </button>
       <button
-        ref={mergeBtnRef}
         className={`${styles.btn} ${styles.merge}`}
         disabled={!mergeable}
         title={!mergeable ? `Not mergeable: ${mr.detailed_merge_status}${mr.draft ? " (draft)" : ""}` : "Merge this MR"}
         onClick={() => setMergeOpen(true)}
       >
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M6 21V9a9 9 0 0 0 9 9"/></svg>
+        <MergeIcon />
         {mergeable ? "Merge" : "Not Mergeable"}
       </button>
       {mergeOpen && (
         <MergeDialog
           mr={mr}
-          anchorRef={mergeBtnRef}
           onClose={() => setMergeOpen(false)}
           onRefetch={onRefetch}
         />
@@ -86,7 +84,7 @@ export function ActionButtons({ mr, approvals, currentUserId, onRefetch }: Props
         className={`${styles.btn} ${styles.external}`}
       >
         Open in GitLab
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        <ExternalLinkIcon />
       </a>
     </div>
   );

@@ -2,6 +2,7 @@ import { NextRequest } from "next/server";
 import { auth } from "@/lib/auth";
 import { createLogger } from "@/lib/logger";
 import { startPoller } from "@/lib/mr-poller";
+import { clearViewedMR } from "@/lib/viewed-mr-store";
 
 const log = createLogger("api/sse");
 
@@ -39,8 +40,11 @@ export async function GET(_req: NextRequest) {
       });
     },
     cancel() {
-      log.info(`SSE connection closed for user ${userId}`);
+      log.info(`SSE connection closed for user ${userId} — clearing viewed MR`);
       pollerHandle?.stop();
+      if (userId !== undefined) {
+        clearViewedMR(userId);
+      }
     },
   });
 

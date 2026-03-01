@@ -1,5 +1,7 @@
 import styles from "./Avatar.module.css";
 
+const FALLBACK_FONT_RATIO = 0.38;
+
 interface AvatarProps {
   name: string;
   avatarUrl?: string;
@@ -31,7 +33,7 @@ export function Avatar({ name, avatarUrl, size = 24 }: AvatarProps) {
   return (
     <span
       className={styles.fallback}
-      style={{ width: size, height: size, fontSize: size * 0.38 }}
+      style={{ width: size, height: size, fontSize: size * FALLBACK_FONT_RATIO }}
     >
       {getInitials(name)}
     </span>

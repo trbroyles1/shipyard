@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, useCallback, useRef, type ReactNode } from "react";
+import { createContext, useContext, useState, useCallback, useRef, useMemo, type ReactNode } from "react";
 import type { MRSummary } from "@/lib/types/mr";
 import type { GitLabMergeRequest, GitLabApprovals } from "@/lib/types/gitlab";
 
@@ -19,7 +19,7 @@ interface AppState {
   selectMR: (mr: MRSummary | null) => void;
   updateSelectedMR: (mr: MRSummary) => void;
   pushDetailPatch: (patch: DetailPatch) => void;
-  consumeDetailPatch: () => DetailPatch | null;
+  consumeAllDetailPatches: () => DetailPatch[];
   detailPatchVersion: number;
   detailVersion: number;
   filter: FilterMode;
@@ -41,8 +41,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
   const [selectedMR, setSelectedMR] = useState<MRSummary | null>(null);
   const [detailVersion, setDetailVersion] = useState(0);
   const [filter, setFilter] = useState<FilterMode>("all");
-  const [sortField, setSortField] = useState<SortField>("age");
-  const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
+  const [sort, setSort] = useState<{ field: SortField; direction: SortDirection }>({ field: "age", direction: "asc" });
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [activeTab, setActiveTab] = useState<TabId>("changes");
   const [scrollToFile, setScrollToFile] = useState<string | null>(null);
@@ -60,67 +59,68 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
-  // Lightweight patch channel: SSE detail updates set this, useMRDetail consumes it
-  const detailPatchRef = useRef<DetailPatch | null>(null);
+  // Patch queue: SSE detail updates push here, useMRDetail consumes them
+  const detailPatchQueueRef = useRef<DetailPatch[]>([]);
   const [detailPatchVersion, setDetailPatchVersion] = useState(0);
 
   const pushDetailPatch = useCallback((patch: DetailPatch) => {
-    detailPatchRef.current = patch;
+    detailPatchQueueRef.current.push(patch);
     setDetailPatchVersion((v) => v + 1);
   }, []);
 
-  const consumeDetailPatch = useCallback(() => {
-    const patch = detailPatchRef.current;
-    detailPatchRef.current = null;
-    return patch;
+  const consumeAllDetailPatches = useCallback(() => {
+    const patches = detailPatchQueueRef.current;
+    detailPatchQueueRef.current = [];
+    return patches;
   }, []);
 
   const toggleSort = useCallback(() => {
-    setSortField((prev) => {
-      if (prev === "age") {
-        // If switching from age asc -> age desc -> repo asc -> repo desc -> age asc
-        if (sortDirection === "asc") {
-          setSortDirection("desc");
-          return "age";
-        } else {
-          setSortDirection("asc");
-          return "repo";
-        }
-      } else {
-        if (sortDirection === "asc") {
-          setSortDirection("desc");
-          return "repo";
-        } else {
-          setSortDirection("asc");
-          return "age";
-        }
-      }
+    setSort((prev) => {
+      if (prev.field === "age" && prev.direction === "asc") return { field: "age", direction: "desc" };
+      if (prev.field === "age" && prev.direction === "desc") return { field: "repo", direction: "asc" };
+      if (prev.field === "repo" && prev.direction === "asc") return { field: "repo", direction: "desc" };
+      return { field: "age", direction: "asc" };
     });
-  }, [sortDirection]);
+  }, []);
+
+  const value = useMemo<AppState>(() => ({
+    selectedMR,
+    selectMR,
+    updateSelectedMR,
+    pushDetailPatch,
+    consumeAllDetailPatches,
+    detailPatchVersion,
+    detailVersion,
+    filter,
+    setFilter,
+    sortField: sort.field,
+    sortDirection: sort.direction,
+    toggleSort,
+    sidebarOpen,
+    setSidebarOpen,
+    activeTab,
+    setActiveTab,
+    scrollToFile,
+    setScrollToFile,
+  }), [
+    selectedMR,
+    selectMR,
+    updateSelectedMR,
+    pushDetailPatch,
+    consumeAllDetailPatches,
+    detailPatchVersion,
+    detailVersion,
+    filter,
+    sort.field,
+    sort.direction,
+    toggleSort,
+    sidebarOpen,
+    activeTab,
+    scrollToFile,
+  ]);
 
   return (
-    <AppStateContext.Provider
-      value={{
-        selectedMR,
-        selectMR,
-        updateSelectedMR,
-        pushDetailPatch,
-        consumeDetailPatch,
-        detailPatchVersion,
-        detailVersion,
-        filter,
-        setFilter,
-        sortField,
-        sortDirection,
-        toggleSort,
-        sidebarOpen,
-        setSidebarOpen,
-        activeTab,
-        setActiveTab,
-        scrollToFile,
-        setScrollToFile,
-      }}
-    >
+    <AppStateContext.Provider value={value}>
       {children}
     </AppStateContext.Provider>
   );

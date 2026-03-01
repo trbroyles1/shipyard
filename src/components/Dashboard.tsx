@@ -44,6 +44,7 @@ function DashboardInner() {
           break;
         }
         case "mr-detail-update": {
+          console.debug("[Dashboard] mr-detail-update received, approved_by:", event.data.approvals.approved_by.map(a => a.user.id));
           pushDetailPatch(event.data);
           break;
         }

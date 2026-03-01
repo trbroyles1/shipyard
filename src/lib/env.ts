@@ -1,3 +1,7 @@
+import { createLogger } from "./logger";
+
+const log = createLogger("env");
+
 function required(name: string): string {
   const value = process.env[name];
   if (!value) {
@@ -9,6 +13,17 @@ function required(name: string): string {
 function optional(name: string, fallback: string): string {
   return process.env[name] || fallback;
 }
+
+function optionalWithWarning(name: string, fallback: string, message: string): string {
+  const value = process.env[name];
+  if (value) return value;
+  if (!optionalWithWarning._warned.has(name)) {
+    optionalWithWarning._warned.add(name);
+    log.warn(message);
+  }
+  return fallback;
+}
+optionalWithWarning._warned = new Set<string>();
 
 /** Typed environment variable access. All values are resolved lazily via getters. */
 export const env = {
@@ -22,7 +37,11 @@ export const env = {
     return required("AUTH_GITLAB_SECRET");
   },
   get GITLAB_URL() {
-    return optional("GITLAB_URL", "https://gitlab.com");
+    return optionalWithWarning(
+      "GITLAB_URL",
+      "https://gitlab.com",
+      "GITLAB_URL is not set — defaulting to https://gitlab.com",
+    );
   },
   get GITLAB_GROUP_ID() {
     return required("GITLAB_GROUP_ID");

@@ -52,6 +52,120 @@ export interface PollerHandle {
   stop: () => void;
 }
 
+async function pollMRList(
+  store: MRStore,
+  token: string,
+  emit: (event: SSEEventPayload) => void,
+): Promise<void> {
+  const mrs = await gitlabFetchAllPages<GitLabMergeRequest>(
+    `/groups/${env.GITLAB_GROUP_ID}/merge_requests`,
+    token,
+    { state: "opened", scope: "all", include_subgroups: "true" },
+  );
+
+  const freshMap = new Map<number, MRSummary>();
+  for (const mr of mrs) {
+    const { slug, repoUrl } = extractRepoSlug(mr.web_url);
+    freshMap.set(mr.id, mapMRSummary(mr, slug, repoUrl));
+  }
+
+  if (!store.isHydrated) {
+    // First poll: populate silently, send full list
+    freshMap.forEach((mr) => store.upsert(mr));
+    store.markHydrated();
+    emit({ type: "status", data: { state: "ready" } });
+    emit({ type: "mr-list", data: store.getAll() });
+    log.info(`Initial hydration complete: ${freshMap.size} MRs`);
+    return;
+  }
+
+  // Diff against store
+  const events: SSEEventPayload[] = [];
+
+  // Detect new and updated MRs
+  freshMap.forEach((freshMR) => {
+    const existing = store.get(freshMR.id);
+    if (!existing) {
+      store.upsert(freshMR);
+      events.push({ type: "mr-new", data: freshMR });
+    } else if (hasChanged(existing, freshMR)) {
+      if (
+        existing.detailedMergeStatus !== "mergeable" &&
+        freshMR.detailedMergeStatus === "mergeable" &&
+        !freshMR.draft
+      ) {
+        events.push({ type: "mr-ready-to-merge", data: freshMR });
+      }
+      store.upsert(freshMR);
+      events.push({ type: "mr-update", data: freshMR });
+    }
+  });
+
+  // Detect removed MRs
+  for (const existing of store.getAll()) {
+    if (!freshMap.has(existing.id)) {
+      store.remove(existing.id);
+      events.push({ type: "mr-removed", data: { id: existing.id } });
+    }
+  }
+
+  for (const event of events) {
+    emit(event);
+  }
+
+  if (events.length > 0) {
+    log.debug(`Poll diff: ${events.length} events emitted`);
+  }
+}
+
+async function pollViewedMRApprovals(
+  token: string,
+  userId: number,
+  emit: (event: SSEEventPayload) => void,
+  lastKeyRef: { value: string },
+): Promise<void> {
+  const viewed = getViewedMR(userId);
+  if (!viewed) {
+    if (lastKeyRef.value) {
+      log.debug("Viewed MR cleared — resetting approval key");
+    }
+    lastKeyRef.value = "";
+    return;
+  }
+
+  const [mr, approvals] = await Promise.all([
+    gitlabFetch<GitLabMergeRequest>(
+      `/projects/${viewed.projectId}/merge_requests/${viewed.iid}?with_merge_status_recheck=true`,
+      token,
+    ),
+    gitlabFetch<GitLabApprovals>(
+      `/projects/${viewed.projectId}/merge_requests/${viewed.iid}/approvals`,
+      token,
+    ),
+  ]);
+
+  const approvalKey = JSON.stringify({
+    approved: approvals.approved,
+    approvals_left: approvals.approvals_left,
+    approved_by: approvals.approved_by.map((a) => a.user.id).sort(),
+    merge_status: mr.detailed_merge_status,
+    state: mr.state,
+    user_notes_count: mr.user_notes_count,
+  });
+
+  if (!lastKeyRef.value) {
+    log.debug(`Approval key initialized for project=${viewed.projectId} iid=${viewed.iid}: ${approvalKey}`);
+  } else if (approvalKey !== lastKeyRef.value) {
+    log.info(`Approval key changed for project=${viewed.projectId} iid=${viewed.iid}`);
+    log.debug(`  old: ${lastKeyRef.value}`);
+    log.debug(`  new: ${approvalKey}`);
+    emit({ type: "mr-detail-update", data: { mr, approvals } });
+  } else {
+    log.debug(`Approval key unchanged for project=${viewed.projectId} iid=${viewed.iid}`);
+  }
+  lastKeyRef.value = approvalKey;
+}
+
 /**
  * Starts a polling loop for one SSE connection. Uses the user's access token.
  * Calls `emit` with SSE events whenever the MR list changes.
@@ -64,111 +178,20 @@ export function startPoller(
   const store = new MRStore();
   let timer: ReturnType<typeof setTimeout> | null = null;
   let stopped = false;
-  // Track last-known approval state for the viewed MR to detect changes
-  let lastApprovalKey = "";
+  const lastApprovalKey = { value: "" };
 
   async function poll() {
     if (stopped) return;
 
     try {
-      const mrs = await gitlabFetchAllPages<GitLabMergeRequest>(
-        `/groups/${env.GITLAB_GROUP_ID}/merge_requests`,
-        token,
-        { state: "opened", scope: "all", include_subgroups: "true" },
-      );
-
-      const freshMap = new Map<number, MRSummary>();
-      for (const mr of mrs) {
-        const { slug, repoUrl } = extractRepoSlug(mr.web_url);
-        freshMap.set(mr.id, mapMRSummary(mr, slug, repoUrl));
-      }
-
-      if (!store.isHydrated) {
-        // First poll: populate silently, send full list
-        freshMap.forEach((mr) => store.upsert(mr));
-        store.markHydrated();
-        emit({ type: "status", data: { state: "ready" } });
-        emit({ type: "mr-list", data: store.getAll() });
-        log.info(`Initial hydration complete: ${freshMap.size} MRs`);
-      } else {
-        // Diff against store
-        const events: SSEEventPayload[] = [];
-
-        // Detect new and updated MRs
-        freshMap.forEach((freshMR) => {
-          const existing = store.get(freshMR.id);
-          if (!existing) {
-            store.upsert(freshMR);
-            events.push({ type: "mr-new", data: freshMR });
-          } else if (hasChanged(existing, freshMR)) {
-            // Check for status transition to mergeable
-            if (
-              existing.detailedMergeStatus !== "mergeable" &&
-              freshMR.detailedMergeStatus === "mergeable" &&
-              !freshMR.draft
-            ) {
-              events.push({ type: "mr-ready-to-merge", data: freshMR });
-            }
-            store.upsert(freshMR);
-            events.push({ type: "mr-update", data: freshMR });
-          }
-        });
-
-        // Detect removed MRs
-        for (const existing of store.getAll()) {
-          if (!freshMap.has(existing.id)) {
-            store.remove(existing.id);
-            events.push({ type: "mr-removed", data: { id: existing.id } });
-          }
-        }
-
-        // Emit events
-        for (const event of events) {
-          emit(event);
-        }
-
-        if (events.length > 0) {
-          log.debug(`Poll diff: ${events.length} events emitted`);
-        }
-      }
+      await pollMRList(store, token, emit);
     } catch (err) {
       log.error(`Poll error: ${err}`);
     }
 
-    // Poll approval state for the currently-viewed MR
     if (userId) {
       try {
-        const viewed = getViewedMR(userId);
-        if (viewed) {
-          const [mr, approvals] = await Promise.all([
-            gitlabFetch<GitLabMergeRequest>(
-              `/projects/${viewed.projectId}/merge_requests/${viewed.iid}?with_merge_status_recheck=true`,
-              token,
-            ),
-            gitlabFetch<GitLabApprovals>(
-              `/projects/${viewed.projectId}/merge_requests/${viewed.iid}/approvals`,
-              token,
-            ),
-          ]);
-
-          // Build a lightweight fingerprint to detect changes
-          const approvalKey = JSON.stringify({
-            approved: approvals.approved,
-            approvals_left: approvals.approvals_left,
-            approved_by: approvals.approved_by.map((a) => a.user.id).sort(),
-            merge_status: mr.detailed_merge_status,
-            state: mr.state,
-            user_notes_count: mr.user_notes_count,
-          });
-
-          if (lastApprovalKey && approvalKey !== lastApprovalKey) {
-            emit({ type: "mr-detail-update", data: { mr, approvals } });
-            log.debug(`Detail update emitted for project=${viewed.projectId} iid=${viewed.iid}`);
-          }
-          lastApprovalKey = approvalKey;
-        } else {
-          lastApprovalKey = "";
-        }
+        await pollViewedMRApprovals(token, userId, emit, lastApprovalKey);
       } catch (err) {
         log.error(`Viewed MR poll error: ${err}`);
       }

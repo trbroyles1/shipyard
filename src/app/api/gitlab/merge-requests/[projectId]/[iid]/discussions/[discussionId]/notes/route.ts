@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAuthenticatedSession, extractAccessToken } from "@/lib/auth-helpers";
+import { getAuthenticatedSession, extractAccessToken, parseBody } from "@/lib/auth-helpers";
 import { gitlabFetch, GitLabApiError } from "@/lib/gitlab-client";
 import { createLogger } from "@/lib/logger";
 
@@ -14,7 +14,9 @@ export async function POST(
     const token = extractAccessToken(session);
     const { projectId, iid, discussionId } = params;
 
-    const body = await req.json();
+    const parsed = await parseBody<{ body?: string }>(req);
+    if ("error" in parsed) return parsed.error;
+    const body = parsed.data;
     if (!body.body) {
       return NextResponse.json({ error: "body is required" }, { status: 400 });
     }

@@ -1,4 +1,5 @@
 import { StatusDot } from "@/components/shared/StatusDot";
+import { CheckIcon, XIcon } from "@/components/shared/icons";
 import styles from "./StatsRow.module.css";
 
 interface Props {
@@ -33,9 +34,9 @@ export function StatsRow({ pipelineStatus, approvalsGiven, approvalsRequired, ch
       <div className={styles.stat}>
         Approvals: {approvalsGiven}/{approvalsRequired}
         {approvalsGiven >= approvalsRequired && approvalsRequired > 0 ? (
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--grn)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          <CheckIcon stroke="var(--grn)" />
         ) : (
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--red)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          <XIcon stroke="var(--red)" />
         )}
       </div>
       <div className={styles.stat}>{changesCount} files changed</div>

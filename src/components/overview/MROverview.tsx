@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useSession } from "next-auth/react";
 import type { MRDetailData } from "@/hooks/use-mr-detail";
 import type { MRSummary } from "@/lib/types/mr";
+import { MergeIcon, ChevronIcon } from "@/components/shared/icons";
 import { BranchIndicator } from "./BranchIndicator";
 import { LabelPills } from "./LabelPills";
 import { StatsRow } from "./StatsRow";
@@ -31,20 +32,10 @@ export function MROverview({ summary, detail, onRefetch }: Props) {
         onClick={() => setExpanded(!expanded)}
       >
         <h2 className={styles.heading}>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="18" cy="18" r="3"/>
-            <circle cx="6" cy="6" r="3"/>
-            <path d="M6 21V9a9 9 0 0 0 9 9"/>
-          </svg>
+          <MergeIcon />
           !{mr.iid} &middot; {summary.repo}
         </h2>
-        <svg
-          width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-          strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
-          className={styles.chevron}
-        >
-          <polyline points="6 9 12 15 18 9"/>
-        </svg>
+        <ChevronIcon className={styles.chevron} />
       </div>
       {expanded && (
         <div className={styles.body}>

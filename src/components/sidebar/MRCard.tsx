@@ -2,6 +2,7 @@
 
 import { useAppState } from "@/components/providers/AppStateProvider";
 import { StatusDot } from "@/components/shared/StatusDot";
+import { CheckIcon } from "@/components/shared/icons";
 import { RelativeTime, hoursOld } from "@/components/shared/RelativeTime";
 import { GitLabLink } from "@/components/shared/GitLabLink";
 import type { MRSummary } from "@/lib/types/mr";
@@ -13,11 +14,13 @@ interface MRCardProps {
 
 const WARNING_HOURS = 10;
 const CRITICAL_HOURS = 20;
+const CRITICAL_BG = "rgba(220, 38, 38, 0.12)";
+const WARNING_BG = "rgba(234, 179, 8, 0.10)";
 
 function cardBackground(createdAt: string): string {
   const hours = hoursOld(createdAt);
-  if (hours > CRITICAL_HOURS) return "rgba(220, 38, 38, 0.12)";
-  if (hours > WARNING_HOURS) return "rgba(234, 179, 8, 0.10)";
+  if (hours > CRITICAL_HOURS) return CRITICAL_BG;
+  if (hours > WARNING_HOURS) return WARNING_BG;
   return "transparent";
 }
 
@@ -38,9 +41,7 @@ export function MRCard({ mr }: MRCardProps) {
       {mr.draft && <div className={styles.draft}>Draft</div>}
       {isMergeable && (
         <div className={styles.ready}>
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-            <polyline points="20 6 9 17 4 12"/>
-          </svg>
+          <CheckIcon size={12} />
           Ready to merge
         </div>
       )}

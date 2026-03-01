@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useRef, type KeyboardEvent } from "react";
 import type { GitLabDiscussion } from "@/lib/types/gitlab";
+import { ChevronRightIcon } from "./icons";
 import { Avatar } from "./Avatar";
 import { RelativeTime } from "./RelativeTime";
 import styles from "./DiscussionThread.module.css";
@@ -67,13 +68,9 @@ export function DiscussionThread({ discussion, defaultExpanded = false, compact 
     <div className={rootClass}>
       {/* Header bar — always visible */}
       <div className={styles.header} onClick={() => setExpanded(!expanded)}>
-        <svg
-          width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-          strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+        <ChevronRightIcon
           className={`${styles.chevron} ${expanded ? styles.chevronOpen : ""}`}
-        >
-          <polyline points="9 6 15 12 9 18" />
-        </svg>
+        />
         <Avatar avatarUrl={firstNote.author.avatar_url} name={firstNote.author.name} size={compact ? 18 : 20} />
         <span className={styles.authorName}>{firstNote.author.name}</span>
         {fileLink && (

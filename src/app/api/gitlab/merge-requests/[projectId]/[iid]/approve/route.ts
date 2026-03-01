@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAuthenticatedSession, extractAccessToken } from "@/lib/auth-helpers";
+import { getAuthenticatedSession, extractAccessToken, parseBody } from "@/lib/auth-helpers";
 import { gitlabFetch, GitLabApiError } from "@/lib/gitlab-client";
 import { createLogger } from "@/lib/logger";
 
@@ -14,7 +14,9 @@ export async function POST(
     const token = extractAccessToken(session);
     const { projectId, iid } = params;
 
-    const body = await req.json().catch(() => ({}));
+    const parsed = await parseBody<{ sha?: string }>(req);
+    if ("error" in parsed) return parsed.error;
+    const body = parsed.data;
 
     log.info(`Approving MR: project=${projectId} iid=${iid}`);
 
