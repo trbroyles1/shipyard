@@ -7,6 +7,7 @@ import { TopBar } from "@/components/layout/TopBar";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { MainContent } from "@/components/layout/MainContent";
 import { ToastContainer } from "@/components/notifications/ToastContainer";
+import { useAppState } from "@/components/providers/AppStateProvider";
 import { useMRList, type MREvent } from "@/hooks/use-mr-list";
 import { useNotifications } from "@/hooks/use-notifications";
 import { useToasts } from "@/hooks/use-toasts";
@@ -15,6 +16,7 @@ import styles from "./Dashboard.module.css";
 
 function DashboardInner() {
   const { data: session } = useSession();
+  const { updateSelectedMR } = useAppState();
   const { notifications, unreadCount, addNotification, markAllRead } = useNotifications();
   const { toasts, addToast, dismiss } = useToasts();
   const { playNewMR, playAssignedToMe, playReadyToMerge } = useAudio();
@@ -37,6 +39,10 @@ function DashboardInner() {
           }
           break;
         }
+        case "mr-update": {
+          updateSelectedMR(event.data);
+          break;
+        }
         case "mr-ready-to-merge": {
           const mr = event.data;
           // Only notify if current user is the author
@@ -49,7 +55,7 @@ function DashboardInner() {
         }
       }
     },
-    [currentUserId, addNotification, addToast, playNewMR, playAssignedToMe, playReadyToMerge],
+    [currentUserId, updateSelectedMR, addNotification, addToast, playNewMR, playAssignedToMe, playReadyToMerge],
   );
 
   const { mrs, isLoading, error } = useMRList(handleMREvent);

@@ -9,8 +9,8 @@ import { TabContent } from "@/components/tabs/TabContent";
 import styles from "./MainContent.module.css";
 
 export function MainContent() {
-  const { selectedMR } = useAppState();
-  const { data, isLoading, error } = useMRDetail(selectedMR);
+  const { selectedMR, detailVersion } = useAppState();
+  const { data, isLoading, error } = useMRDetail(selectedMR, detailVersion);
 
   if (!selectedMR) {
     return (

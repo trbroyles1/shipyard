@@ -11,6 +11,8 @@ export type TabId = "changes" | "commits" | "discussions" | "pipeline" | "histor
 interface AppState {
   selectedMR: MRSummary | null;
   selectMR: (mr: MRSummary | null) => void;
+  updateSelectedMR: (mr: MRSummary) => void;
+  detailVersion: number;
   filter: FilterMode;
   setFilter: (filter: FilterMode) => void;
   sortField: SortField;
@@ -26,6 +28,7 @@ const AppStateContext = createContext<AppState | null>(null);
 
 export function AppStateProvider({ children }: { children: ReactNode }) {
   const [selectedMR, setSelectedMR] = useState<MRSummary | null>(null);
+  const [detailVersion, setDetailVersion] = useState(0);
   const [filter, setFilter] = useState<FilterMode>("all");
   const [sortField, setSortField] = useState<SortField>("age");
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
@@ -34,6 +37,15 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
 
   const selectMR = useCallback((mr: MRSummary | null) => {
     setSelectedMR(mr);
+  }, []);
+
+  const updateSelectedMR = useCallback((mr: MRSummary) => {
+    setSelectedMR((prev) => {
+      if (!prev || prev.id !== mr.id) return prev;
+      if (prev.updatedAt === mr.updatedAt) return prev;
+      setDetailVersion((v) => v + 1);
+      return mr;
+    });
   }, []);
 
   const toggleSort = useCallback(() => {
@@ -64,6 +76,8 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
       value={{
         selectedMR,
         selectMR,
+        updateSelectedMR,
+        detailVersion,
         filter,
         setFilter,
         sortField,
