@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { DEFAULT_PREFERENCES, type UserPreferences } from "@/lib/types/preferences";
 
 const COOKIE_NAME = "shipyard_prefs";
@@ -25,6 +25,11 @@ function writeCookie(prefs: UserPreferences): void {
 
 export function usePreferences() {
   const [preferences, setPreferences] = useState<UserPreferences>(readCookie);
+
+  // Sync data-theme attribute on <html> whenever theme changes
+  useEffect(() => {
+    document.documentElement.dataset.theme = preferences.theme;
+  }, [preferences.theme]);
 
   const updatePreferences = useCallback((partial: Partial<UserPreferences>) => {
     setPreferences((prev) => {

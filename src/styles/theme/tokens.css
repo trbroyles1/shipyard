@@ -42,3 +42,17 @@
   --bg-terminal: #0d0d0d;
   --t-terminal: #d4d4d4;
 }
+
+/*
+ * Theme overrides — future themes override :root values via data-theme.
+ * Classic is the default and needs no override (values live on :root).
+ *
+ * Example:
+ * [data-theme="midnight"] {
+ *   --bg-root: #030305;
+ *   --bg-s: #0a0b12;
+ *   --acc: #818cf8;
+ *   --sh-md: 0 4px 20px rgba(0, 0, 0, 0.6);
+ *   --fs-2: 13px;
+ * }
+ */

@@ -3,7 +3,7 @@
 import { useCallback } from "react";
 import { Modal } from "@/components/shared/Modal";
 import { usePreferencesContext } from "@/components/providers/PreferencesProvider";
-import type { UserPreferences } from "@/lib/types/preferences";
+import { THEMES, type UserPreferences, type Theme } from "@/lib/types/preferences";
 import styles from "./PreferencesModal.module.css";
 
 interface Props {
@@ -48,6 +48,22 @@ export function PreferencesModal({ open, onClose }: Props) {
 
   return (
     <Modal open={open} onClose={onClose} title="Preferences" width={400}>
+      <section className={styles.section}>
+        <h3 className={styles.sectionTitle}>Theme</h3>
+        <div className={styles.themeSelect}>
+          {THEMES.map((t) => (
+            <button
+              key={t.value}
+              type="button"
+              className={`${styles.themeOption} ${preferences.theme === t.value ? styles.themeActive : ""}`}
+              onClick={() => update("theme", t.value as Theme)}
+            >
+              {t.label}
+            </button>
+          ))}
+        </div>
+      </section>
+
       <section className={styles.section}>
         <h3 className={styles.sectionTitle}>MR Age Thresholds</h3>
         <p className={styles.sectionDesc}>

@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
 import { Outfit, JetBrains_Mono } from "next/font/google";
 import { SessionProvider } from "@/components/providers/SessionProvider";
+import { DEFAULT_PREFERENCES } from "@/lib/types/preferences";
+import type { Theme } from "@/lib/types/preferences";
 import "./globals.css";
 
 const outfit = Outfit({
@@ -20,13 +23,31 @@ export const metadata: Metadata = {
   description: "GitLab merge request review dashboard",
 };
 
+function readThemeFromCookie(cookieStore: ReturnType<typeof cookies>): Theme {
+  const raw = cookieStore.get("shipyard_prefs")?.value;
+  if (!raw) return DEFAULT_PREFERENCES.theme;
+  try {
+    const parsed = JSON.parse(decodeURIComponent(raw));
+    return parsed.theme ?? DEFAULT_PREFERENCES.theme;
+  } catch {
+    return DEFAULT_PREFERENCES.theme;
+  }
+}
+
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const cookieStore = cookies();
+  const theme = readThemeFromCookie(cookieStore);
+
   return (
-    <html lang="en" className={`${outfit.variable} ${jetbrainsMono.variable}`}>
+    <html
+      lang="en"
+      className={`${outfit.variable} ${jetbrainsMono.variable}`}
+      data-theme={theme}
+    >
       <body>
         <SessionProvider>{children}</SessionProvider>
       </body>

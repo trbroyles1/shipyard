@@ -26,6 +26,35 @@
   line-height: 1.4;
 }
 
+/* Theme selector */
+.themeSelect {
+  display: flex;
+  gap: var(--sp-3);
+}
+
+.themeOption {
+  padding: var(--sp-2) var(--sp-5);
+  border-radius: var(--rs);
+  border: var(--bw) solid var(--brd);
+  background: var(--bg-sr);
+  color: var(--t2);
+  font-size: var(--fs-2);
+  font-family: var(--sans);
+  cursor: pointer;
+  transition: all var(--dur-base);
+}
+
+.themeOption:hover {
+  border-color: var(--acc);
+  color: var(--t1);
+}
+
+.themeActive {
+  border-color: var(--acc);
+  background: var(--acc-d);
+  color: var(--t1);
+}
+
 /* Number inputs row */
 .inputRow {
   display: flex;
