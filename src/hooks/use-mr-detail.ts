@@ -5,7 +5,7 @@ import type { MRSummary, MRUser } from "@/lib/types/mr";
 import type {
   GitLabMergeRequest,
   GitLabApprovals,
-  GitLabDiffFile,
+  EnrichedDiffFile,
   GitLabDiscussion,
   GitLabCommit,
   GitLabPipeline,
@@ -15,7 +15,7 @@ import type {
 export interface MRDetailData {
   mr: GitLabMergeRequest;
   approvals: GitLabApprovals;
-  diffs: GitLabDiffFile[];
+  diffs: EnrichedDiffFile[];
   discussions: GitLabDiscussion[];
   commits: GitLabCommit[];
   pipelines: GitLabPipeline[];
@@ -53,7 +53,7 @@ export function useMRDetail(selected: MRSummary | null) {
 
       const [detail, diffs, discussions, commits, pipelines, notes] = await Promise.all([
         detailRes.json() as Promise<{ mr: GitLabMergeRequest; approvals: GitLabApprovals }>,
-        diffsRes.json() as Promise<GitLabDiffFile[]>,
+        diffsRes.json() as Promise<EnrichedDiffFile[]>,
         discussionsRes.json() as Promise<GitLabDiscussion[]>,
         commitsRes.json() as Promise<GitLabCommit[]>,
         pipelinesRes.json() as Promise<GitLabPipeline[]>,

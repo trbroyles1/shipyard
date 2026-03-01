@@ -1,29 +1,29 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import type { GitLabDiffFile } from "@/lib/types/gitlab";
-import { enrichWithStats, type FileWithStats } from "./changes/diff-stats";
+import type { EnrichedDiffFile } from "@/lib/types/gitlab";
+import type { FileWithStats } from "./changes/diff-stats";
 import { FileTree } from "./changes/FileTree";
 import { DiffViewer } from "./changes/DiffViewer";
 import styles from "./ChangesTab.module.css";
 
 interface Props {
-  diffs: GitLabDiffFile[];
+  diffs: EnrichedDiffFile[];
+  projectId: number;
+  iid: number;
 }
 
-export function ChangesTab({ diffs }: Props) {
+export function ChangesTab({ diffs, projectId, iid }: Props) {
   const [selectedFile, setSelectedFile] = useState<string | null>(null);
   const [treeOpen, setTreeOpen] = useState(true);
 
-  const filesWithStats = useMemo(() => enrichWithStats(diffs), [diffs]);
-
   const fileMap = useMemo(() => {
     const map = new Map<string, FileWithStats>();
-    for (const d of filesWithStats) {
+    for (const d of diffs) {
       map.set(d.new_path || d.old_path, d);
     }
     return map;
-  }, [filesWithStats]);
+  }, [diffs]);
 
   if (diffs.length === 0) {
     return <div className={styles.empty}>No changes found.</div>;
@@ -34,7 +34,7 @@ export function ChangesTab({ diffs }: Props) {
       {treeOpen && (
         <div className={styles.tree}>
           <FileTree
-            files={filesWithStats}
+            files={diffs}
             selectedFile={selectedFile}
             onSelect={setSelectedFile}
             onClose={() => setTreeOpen(false)}
@@ -48,20 +48,20 @@ export function ChangesTab({ diffs }: Props) {
           </button>
         )}
         {selectedFile && fileMap.has(selectedFile) ? (
-          <DiffViewer file={fileMap.get(selectedFile)!} />
+          <DiffViewer file={fileMap.get(selectedFile)!} projectId={projectId} iid={iid} />
         ) : (
-          <DiffAllFiles files={filesWithStats} />
+          <DiffAllFiles files={diffs} projectId={projectId} iid={iid} />
         )}
       </div>
     </div>
   );
 }
 
-function DiffAllFiles({ files }: { files: FileWithStats[] }) {
+function DiffAllFiles({ files, projectId, iid }: { files: FileWithStats[]; projectId: number; iid: number }) {
   return (
     <div className={styles.allFiles}>
       {files.map((f) => (
-        <DiffViewer key={f.new_path || f.old_path} file={f} />
+        <DiffViewer key={f.new_path || f.old_path} file={f} projectId={projectId} iid={iid} />
       ))}
     </div>
   );

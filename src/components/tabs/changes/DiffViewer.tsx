@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useCallback } from "react";
 import { parseDiff, Diff, Hunk } from "react-diff-view";
 import type { FileWithStats } from "./diff-stats";
 import styles from "./DiffViewer.module.css";
@@ -8,23 +8,50 @@ import "react-diff-view/style/index.css";
 
 interface Props {
   file: FileWithStats;
+  projectId: number;
+  iid: number;
 }
 
-export function DiffViewer({ file }: Props) {
+export function DiffViewer({ file: initialFile, projectId, iid }: Props) {
   const [collapsed, setCollapsed] = useState(false);
-  const path = file.new_path || file.old_path;
+  const [loadedDiff, setLoadedDiff] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
+
+  const path = initialFile.new_path || initialFile.old_path;
+  const diffText = loadedDiff ?? initialFile.diff;
+  const isTruncated = initialFile.truncated && loadedDiff === null;
 
   const parsedFiles = useMemo(() => {
-    if (!file.diff) return [];
-    const unifiedDiff = `--- a/${file.old_path}\n+++ b/${file.new_path}\n${file.diff}`;
+    if (!diffText) return [];
+    const unifiedDiff = `--- a/${initialFile.old_path}\n+++ b/${initialFile.new_path}\n${diffText}`;
     try {
       return parseDiff(unifiedDiff);
     } catch {
       return [];
     }
-  }, [file]);
+  }, [diffText, initialFile.old_path, initialFile.new_path]);
 
-  const noDiff = parsedFiles.length === 0 && !file.diff;
+  const handleLoad = useCallback(async () => {
+    setLoading(true);
+    setLoadError(null);
+    try {
+      const base = `/api/gitlab/merge-requests/${projectId}/${iid}/changes/file`;
+      const res = await fetch(`${base}?path=${encodeURIComponent(path)}`);
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        throw new Error(body.error || `HTTP ${res.status}`);
+      }
+      const data = await res.json();
+      setLoadedDiff(data.diff || "");
+    } catch (err) {
+      setLoadError(err instanceof Error ? err.message : "Failed to load diff");
+    } finally {
+      setLoading(false);
+    }
+  }, [projectId, iid, path]);
+
+  const noDiff = !diffText && !isTruncated;
 
   return (
     <div className={styles.file}>
@@ -41,17 +68,33 @@ export function DiffViewer({ file }: Props) {
         </svg>
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
         <span className={styles.filePath}>{path}</span>
-        {file.renamed_file && file.old_path !== file.new_path && (
-          <span className={styles.rename}>{file.old_path} &rarr;</span>
+        {initialFile.renamed_file && initialFile.old_path !== initialFile.new_path && (
+          <span className={styles.rename}>{initialFile.old_path} &rarr;</span>
         )}
         <span className={styles.stats}>
-          <span className={styles.additions}>+{file.additions}</span>
-          <span className={styles.deletions}>-{file.deletions}</span>
+          <span className={styles.additions}>+{initialFile.additions}</span>
+          <span className={styles.deletions}>-{initialFile.deletions}</span>
         </span>
       </div>
       {!collapsed && (
-        noDiff ? (
-          <div className={styles.noContent}>File content not available (binary or too large)</div>
+        initialFile.binary ? (
+          <div className={styles.noContent}>Binary file — no text diff available.</div>
+        ) : isTruncated ? (
+          <div className={styles.largeDiff}>
+            <span className={styles.largeDiffText}>
+              Large diff ({initialFile.additions + initialFile.deletions} changed lines). Load it?
+            </span>
+            <button
+              className={styles.loadBtn}
+              onClick={handleLoad}
+              disabled={loading}
+            >
+              {loading ? "Loading..." : "Load diff"}
+            </button>
+            {loadError && <span className={styles.loadError}>{loadError}</span>}
+          </div>
+        ) : noDiff ? (
+          <div className={styles.noContent}>Empty diff.</div>
         ) : (
           <div className={styles.diffContent}>
             {parsedFiles.map((pf) => (

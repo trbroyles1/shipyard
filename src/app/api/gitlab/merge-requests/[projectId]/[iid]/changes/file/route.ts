@@ -1,0 +1,59 @@
+import { NextRequest, NextResponse } from "next/server";
+import { getAuthenticatedSession, extractAccessToken } from "@/lib/auth-helpers";
+import { gitlabFetch, GitLabApiError } from "@/lib/gitlab-client";
+import { createLogger } from "@/lib/logger";
+import type { GitLabDiffFile } from "@/lib/types/gitlab";
+
+const log = createLogger("api/mr-changes-file");
+
+interface ChangesResponse {
+  changes: GitLabDiffFile[];
+}
+
+/**
+ * Fetch the raw diff for a single file in an MR.
+ * Query param: ?path=<file_path>
+ * Uses /changes?access_raw_diffs=true so GitLab returns full content
+ * even for collapsed/generated files.
+ */
+export async function GET(
+  req: NextRequest,
+  { params }: { params: { projectId: string; iid: string } },
+) {
+  try {
+    const session = await getAuthenticatedSession();
+    const token = extractAccessToken(session);
+    const { projectId, iid } = params;
+    const filePath = req.nextUrl.searchParams.get("path");
+
+    if (!filePath) {
+      return NextResponse.json({ error: "Missing ?path= query parameter" }, { status: 400 });
+    }
+
+    log.info(`Fetching single file diff: project=${projectId} iid=${iid} path=${filePath}`);
+
+    const result = await gitlabFetch<ChangesResponse>(
+      `/projects/${projectId}/merge_requests/${iid}/changes?access_raw_diffs=true`,
+      token,
+    );
+
+    const match = result.changes.find(
+      (d) => d.new_path === filePath || d.old_path === filePath,
+    );
+
+    if (!match) {
+      return NextResponse.json({ error: "File not found in MR diffs" }, { status: 404 });
+    }
+
+    return NextResponse.json({ diff: match.diff });
+  } catch (error) {
+    if (error instanceof GitLabApiError) {
+      return NextResponse.json({ error: error.message }, { status: error.status });
+    }
+    if (error instanceof Error && error.message.includes("Not authenticated")) {
+      return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+    }
+    log.error(`Unexpected error: ${error}`);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+  }
+}

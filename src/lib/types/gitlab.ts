@@ -73,6 +73,18 @@ export interface GitLabDiffFile {
   new_file: boolean;
   renamed_file: boolean;
   deleted_file: boolean;
+  /** Whether the diff was generated (true) or is truly binary with no text diff. */
+  generated_file?: boolean;
+}
+
+/** Extended diff file returned by our API with precomputed stats. */
+export interface EnrichedDiffFile extends GitLabDiffFile {
+  additions: number;
+  deletions: number;
+  /** true when the diff body was stripped server-side to protect browser perf. */
+  truncated: boolean;
+  /** true when the file is genuinely binary (no text representation). */
+  binary: boolean;
 }
 
 export interface GitLabNote {
