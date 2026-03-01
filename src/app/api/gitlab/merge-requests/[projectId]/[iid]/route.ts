@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAuthenticatedSession, extractAccessToken } from "@/lib/auth-helpers";
 import { gitlabFetch, GitLabApiError } from "@/lib/gitlab-client";
+import { setViewedMR } from "@/lib/viewed-mr-store";
 import { createLogger } from "@/lib/logger";
 import type { GitLabMergeRequest, GitLabApprovals } from "@/lib/types/gitlab";
 
@@ -16,6 +17,10 @@ export async function GET(
     const { projectId, iid } = params;
 
     log.info(`Fetching MR detail: project=${projectId} iid=${iid}`);
+
+    if (session.gitlabUserId) {
+      setViewedMR(session.gitlabUserId, Number(projectId), Number(iid));
+    }
 
     const [mr, approvals] = await Promise.all([
       gitlabFetch<GitLabMergeRequest>(

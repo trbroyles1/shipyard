@@ -1,8 +1,9 @@
-import { gitlabFetchAllPages } from "./gitlab-client";
+import { gitlabFetch, gitlabFetchAllPages } from "./gitlab-client";
 import { env } from "./env";
 import { createLogger } from "./logger";
 import { MRStore } from "./mr-store";
-import type { GitLabMergeRequest } from "./types/gitlab";
+import { getViewedMR } from "./viewed-mr-store";
+import type { GitLabMergeRequest, GitLabApprovals } from "./types/gitlab";
 import type { MRSummary } from "./types/mr";
 import { mapMRSummary } from "./types/mr";
 import type {
@@ -10,6 +11,7 @@ import type {
   MRUpdateEvent,
   MRRemovedEvent,
   MRReadyToMergeEvent,
+  MRDetailUpdateEvent,
   MRListEvent,
   StatusEvent,
 } from "./types/events";
@@ -24,6 +26,7 @@ type SSEEventPayload =
   | MRUpdateEvent
   | MRRemovedEvent
   | MRReadyToMergeEvent
+  | MRDetailUpdateEvent
   | StatusEvent;
 
 function extractRepoSlug(webUrl: string): { slug: string; repoUrl: string } {
@@ -55,11 +58,14 @@ export interface PollerHandle {
  */
 export function startPoller(
   token: string,
+  userId: number | undefined,
   emit: (event: SSEEventPayload) => void,
 ): PollerHandle {
   const store = new MRStore();
   let timer: ReturnType<typeof setTimeout> | null = null;
   let stopped = false;
+  // Track last-known approval state for the viewed MR to detect changes
+  let lastApprovalKey = "";
 
   async function poll() {
     if (stopped) return;
@@ -127,6 +133,44 @@ export function startPoller(
       }
     } catch (err) {
       log.error(`Poll error: ${err}`);
+    }
+
+    // Poll approval state for the currently-viewed MR
+    if (userId) {
+      try {
+        const viewed = getViewedMR(userId);
+        if (viewed) {
+          const [mr, approvals] = await Promise.all([
+            gitlabFetch<GitLabMergeRequest>(
+              `/projects/${viewed.projectId}/merge_requests/${viewed.iid}?with_merge_status_recheck=true`,
+              token,
+            ),
+            gitlabFetch<GitLabApprovals>(
+              `/projects/${viewed.projectId}/merge_requests/${viewed.iid}/approvals`,
+              token,
+            ),
+          ]);
+
+          // Build a lightweight fingerprint to detect changes
+          const approvalKey = JSON.stringify({
+            approved: approvals.approved,
+            approvals_left: approvals.approvals_left,
+            approved_by: approvals.approved_by.map((a) => a.user.id).sort(),
+            merge_status: mr.detailed_merge_status,
+            state: mr.state,
+          });
+
+          if (lastApprovalKey && approvalKey !== lastApprovalKey) {
+            emit({ type: "mr-detail-update", data: { mr, approvals } });
+            log.debug(`Detail update emitted for project=${viewed.projectId} iid=${viewed.iid}`);
+          }
+          lastApprovalKey = approvalKey;
+        } else {
+          lastApprovalKey = "";
+        }
+      } catch (err) {
+        log.error(`Viewed MR poll error: ${err}`);
+      }
     }
 
     if (!stopped) {

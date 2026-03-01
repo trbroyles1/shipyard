@@ -16,7 +16,7 @@ import styles from "./Dashboard.module.css";
 
 function DashboardInner() {
   const { data: session } = useSession();
-  const { updateSelectedMR } = useAppState();
+  const { updateSelectedMR, pushDetailPatch } = useAppState();
   const { notifications, unreadCount, addNotification, markAllRead } = useNotifications();
   const { toasts, addToast, dismiss } = useToastContext();
   const { playNewMR, playAssignedToMe, playReadyToMerge } = useAudio();
@@ -43,6 +43,10 @@ function DashboardInner() {
           updateSelectedMR(event.data);
           break;
         }
+        case "mr-detail-update": {
+          pushDetailPatch(event.data);
+          break;
+        }
         case "mr-ready-to-merge": {
           const mr = event.data;
           // Only notify if current user is the author
@@ -55,7 +59,7 @@ function DashboardInner() {
         }
       }
     },
-    [currentUserId, updateSelectedMR, addNotification, addToast, playNewMR, playAssignedToMe, playReadyToMerge],
+    [currentUserId, updateSelectedMR, pushDetailPatch, addNotification, addToast, playNewMR, playAssignedToMe, playReadyToMerge],
   );
 
   const { mrs, isLoading, error } = useMRList(handleMREvent);

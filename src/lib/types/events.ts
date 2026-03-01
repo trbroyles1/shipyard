@@ -1,4 +1,5 @@
 import type { MRSummary } from "./mr";
+import type { GitLabMergeRequest, GitLabApprovals } from "./gitlab";
 
 export type SSEEventType =
   | "mr-list"
@@ -6,6 +7,7 @@ export type SSEEventType =
   | "mr-update"
   | "mr-removed"
   | "mr-ready-to-merge"
+  | "mr-detail-update"
   | "status";
 
 export interface SSEEvent {
@@ -36,6 +38,11 @@ export interface MRRemovedEvent {
 export interface MRReadyToMergeEvent {
   type: "mr-ready-to-merge";
   data: MRSummary;
+}
+
+export interface MRDetailUpdateEvent {
+  type: "mr-detail-update";
+  data: { mr: GitLabMergeRequest; approvals: GitLabApprovals };
 }
 
 export interface StatusEvent {

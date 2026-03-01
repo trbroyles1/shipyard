@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { useAppState } from "@/components/providers/AppStateProvider";
 import type { MRSummary } from "@/lib/types/mr";
 import type {
   GitLabMergeRequest,
@@ -23,6 +24,7 @@ export interface MRDetailData {
 }
 
 export function useMRDetail(selected: MRSummary | null, detailVersion = 0) {
+  const { detailPatchVersion, consumeDetailPatch } = useAppState();
   const [data, setData] = useState<MRDetailData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -103,6 +105,15 @@ export function useMRDetail(selected: MRSummary | null, detailVersion = 0) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [detailVersion]);
+
+  // Merge mr+approvals patch from SSE detail-update (no full refetch)
+  useEffect(() => {
+    if (detailPatchVersion === 0) return;
+    const patch = consumeDetailPatch();
+    if (!patch) return;
+    setData((prev) => (prev ? { ...prev, mr: patch.mr, approvals: patch.approvals } : prev));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [detailPatchVersion]);
 
   const refetch = useCallback(async () => {
     if (selected) await silentRefetch(selected);

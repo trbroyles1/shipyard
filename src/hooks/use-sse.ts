@@ -24,6 +24,7 @@ export function useSSE({ onEvent }: UseSSEOptions) {
         "mr-update",
         "mr-removed",
         "mr-ready-to-merge",
+        "mr-detail-update",
         "status",
       ];
 

@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useRef } from "react";
 import type { MRSummary } from "@/lib/types/mr";
+import type { GitLabMergeRequest, GitLabApprovals } from "@/lib/types/gitlab";
 import type { SSEEventType } from "@/lib/types/events";
 import { useSSE } from "./use-sse";
 
@@ -9,7 +10,8 @@ export type MREvent =
   | { type: "mr-new"; data: MRSummary }
   | { type: "mr-update"; data: MRSummary }
   | { type: "mr-removed"; data: { id: number } }
-  | { type: "mr-ready-to-merge"; data: MRSummary };
+  | { type: "mr-ready-to-merge"; data: MRSummary }
+  | { type: "mr-detail-update"; data: { mr: GitLabMergeRequest; approvals: GitLabApprovals } };
 
 interface UseMRListResult {
   mrs: MRSummary[];
@@ -61,6 +63,11 @@ export function useMRList(onMREvent?: (event: MREvent) => void) {
       case "mr-ready-to-merge": {
         const mr = data as MRSummary;
         onMREventRef.current?.({ type: "mr-ready-to-merge", data: mr });
+        break;
+      }
+      case "mr-detail-update": {
+        const detail = data as { mr: GitLabMergeRequest; approvals: GitLabApprovals };
+        onMREventRef.current?.({ type: "mr-detail-update", data: detail });
         break;
       }
     }

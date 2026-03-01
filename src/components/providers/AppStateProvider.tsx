@@ -1,17 +1,26 @@
 "use client";
 
-import { createContext, useContext, useState, useCallback, type ReactNode } from "react";
+import { createContext, useContext, useState, useCallback, useRef, type ReactNode } from "react";
 import type { MRSummary } from "@/lib/types/mr";
+import type { GitLabMergeRequest, GitLabApprovals } from "@/lib/types/gitlab";
 
 export type FilterMode = "mine" | "to-review" | "all";
 export type SortField = "age" | "repo";
 export type SortDirection = "asc" | "desc";
 export type TabId = "changes" | "commits" | "discussions" | "pipeline" | "history";
 
+export interface DetailPatch {
+  mr: GitLabMergeRequest;
+  approvals: GitLabApprovals;
+}
+
 interface AppState {
   selectedMR: MRSummary | null;
   selectMR: (mr: MRSummary | null) => void;
   updateSelectedMR: (mr: MRSummary) => void;
+  pushDetailPatch: (patch: DetailPatch) => void;
+  consumeDetailPatch: () => DetailPatch | null;
+  detailPatchVersion: number;
   detailVersion: number;
   filter: FilterMode;
   setFilter: (filter: FilterMode) => void;
@@ -51,6 +60,21 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
+  // Lightweight patch channel: SSE detail updates set this, useMRDetail consumes it
+  const detailPatchRef = useRef<DetailPatch | null>(null);
+  const [detailPatchVersion, setDetailPatchVersion] = useState(0);
+
+  const pushDetailPatch = useCallback((patch: DetailPatch) => {
+    detailPatchRef.current = patch;
+    setDetailPatchVersion((v) => v + 1);
+  }, []);
+
+  const consumeDetailPatch = useCallback(() => {
+    const patch = detailPatchRef.current;
+    detailPatchRef.current = null;
+    return patch;
+  }, []);
+
   const toggleSort = useCallback(() => {
     setSortField((prev) => {
       if (prev === "age") {
@@ -80,6 +104,9 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
         selectedMR,
         selectMR,
         updateSelectedMR,
+        pushDetailPatch,
+        consumeDetailPatch,
+        detailPatchVersion,
         detailVersion,
         filter,
         setFilter,

@@ -34,7 +34,7 @@ export async function GET(_req: NextRequest) {
         }
       }
 
-      pollerHandle = startPoller(token, (event) => {
+      pollerHandle = startPoller(token, userId, (event) => {
         send(event.type, event.data);
       });
     },
