@@ -1,25 +1,36 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import type { GitLabMergeRequest } from "@/lib/types/gitlab";
 import { useToastContext } from "@/components/providers/ToastProvider";
 import styles from "./MergeDialog.module.css";
 
 interface Props {
   mr: GitLabMergeRequest;
+  anchorRef: React.RefObject<HTMLButtonElement>;
   onClose: () => void;
   onRefetch: () => Promise<void>;
 }
 
-export function MergeDialog({ mr, onClose, onRefetch }: Props) {
+export function MergeDialog({ mr, anchorRef, onClose, onRefetch }: Props) {
   const { addToast } = useToastContext();
   const [squash, setSquash] = useState(false);
   const [deleteBranch, setDeleteBranch] = useState(true);
   const [autoMerge, setAutoMerge] = useState(false);
   const [merging, setMerging] = useState(false);
   const dialogRef = useRef<HTMLDivElement>(null);
+  const [pos, setPos] = useState<{ top: number; left: number } | null>(null);
 
   const pipelineRunning = mr.head_pipeline?.status === "running" || mr.head_pipeline?.status === "pending";
+
+  // Position the dialog below the anchor button
+  useEffect(() => {
+    if (anchorRef.current) {
+      const rect = anchorRef.current.getBoundingClientRect();
+      setPos({ top: rect.bottom + 6, left: rect.left });
+    }
+  }, [anchorRef]);
 
   // Close on outside click
   useEffect(() => {
@@ -73,8 +84,10 @@ export function MergeDialog({ mr, onClose, onRefetch }: Props) {
     }
   }, [mr, squash, deleteBranch, autoMerge, pipelineRunning, addToast, onClose, onRefetch]);
 
-  return (
-    <div className={styles.dialog} ref={dialogRef}>
+  if (!pos) return null;
+
+  return createPortal(
+    <div className={styles.dialog} ref={dialogRef} style={{ top: pos.top, left: pos.left }}>
       <div className={styles.title}>Merge options</div>
       <label className={styles.option}>
         <input type="checkbox" checked={squash} onChange={(e) => setSquash(e.target.checked)} />
@@ -97,6 +110,7 @@ export function MergeDialog({ mr, onClose, onRefetch }: Props) {
           {merging ? "Merging..." : "Confirm merge"}
         </button>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }

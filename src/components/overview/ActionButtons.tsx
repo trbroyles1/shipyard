@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import type { GitLabMergeRequest, GitLabApprovals } from "@/lib/types/gitlab";
 import { useToastContext } from "@/components/providers/ToastProvider";
 import { MergeDialog } from "./MergeDialog";
@@ -17,6 +17,7 @@ export function ActionButtons({ mr, approvals, currentUserId, onRefetch }: Props
   const { addToast } = useToastContext();
   const [approving, setApproving] = useState(false);
   const [mergeOpen, setMergeOpen] = useState(false);
+  const mergeBtnRef = useRef<HTMLButtonElement>(null);
 
   const hasApproved = currentUserId != null && approvals.approved_by.some((a) => a.user.id === currentUserId);
   const mergeable = mr.detailed_merge_status === "mergeable" && !mr.draft;
@@ -60,24 +61,24 @@ export function ActionButtons({ mr, approvals, currentUserId, onRefetch }: Props
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
         Request Changes
       </button>
-      <div className={styles.mergeWrap}>
-        <button
-          className={`${styles.btn} ${styles.merge}`}
-          disabled={!mergeable}
-          title={!mergeable ? `Not mergeable: ${mr.detailed_merge_status}${mr.draft ? " (draft)" : ""}` : "Merge this MR"}
-          onClick={() => setMergeOpen(true)}
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M6 21V9a9 9 0 0 0 9 9"/></svg>
-          {mergeable ? "Merge" : "Not Mergeable"}
-        </button>
-        {mergeOpen && (
-          <MergeDialog
-            mr={mr}
-            onClose={() => setMergeOpen(false)}
-            onRefetch={onRefetch}
-          />
-        )}
-      </div>
+      <button
+        ref={mergeBtnRef}
+        className={`${styles.btn} ${styles.merge}`}
+        disabled={!mergeable}
+        title={!mergeable ? `Not mergeable: ${mr.detailed_merge_status}${mr.draft ? " (draft)" : ""}` : "Merge this MR"}
+        onClick={() => setMergeOpen(true)}
+      >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M6 21V9a9 9 0 0 0 9 9"/></svg>
+        {mergeable ? "Merge" : "Not Mergeable"}
+      </button>
+      {mergeOpen && (
+        <MergeDialog
+          mr={mr}
+          anchorRef={mergeBtnRef}
+          onClose={() => setMergeOpen(false)}
+          onRefetch={onRefetch}
+        />
+      )}
       <a
         href={mr.web_url}
         target="_blank"

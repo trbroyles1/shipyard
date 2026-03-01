@@ -41,8 +41,6 @@
 .unapprove { border-color: var(--grn); color: var(--grn); background: var(--grn-d); }
 .unapprove:hover:not(:disabled) { background: transparent; }
 
-.mergeWrap { position: relative; }
-
 .external { margin-left: auto; }
 
 .spinner {
