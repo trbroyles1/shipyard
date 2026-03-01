@@ -21,8 +21,8 @@
 .header {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 8px 10px;
+  gap: var(--sp-2);
+  padding: var(--sp-3) var(--sp-4);
   cursor: pointer;
   user-select: none;
   min-height: 32px;
@@ -33,7 +33,7 @@
 }
 
 .compact .header {
-  padding: 6px 8px;
+  padding: var(--sp-2) var(--sp-3);
   gap: 5px;
 }
 
@@ -65,7 +65,7 @@
   background: none;
   border: none;
   cursor: pointer;
-  padding: 1px 4px;
+  padding: 1px var(--sp-1);
   border-radius: 3px;
   flex-shrink: 0;
 }
@@ -92,7 +92,7 @@
 .meta {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--sp-3);
   flex-shrink: 0;
   margin-left: auto;
 }
@@ -102,7 +102,7 @@
   font-weight: var(--fw-sb);
   color: var(--grn);
   background: var(--grn-d);
-  padding: 1px 6px;
+  padding: 1px var(--sp-2);
   border-radius: 3px;
 }
 
@@ -123,14 +123,14 @@
 
 .note {
   display: flex;
-  gap: 8px;
-  padding: 10px 12px;
+  gap: var(--sp-3);
+  padding: var(--sp-4) var(--sp-5);
   position: relative;
 }
 
 .compact .note {
-  padding: 7px 8px;
-  gap: 6px;
+  padding: 7px var(--sp-3);
+  gap: var(--sp-2);
 }
 
 .note + .note {
@@ -166,8 +166,8 @@
 .noteHeader {
   display: flex;
   align-items: center;
-  gap: 6px;
-  margin-bottom: 4px;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-1);
 }
 
 .noteAuthor {
@@ -203,7 +203,7 @@
 .resolveBtn {
   font-size: var(--fs-0);
   font-weight: var(--fw-sb);
-  padding: 1px 8px;
+  padding: 1px var(--sp-3);
   border-radius: 3px;
   border: 1px solid var(--brd);
   background: transparent;
@@ -230,21 +230,21 @@
 /* Reply box */
 .replyBox {
   display: flex;
-  gap: 8px;
-  padding: 8px 12px;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-5);
   border-top: 1px solid var(--brd-s);
   align-items: flex-end;
 }
 
 .compact .replyBox {
-  padding: 6px 8px;
+  padding: var(--sp-2) var(--sp-3);
 }
 
 .replyInput {
   flex: 1;
   min-height: 28px;
   max-height: 120px;
-  padding: 6px 8px;
+  padding: var(--sp-2) var(--sp-3);
   border: 1px solid var(--brd);
   border-radius: var(--rs);
   background: var(--bg-sd);
@@ -265,7 +265,7 @@
 }
 
 .replyBtn {
-  padding: 6px 12px;
+  padding: var(--sp-2) var(--sp-5);
   border-radius: var(--rs);
   border: 1px solid var(--acc);
   background: var(--acc);

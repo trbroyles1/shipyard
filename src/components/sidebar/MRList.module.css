@@ -1,19 +1,19 @@
 .list {
   flex: 1;
   overflow-y: auto;
-  padding: 6px;
+  padding: var(--sp-2);
 }
 
 .empty {
-  padding: 24px;
+  padding: var(--sp-9);
   text-align: center;
   font-size: var(--fs-3);
   color: var(--tm);
 }
 
 .skeleton {
-  padding: 10px 12px;
-  margin-bottom: 4px;
+  padding: var(--sp-4) var(--sp-5);
+  margin-bottom: var(--sp-1);
   border-radius: var(--r);
 }
 
@@ -21,7 +21,7 @@
   height: 14px;
   background: var(--bg-sh);
   border-radius: var(--rs);
-  margin-bottom: 8px;
+  margin-bottom: var(--sp-3);
   width: 80%;
   animation: shimmer 1.5s infinite;
 }

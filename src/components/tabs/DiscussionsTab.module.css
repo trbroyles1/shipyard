@@ -1,24 +1,24 @@
 .list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: var(--sp-4);
 }
 
 .empty {
   color: var(--t2);
   font-size: var(--fs-3);
   text-align: center;
-  padding: 40px;
+  padding: var(--sp-10);
 }
 
 /* New comment */
 .newComment {
-  margin-bottom: 4px;
+  margin-bottom: var(--sp-1);
 }
 
 .commentPlaceholder {
   width: 100%;
-  padding: 10px 12px;
+  padding: var(--sp-4) var(--sp-5);
   border: 1px solid var(--brd);
   border-radius: var(--r);
   background: var(--bg-sr);
@@ -38,14 +38,14 @@
   border: 1px solid var(--brd);
   border-radius: var(--r);
   background: var(--bg-sr);
-  padding: 10px;
+  padding: var(--sp-4);
 }
 
 .commentInput {
   width: 100%;
   min-height: 60px;
   max-height: 200px;
-  padding: 8px;
+  padding: var(--sp-3);
   border: 1px solid var(--brd);
   border-radius: var(--rs);
   background: var(--bg-sd);
@@ -68,13 +68,13 @@
 
 .commentActions {
   display: flex;
-  gap: 8px;
+  gap: var(--sp-3);
   justify-content: flex-end;
-  margin-top: 8px;
+  margin-top: var(--sp-3);
 }
 
 .commentCancel {
-  padding: 6px 12px;
+  padding: var(--sp-2) var(--sp-5);
   border-radius: var(--rs);
   border: 1px solid var(--brd);
   background: transparent;
@@ -89,7 +89,7 @@
 }
 
 .commentSubmit {
-  padding: 6px 14px;
+  padding: var(--sp-2) var(--sp-6);
   border-radius: var(--rs);
   border: 1px solid var(--acc);
   background: var(--acc);

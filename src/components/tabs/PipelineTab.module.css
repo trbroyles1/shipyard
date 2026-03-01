@@ -1,7 +1,7 @@
 .list {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--sp-1);
 }
 
 .pipeline {
@@ -14,8 +14,8 @@
 .pipelineHeader {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 10px 12px;
+  gap: var(--sp-3);
+  padding: var(--sp-4) var(--sp-5);
   cursor: pointer;
   font-size: var(--fs-2);
 }
@@ -83,8 +83,8 @@
 .job {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 7px 12px 7px 28px;
+  gap: var(--sp-3);
+  padding: 7px var(--sp-5) 7px 28px;
   font-size: var(--fs-2);
 }
 
@@ -121,7 +121,7 @@
   border: none;
   color: var(--tm);
   cursor: pointer;
-  padding: 2px;
+  padding: var(--sp-0);
   display: flex;
   align-items: center;
   border-radius: 3px;
@@ -141,7 +141,7 @@
 .jobLink:hover { color: var(--acc); }
 
 .jobLoading {
-  padding: 12px;
+  padding: var(--sp-5);
   text-align: center;
   font-size: var(--fs-2);
   color: var(--tm);
@@ -151,5 +151,5 @@
   color: var(--t2);
   font-size: var(--fs-3);
   text-align: center;
-  padding: 40px;
+  padding: var(--sp-10);
 }

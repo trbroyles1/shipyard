@@ -3,7 +3,7 @@
   gap: 0;
   border-bottom: 1px solid var(--brd);
   background: var(--bg-s);
-  padding: 0 16px;
+  padding: 0 var(--sp-7);
   overflow-x: auto;
   scrollbar-width: none;
 }
@@ -12,7 +12,7 @@
 
 .tab {
   position: relative;
-  padding: 10px 14px;
+  padding: var(--sp-4) var(--sp-6);
   font-size: var(--fs-2);
   font-weight: var(--fw-md);
   font-family: var(--sans);
@@ -23,7 +23,7 @@
   white-space: nowrap;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--sp-2);
   transition: color 0.15s;
 }
 

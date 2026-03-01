@@ -1,6 +1,6 @@
 .section {
-  padding-bottom: 16px;
-  margin-bottom: 16px;
+  padding-bottom: var(--sp-7);
+  margin-bottom: var(--sp-7);
   border-bottom: 1px solid var(--brd-s);
 }
 
@@ -14,7 +14,7 @@
   font-size: var(--fs-2);
   font-weight: var(--fw-sb);
   color: var(--t1);
-  margin: 0 0 4px;
+  margin: 0 0 var(--sp-1);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -22,14 +22,14 @@
 .sectionDesc {
   font-size: var(--fs-2);
   color: var(--tm);
-  margin: 0 0 10px;
+  margin: 0 0 var(--sp-4);
   line-height: 1.4;
 }
 
 /* Number inputs row */
 .inputRow {
   display: flex;
-  gap: 12px;
+  gap: var(--sp-5);
 }
 
 .inputLabel {
@@ -38,18 +38,18 @@
   color: var(--t2);
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--sp-1);
 }
 
 .inputWrap {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--sp-2);
 }
 
 .numberInput {
   width: 70px;
-  padding: 5px 8px;
+  padding: 5px var(--sp-3);
   border-radius: var(--rs);
   border: 1px solid var(--brd);
   background: var(--bg-sr);
@@ -73,7 +73,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 6px 0;
+  padding: var(--sp-2) 0;
   cursor: pointer;
 }
 
@@ -117,7 +117,7 @@
 /* Text input */
 .textInput {
   width: 100%;
-  padding: 7px 10px;
+  padding: 7px var(--sp-4);
   border-radius: var(--rs);
   border: 1px solid var(--brd);
   background: var(--bg-sr);

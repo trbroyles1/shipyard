@@ -5,7 +5,7 @@
   align-items: center;
   justify-content: center;
   color: var(--tm);
-  gap: 12px;
+  gap: var(--sp-5);
 }
 
 .icon {

@@ -10,8 +10,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
-  padding: 40px;
+  gap: var(--sp-7);
+  padding: var(--sp-10);
   background: var(--bg-s);
   border: 1px solid var(--brd);
   border-radius: var(--rl);
@@ -21,7 +21,7 @@
 .logo {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: var(--sp-4);
   color: var(--acc);
 }
 
@@ -42,9 +42,9 @@
 .button {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 12px 24px;
-  margin-top: 8px;
+  gap: var(--sp-4);
+  padding: var(--sp-5) var(--sp-9);
+  margin-top: var(--sp-3);
   background: var(--acc);
   color: #0a0c10;
   border: none;

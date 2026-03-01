@@ -4,7 +4,7 @@
   justify-content: space-between;
   height: 52px;
   min-height: 52px;
-  padding: 0 16px;
+  padding: 0 var(--sp-7);
   background: var(--bg-s);
   border-bottom: 1px solid var(--brd);
   z-index: 100;
@@ -13,7 +13,7 @@
 .left {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: var(--sp-4);
 }
 
 .logo {
@@ -35,7 +35,7 @@
 .right {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--sp-2);
 }
 
 .iconBtn {
@@ -78,7 +78,7 @@
 }
 
 .userMenuHeader {
-  padding: 12px 14px;
+  padding: var(--sp-5) var(--sp-6);
   border-bottom: 1px solid var(--brd-s);
 }
 
@@ -95,8 +95,8 @@
 .userMenuItem {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px 14px;
+  gap: var(--sp-4);
+  padding: var(--sp-4) var(--sp-6);
   font-size: var(--fs-3);
   color: var(--t2);
   cursor: pointer;

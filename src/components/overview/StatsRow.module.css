@@ -1,6 +1,6 @@
 .stats {
   display: flex;
-  gap: 16px;
+  gap: var(--sp-7);
   font-size: var(--fs-2);
   color: var(--t2);
 }

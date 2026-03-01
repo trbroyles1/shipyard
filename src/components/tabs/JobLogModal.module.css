@@ -6,7 +6,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 40px;
+  padding: var(--sp-10);
 }
 
 .modal {
@@ -33,8 +33,8 @@
 .header {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 10px 14px;
+  gap: var(--sp-3);
+  padding: var(--sp-4) var(--sp-6);
   background: var(--bg-sr);
   border-bottom: 1px solid var(--brd);
   color: var(--t2);
@@ -56,7 +56,7 @@
   border: none;
   color: var(--tm);
   cursor: pointer;
-  padding: 4px;
+  padding: var(--sp-1);
   display: flex;
   align-items: center;
   border-radius: 3px;
@@ -75,7 +75,7 @@
 
 .log {
   margin: 0;
-  padding: 14px 16px;
+  padding: var(--sp-6) var(--sp-7);
   font-family: var(--mono);
   font-size: var(--fs-2);
   line-height: 1.5;
@@ -98,14 +98,14 @@
 }
 
 .loading {
-  padding: 40px;
+  padding: var(--sp-10);
   text-align: center;
   color: var(--tm);
   font-size: var(--fs-3);
 }
 
 .error {
-  padding: 40px;
+  padding: var(--sp-10);
   text-align: center;
   color: var(--red);
   font-size: var(--fs-3);

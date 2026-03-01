@@ -1,11 +1,11 @@
 .list {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: var(--sp-0);
 }
 
 .commit {
-  padding: 10px 12px;
+  padding: var(--sp-4) var(--sp-5);
   border-radius: var(--rs);
   background: var(--bg-sr);
   border: 1px solid var(--brd-s);
@@ -19,7 +19,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 4px;
+  margin-bottom: var(--sp-1);
 }
 
 .sha {
@@ -55,5 +55,5 @@
   color: var(--t2);
   font-size: var(--fs-3);
   text-align: center;
-  padding: 40px;
+  padding: var(--sp-10);
 }

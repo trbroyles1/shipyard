@@ -17,7 +17,7 @@
   bottom: 0;
   left: 0;
   right: 0;
-  padding: 8px 16px;
+  padding: var(--sp-3) var(--sp-7);
   background: var(--red-d);
   color: var(--red);
   font-size: var(--fs-2);

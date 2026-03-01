@@ -18,7 +18,7 @@
 }
 
 .header {
-  padding: 12px 14px 10px;
+  padding: var(--sp-5) var(--sp-6) var(--sp-4);
   border-bottom: 1px solid var(--brd-s);
   flex-shrink: 0;
 }

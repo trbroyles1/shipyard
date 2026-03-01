@@ -1,11 +1,11 @@
 .timeline {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: var(--sp-0);
 }
 
 .entry {
-  padding: 8px 12px;
+  padding: var(--sp-3) var(--sp-5);
   border-radius: var(--rs);
 }
 
@@ -27,8 +27,8 @@
 .entryHeader {
   display: flex;
   align-items: center;
-  gap: 6px;
-  margin-bottom: 4px;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-1);
 }
 
 .authorName {
@@ -55,5 +55,5 @@
   color: var(--t2);
   font-size: var(--fs-3);
   text-align: center;
-  padding: 40px;
+  padding: var(--sp-10);
 }

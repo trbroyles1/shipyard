@@ -13,20 +13,20 @@
 }
 
 .content {
-  padding: 14px;
+  padding: var(--sp-6);
 }
 
 .title {
   font-size: var(--fs-2);
   font-weight: var(--fw-sb);
   color: var(--t1);
-  margin-bottom: 10px;
+  margin-bottom: var(--sp-4);
 }
 
 .option {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--sp-3);
   padding: 5px 0;
   font-size: var(--fs-2);
   color: var(--t2);
@@ -39,13 +39,13 @@
 
 .buttons {
   display: flex;
-  gap: 8px;
-  margin-top: 12px;
+  gap: var(--sp-3);
+  margin-top: var(--sp-5);
   justify-content: flex-end;
 }
 
 .cancel {
-  padding: 6px 12px;
+  padding: var(--sp-2) var(--sp-5);
   border-radius: var(--rs);
   border: 1px solid var(--brd);
   background: transparent;
@@ -60,7 +60,7 @@
 }
 
 .confirm {
-  padding: 6px 14px;
+  padding: var(--sp-2) var(--sp-6);
   border-radius: var(--rs);
   border: 1px solid var(--acc);
   background: var(--acc);
@@ -71,7 +71,7 @@
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--sp-2);
 }
 
 .confirm:hover:not(:disabled) {

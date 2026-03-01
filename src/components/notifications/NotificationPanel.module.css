@@ -12,11 +12,11 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  margin-top: 4px;
+  margin-top: var(--sp-1);
 }
 
 .header {
-  padding: 10px 14px;
+  padding: var(--sp-4) var(--sp-6);
   font-size: var(--fs-2);
   font-weight: var(--fw-sb);
   color: var(--t1);
@@ -31,7 +31,7 @@
 }
 
 .item {
-  padding: 10px 14px;
+  padding: var(--sp-4) var(--sp-6);
   border-bottom: 1px solid var(--brd-s);
 }
 
@@ -43,7 +43,7 @@
   font-size: var(--fs-2);
   font-weight: var(--fw-sb);
   color: var(--t1);
-  margin-bottom: 2px;
+  margin-bottom: var(--sp-0);
 }
 
 .message {
@@ -55,11 +55,11 @@
 .time {
   font-size: var(--fs-0);
   color: var(--tm);
-  margin-top: 4px;
+  margin-top: var(--sp-1);
 }
 
 .empty {
-  padding: 30px 14px;
+  padding: 30px var(--sp-6);
   text-align: center;
   color: var(--tm);
   font-size: var(--fs-2);

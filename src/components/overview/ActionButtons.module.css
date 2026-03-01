@@ -1,11 +1,11 @@
 .actions {
   display: flex;
-  gap: 8px;
-  margin-top: 12px;
+  gap: var(--sp-3);
+  margin-top: var(--sp-5);
 }
 
 .btn {
-  padding: 7px 14px;
+  padding: 7px var(--sp-6);
   border-radius: var(--rs);
   border: 1px solid var(--brd);
   background: var(--bg-sr);
@@ -16,7 +16,7 @@
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--sp-2);
   transition: all 0.15s;
   text-decoration: none;
 }

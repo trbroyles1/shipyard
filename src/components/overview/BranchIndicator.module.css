@@ -2,7 +2,7 @@
   font-size: var(--fs-2);
   color: var(--tm);
   font-family: var(--mono);
-  margin-bottom: 10px;
+  margin-bottom: var(--sp-4);
 }
 
 .branch { color: var(--acc); }

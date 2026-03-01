@@ -11,8 +11,8 @@
   z-index: 10;
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-5);
   background: var(--bg-sr);
   border-bottom: 1px solid var(--brd-s);
   font-size: var(--fs-3);
@@ -50,7 +50,7 @@
   font-size: var(--fs-1);
   margin-left: auto;
   display: flex;
-  gap: 8px;
+  gap: var(--sp-3);
   flex-shrink: 0;
 }
 
@@ -72,7 +72,7 @@
 
 .diffContent :global(.diff-gutter) {
   width: 50px;
-  padding: 0 8px;
+  padding: 0 var(--sp-3);
   color: var(--tm);
   text-align: right;
   user-select: none;
@@ -81,7 +81,7 @@
 }
 
 .diffContent :global(.diff-code) {
-  padding: 0 12px;
+  padding: 0 var(--sp-5);
   white-space: pre-wrap;
   word-break: break-all;
 }
@@ -120,12 +120,12 @@
 
 .diffContent :global(.diff-hunk-header-content) {
   color: var(--tm);
-  padding: 4px 12px;
+  padding: var(--sp-1) var(--sp-5);
   font-size: var(--fs-1);
 }
 
 .noContent {
-  padding: 20px;
+  padding: var(--sp-8);
   text-align: center;
   color: var(--tm);
   font-size: var(--fs-2);
@@ -134,8 +134,8 @@
 .largeDiff {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 16px 20px;
+  gap: var(--sp-5);
+  padding: var(--sp-7) var(--sp-8);
   background: var(--bg-s);
   border-top: 1px solid var(--brd-s);
 }
@@ -146,7 +146,7 @@
 }
 
 .loadBtn {
-  padding: 5px 14px;
+  padding: 5px var(--sp-6);
   border-radius: var(--rs);
   border: 1px solid var(--acc);
   background: var(--acc-d);
@@ -187,10 +187,10 @@
 
 /* Inline discussion threads (rendered as react-diff-view widgets) */
 .inlineThreads {
-  padding: 6px 12px 6px 62px;
+  padding: var(--sp-2) var(--sp-5) var(--sp-2) 62px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: var(--sp-2);
   background: var(--bg-s);
   border-top: 1px solid var(--brd-s);
   border-bottom: 1px solid var(--brd-s);
@@ -238,10 +238,10 @@
 
 /* Inline comment form (rendered as a widget) */
 .inlineCommentForm {
-  padding: 8px 12px 8px 62px;
+  padding: var(--sp-3) var(--sp-5) var(--sp-3) 62px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: var(--sp-2);
   background: var(--bg-s);
   border-top: 1px solid var(--brd-s);
   border-bottom: 1px solid var(--brd-s);
@@ -257,14 +257,14 @@
   border: 1px solid var(--brd);
   border-radius: var(--r);
   background: var(--bg-sr);
-  padding: 10px;
+  padding: var(--sp-4);
 }
 
 .commentFormInput {
   width: 100%;
   min-height: 60px;
   max-height: 200px;
-  padding: 8px;
+  padding: var(--sp-3);
   border: 1px solid var(--brd);
   border-radius: var(--rs);
   background: var(--bg-s);
@@ -287,13 +287,13 @@
 
 .commentFormActions {
   display: flex;
-  gap: 8px;
+  gap: var(--sp-3);
   justify-content: flex-end;
-  margin-top: 8px;
+  margin-top: var(--sp-3);
 }
 
 .commentFormCancel {
-  padding: 6px 12px;
+  padding: var(--sp-2) var(--sp-5);
   border-radius: var(--rs);
   border: 1px solid var(--brd);
   background: transparent;
@@ -308,7 +308,7 @@
 }
 
 .commentFormSubmit {
-  padding: 6px 14px;
+  padding: var(--sp-2) var(--sp-6);
   border-radius: var(--rs);
   border: 1px solid var(--acc);
   background: var(--acc);
