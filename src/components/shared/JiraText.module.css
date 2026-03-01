@@ -1,0 +1,6 @@
+.jiraLink {
+  color: var(--acc);
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+}

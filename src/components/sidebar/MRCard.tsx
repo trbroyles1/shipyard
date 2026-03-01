@@ -6,6 +6,7 @@ import { StatusDot } from "@/components/shared/StatusDot";
 import { CheckIcon } from "@/components/shared/icons";
 import { RelativeTime, hoursOld } from "@/components/shared/RelativeTime";
 import { GitLabLink } from "@/components/shared/GitLabLink";
+import { JiraText } from "@/components/shared/JiraText";
 import type { MRSummary } from "@/lib/types/mr";
 import styles from "./MRCard.module.css";
 
@@ -36,7 +37,7 @@ export function MRCard({ mr }: MRCardProps) {
       onClick={() => selectMR(mr)}
     >
       <div className={styles.title}>
-        <span className={styles.repo}>{mr.repo}</span>: {mr.title}
+        <span className={styles.repo}>{mr.repo}</span>: <JiraText text={mr.title} jiraBaseUrl={preferences.jiraBaseUrl} />
       </div>
       {mr.draft && <div className={styles.draft}>Draft</div>}
       {isMergeable && (

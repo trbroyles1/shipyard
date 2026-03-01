@@ -10,6 +10,7 @@ import { BranchIndicator } from "./BranchIndicator";
 import { LabelPills } from "./LabelPills";
 import { StatsRow } from "./StatsRow";
 import { ActionButtons } from "./ActionButtons";
+import { JiraText } from "@/components/shared/JiraText";
 import { DescriptionBody } from "./DescriptionBody";
 import styles from "./MROverview.module.css";
 
@@ -41,7 +42,7 @@ export function MROverview({ summary, detail, onRefetch }: Props) {
       </div>
       {expanded && (
         <div className={styles.body}>
-          <div className={styles.title}>{mr.title}</div>
+          <div className={styles.title}><JiraText text={mr.title} jiraBaseUrl={preferences.jiraBaseUrl} /></div>
           <BranchIndicator source={mr.source_branch} target={mr.target_branch} />
           {mr.description && (
             <div className={styles.description}>
