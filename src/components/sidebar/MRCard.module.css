@@ -5,6 +5,7 @@
   transition: all var(--dur-base);
   border: var(--bw) solid transparent;
   margin-bottom: var(--sp-1);
+  box-shadow: var(--card-inset);
 }
 
 .card:hover {

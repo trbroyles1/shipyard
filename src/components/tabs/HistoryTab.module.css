@@ -22,6 +22,7 @@
 .comment {
   background: var(--bg-sr);
   border: var(--bw) solid var(--brd-s);
+  box-shadow: var(--card-inset);
 }
 
 .entryHeader {

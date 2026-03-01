@@ -3,6 +3,7 @@
   border-radius: var(--r);
   background: var(--bg-sr);
   overflow: hidden;
+  box-shadow: var(--card-inset);
 }
 
 .compact {
@@ -262,6 +263,7 @@
 .replyInput:focus {
   outline: none;
   border-color: var(--acc);
+  box-shadow: var(--focus-glow);
 }
 
 .replyBtn {

@@ -6,7 +6,7 @@
   min-height: var(--topbar-h);
   padding: 0 var(--sp-7);
   background: var(--bg-s);
-  border-bottom: var(--bw) solid var(--brd);
+  border-bottom: var(--panel-separator);
   border-radius: var(--panel-r);
   box-shadow: var(--panel-sh);
   backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));

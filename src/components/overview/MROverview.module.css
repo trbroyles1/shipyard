@@ -3,6 +3,7 @@
   background: var(--bg-s);
   overflow: hidden;
   transition: max-height var(--dur-expand) ease;
+  box-shadow: var(--card-inset);
 }
 
 .collapsed { max-height: var(--overview-collapsed-h); }

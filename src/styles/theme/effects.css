@@ -23,6 +23,17 @@
   --panel-sh: none;
 }
 
+/* Glass-enhanced tokens (inert in Classic) */
+:root {
+  --canvas-bg-image: none;
+  --panel-separator: var(--bw) solid var(--brd);
+  --card-inset: 0 0 0 0 transparent;
+  --tab-glow: none;
+  --scrollbar-thumb: var(--brd);
+  --scrollbar-thumb-hover: var(--tm);
+  --focus-glow: none;
+}
+
 /* Border widths */
 :root {
   --bw: 1px;

@@ -3,6 +3,7 @@
   border-radius: var(--r);
   overflow: hidden;
   background: var(--bg-sr);
+  box-shadow: var(--card-inset);
 }
 
 .fileHeader {
@@ -283,6 +284,7 @@
 .commentFormInput:focus {
   outline: none;
   border-color: var(--acc);
+  box-shadow: var(--focus-glow);
 }
 
 .commentFormActions {

@@ -1,7 +1,7 @@
 .sidebar {
   width: var(--sidebar-w);
   min-width: 0;
-  border-right: var(--bw) solid var(--brd);
+  border-right: var(--panel-separator);
   display: flex;
   flex-direction: column;
   background: var(--bg-s);
@@ -44,6 +44,9 @@
   cursor: pointer;
   color: var(--t2);
   transition: all var(--dur-base);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+  box-shadow: var(--card-inset);
 }
 
 .toggle:hover {

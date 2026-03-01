@@ -6,6 +6,7 @@
   padding: 0 var(--sp-7);
   overflow-x: auto;
   scrollbar-width: none;
+  box-shadow: var(--card-inset);
 }
 
 .tabBar::-webkit-scrollbar { display: none; }
@@ -47,6 +48,7 @@
 
 .active::after {
   background: var(--acc);
+  box-shadow: var(--tab-glow);
 }
 
 .badge {

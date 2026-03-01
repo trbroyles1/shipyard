@@ -16,7 +16,8 @@
 html,
 body {
   font-family: var(--sans);
-  background: var(--bg-canvas);
+  background-color: var(--bg-canvas);
+  background-image: var(--canvas-bg-image);
   color: var(--t1);
   height: 100vh;
   overflow: hidden;
@@ -41,18 +42,23 @@ button {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--brd);
+  background: var(--scrollbar-thumb);
   border-radius: var(--rxs);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--tm);
+  background: var(--scrollbar-thumb-hover);
 }
 
 /* Firefox scrollbar */
 * {
   scrollbar-width: thin;
-  scrollbar-color: var(--brd) transparent;
+  scrollbar-color: var(--scrollbar-thumb) transparent;
+}
+
+/* Text selection */
+::selection {
+  background: var(--sel);
 }
 
 /* Pulsing animation for running pipelines */

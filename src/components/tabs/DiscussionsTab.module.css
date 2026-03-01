@@ -27,6 +27,7 @@
   font-family: var(--sans);
   text-align: left;
   cursor: pointer;
+  box-shadow: var(--card-inset);
 }
 
 .commentPlaceholder:hover {
@@ -39,6 +40,7 @@
   border-radius: var(--r);
   background: var(--bg-sr);
   padding: var(--sp-4);
+  box-shadow: var(--card-inset);
 }
 
 .commentInput {
@@ -64,6 +66,7 @@
 .commentInput:focus {
   outline: none;
   border-color: var(--acc);
+  box-shadow: var(--focus-glow);
 }
 
 .commentActions {
