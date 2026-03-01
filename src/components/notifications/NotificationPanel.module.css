@@ -17,8 +17,8 @@
 
 .header {
   padding: 10px 14px;
-  font-size: 12px;
-  font-weight: 600;
+  font-size: var(--fs-2);
+  font-weight: var(--fw-sb);
   color: var(--t1);
   border-bottom: 1px solid var(--brd);
   text-transform: uppercase;
@@ -40,20 +40,20 @@
 }
 
 .title {
-  font-size: 12px;
-  font-weight: 600;
+  font-size: var(--fs-2);
+  font-weight: var(--fw-sb);
   color: var(--t1);
   margin-bottom: 2px;
 }
 
 .message {
-  font-size: 12px;
+  font-size: var(--fs-2);
   color: var(--t2);
   line-height: 1.4;
 }
 
 .time {
-  font-size: 10px;
+  font-size: var(--fs-0);
   color: var(--tm);
   margin-top: 4px;
 }
@@ -62,5 +62,5 @@
   padding: 30px 14px;
   text-align: center;
   color: var(--tm);
-  font-size: 12px;
+  font-size: var(--fs-2);
 }

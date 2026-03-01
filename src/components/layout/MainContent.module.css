@@ -14,7 +14,7 @@
   justify-content: center;
   gap: 12px;
   color: var(--t2);
-  font-size: 13px;
+  font-size: var(--fs-3);
 }
 
 .spinner {
@@ -37,7 +37,7 @@
   justify-content: center;
   gap: 8px;
   color: var(--red);
-  font-size: 13px;
+  font-size: var(--fs-3);
 }
 
 .errorIcon {
@@ -48,6 +48,6 @@
   height: 22px;
   border-radius: 50%;
   background: var(--red-d);
-  font-weight: 700;
-  font-size: 12px;
+  font-weight: var(--fw-bd);
+  font-size: var(--fs-2);
 }

@@ -17,8 +17,8 @@
 }
 
 .title {
-  font-size: 12px;
-  font-weight: 600;
+  font-size: var(--fs-2);
+  font-weight: var(--fw-sb);
   color: var(--t1);
   margin-bottom: 10px;
 }
@@ -28,7 +28,7 @@
   align-items: center;
   gap: 8px;
   padding: 5px 0;
-  font-size: 12px;
+  font-size: var(--fs-2);
   color: var(--t2);
   cursor: pointer;
 }
@@ -50,7 +50,7 @@
   border: 1px solid var(--brd);
   background: transparent;
   color: var(--t2);
-  font-size: 12px;
+  font-size: var(--fs-2);
   font-family: var(--sans);
   cursor: pointer;
 }
@@ -65,8 +65,8 @@
   border: 1px solid var(--acc);
   background: var(--acc);
   color: #0a0c10;
-  font-size: 12px;
-  font-weight: 600;
+  font-size: var(--fs-2);
+  font-weight: var(--fw-sb);
   font-family: var(--sans);
   cursor: pointer;
   display: flex;

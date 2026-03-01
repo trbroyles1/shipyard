@@ -7,7 +7,7 @@
 }
 
 .count {
-  font-size: 11px;
+  font-size: var(--fs-1);
   color: var(--tm);
 }
 
@@ -15,7 +15,7 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  font-size: 11px;
+  font-size: var(--fs-1);
   color: var(--t2);
   background: none;
   border: none;

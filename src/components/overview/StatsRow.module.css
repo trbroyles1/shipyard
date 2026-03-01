@@ -1,7 +1,7 @@
 .stats {
   display: flex;
   gap: 16px;
-  font-size: 12px;
+  font-size: var(--fs-2);
   color: var(--t2);
 }
 

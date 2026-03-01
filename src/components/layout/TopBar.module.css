@@ -23,8 +23,8 @@
 }
 
 .title {
-  font-weight: 700;
-  font-size: 17px;
+  font-weight: var(--fw-bd);
+  font-size: var(--fs-5);
   letter-spacing: -0.3px;
   background: linear-gradient(135deg, var(--acc), #a78bfa);
   -webkit-background-clip: text;
@@ -83,12 +83,12 @@
 }
 
 .userName {
-  font-size: 13px;
-  font-weight: 600;
+  font-size: var(--fs-3);
+  font-weight: var(--fw-sb);
 }
 
 .userHandle {
-  font-size: 11px;
+  font-size: var(--fs-1);
   color: var(--tm);
 }
 
@@ -97,7 +97,7 @@
   align-items: center;
   gap: 10px;
   padding: 10px 14px;
-  font-size: 13px;
+  font-size: var(--fs-3);
   color: var(--t2);
   cursor: pointer;
   transition: all 0.1s;

@@ -26,8 +26,8 @@
 }
 
 .title {
-  font-size: 24px;
-  font-weight: 700;
+  font-size: var(--fs-7);
+  font-weight: var(--fw-bd);
   letter-spacing: -0.3px;
   background: linear-gradient(135deg, var(--acc), #a78bfa);
   -webkit-background-clip: text;
@@ -35,7 +35,7 @@
 }
 
 .subtitle {
-  font-size: 14px;
+  font-size: var(--fs-4);
   color: var(--t2);
 }
 
@@ -49,8 +49,8 @@
   color: #0a0c10;
   border: none;
   border-radius: var(--r);
-  font-size: 14px;
-  font-weight: 600;
+  font-size: var(--fs-4);
+  font-weight: var(--fw-sb);
   font-family: var(--sans);
   cursor: pointer;
   transition: background 0.15s;

@@ -13,5 +13,5 @@
 }
 
 .text {
-  font-size: 14px;
+  font-size: var(--fs-4);
 }

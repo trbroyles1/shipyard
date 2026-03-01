@@ -14,7 +14,7 @@
 }
 
 .system .body {
-  font-size: 12px;
+  font-size: var(--fs-2);
   color: var(--tm);
   font-style: italic;
 }
@@ -32,19 +32,19 @@
 }
 
 .authorName {
-  font-size: 12px;
-  font-weight: 600;
+  font-size: var(--fs-2);
+  font-weight: var(--fw-sb);
   color: var(--t1);
 }
 
 .time {
-  font-size: 11px;
+  font-size: var(--fs-1);
   color: var(--tm);
   margin-left: auto;
 }
 
 .body {
-  font-size: 13px;
+  font-size: var(--fs-3);
   line-height: 1.5;
   color: var(--t2);
   white-space: pre-wrap;
@@ -53,7 +53,7 @@
 
 .empty {
   color: var(--t2);
-  font-size: 13px;
+  font-size: var(--fs-3);
   text-align: center;
   padding: 40px;
 }

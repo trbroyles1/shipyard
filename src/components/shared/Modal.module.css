@@ -28,8 +28,8 @@
 }
 
 .title {
-  font-size: 14px;
-  font-weight: 600;
+  font-size: var(--fs-4);
+  font-weight: var(--fw-sb);
   color: var(--t1);
   margin: 0;
 }

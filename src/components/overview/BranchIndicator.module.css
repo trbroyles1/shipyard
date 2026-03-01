@@ -1,5 +1,5 @@
 .branches {
-  font-size: 12px;
+  font-size: var(--fs-2);
   color: var(--tm);
   font-family: var(--mono);
   margin-bottom: 10px;

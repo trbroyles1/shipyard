@@ -42,8 +42,8 @@
 }
 
 .title {
-  font-size: 13px;
-  font-weight: 600;
+  font-size: var(--fs-3);
+  font-weight: var(--fw-sb);
   color: var(--t1);
   flex: 1;
   overflow: hidden;
@@ -77,7 +77,7 @@
   margin: 0;
   padding: 14px 16px;
   font-family: var(--mono);
-  font-size: 12px;
+  font-size: var(--fs-2);
   line-height: 1.5;
   color: #d4d4d4;
   white-space: pre-wrap;
@@ -85,8 +85,8 @@
 }
 
 .liveIndicator {
-  font-size: 10px;
-  font-weight: 700;
+  font-size: var(--fs-0);
+  font-weight: var(--fw-bd);
   color: var(--red);
   letter-spacing: 0.06em;
   animation: pulse 1.5s ease-in-out infinite;
@@ -101,12 +101,12 @@
   padding: 40px;
   text-align: center;
   color: var(--tm);
-  font-size: 13px;
+  font-size: var(--fs-3);
 }
 
 .error {
   padding: 40px;
   text-align: center;
   color: var(--red);
-  font-size: 13px;
+  font-size: var(--fs-3);
 }

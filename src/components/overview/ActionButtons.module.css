@@ -10,8 +10,8 @@
   border: 1px solid var(--brd);
   background: var(--bg-sr);
   color: var(--t1);
-  font-size: 12px;
-  font-weight: 500;
+  font-size: var(--fs-2);
+  font-weight: var(--fw-md);
   font-family: var(--sans);
   cursor: pointer;
   display: flex;
@@ -34,7 +34,7 @@
   background: var(--acc);
   color: #0a0c10;
   border-color: var(--acc);
-  font-weight: 600;
+  font-weight: var(--fw-sb);
 }
 .merge:hover:not(:disabled) { background: #5cc8f8; }
 

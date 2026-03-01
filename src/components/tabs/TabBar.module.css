@@ -13,8 +13,8 @@
 .tab {
   position: relative;
   padding: 10px 14px;
-  font-size: 12px;
-  font-weight: 500;
+  font-size: var(--fs-2);
+  font-weight: var(--fw-md);
   font-family: var(--sans);
   color: var(--t2);
   background: none;
@@ -50,8 +50,8 @@
 }
 
 .badge {
-  font-size: 10px;
-  font-weight: 600;
+  font-size: var(--fs-0);
+  font-weight: var(--fw-sb);
   padding: 1px 5px;
   border-radius: 8px;
   background: var(--bg-sa);

@@ -19,8 +19,8 @@
 }
 
 .title {
-  font-size: 12.5px;
-  font-weight: 500;
+  font-size: var(--fs-2);
+  font-weight: var(--fw-md);
   line-height: 1.35;
   color: var(--t1);
   margin-bottom: 2px;
@@ -32,22 +32,22 @@
 
 .repo {
   color: var(--acc);
-  font-weight: 600;
+  font-weight: var(--fw-sb);
 }
 
 .ready {
   display: flex;
   align-items: center;
   gap: 4px;
-  font-size: 11px;
+  font-size: var(--fs-1);
   font-style: italic;
   color: var(--grn);
   margin: 2px 0;
-  font-weight: 500;
+  font-weight: var(--fw-md);
 }
 
 .draft {
-  font-size: 11px;
+  font-size: var(--fs-1);
   font-style: italic;
   color: var(--tm);
   margin: 2px 0;
@@ -58,7 +58,7 @@
   align-items: center;
   gap: 10px;
   margin-top: 4px;
-  font-size: 11px;
+  font-size: var(--fs-1);
   color: var(--tm);
 }
 

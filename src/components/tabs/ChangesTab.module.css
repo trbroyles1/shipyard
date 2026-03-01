@@ -48,7 +48,7 @@
 
 .empty {
   color: var(--t2);
-  font-size: 13px;
+  font-size: var(--fs-3);
   text-align: center;
   padding: 40px;
 }

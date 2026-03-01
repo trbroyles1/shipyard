@@ -8,8 +8,8 @@
 .pill {
   padding: 3px 10px;
   border-radius: 99px;
-  font-size: 11px;
-  font-weight: 500;
+  font-size: var(--fs-1);
+  font-weight: var(--fw-md);
   background: var(--bg-sa);
   color: var(--t2);
 }
