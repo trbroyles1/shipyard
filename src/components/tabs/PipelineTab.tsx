@@ -25,6 +25,7 @@ const STATUS_ICON: Record<string, { color: string; symbol: string }> = {
 interface LogTarget {
   jobId: number;
   jobName: string;
+  jobStatus: string;
   pipelineId: number;
 }
 
@@ -42,8 +43,8 @@ export function PipelineTab({ pipelines, mr }: Props) {
           key={pipeline.id}
           pipeline={pipeline}
           projectId={mr.project_id}
-          onViewLog={(jobId, jobName) =>
-            setLogTarget({ jobId, jobName, pipelineId: pipeline.id })
+          onViewLog={(jobId, jobName, status) =>
+            setLogTarget({ jobId, jobName, jobStatus: status, pipelineId: pipeline.id })
           }
         />
       ))}
@@ -53,6 +54,7 @@ export function PipelineTab({ pipelines, mr }: Props) {
           projectId={mr.project_id}
           pipelineId={logTarget.pipelineId}
           jobId={logTarget.jobId}
+          jobStatus={logTarget.jobStatus}
           onClose={() => setLogTarget(null)}
         />
       )}
@@ -60,7 +62,7 @@ export function PipelineTab({ pipelines, mr }: Props) {
   );
 }
 
-function PipelineRow({ pipeline, projectId, onViewLog }: { pipeline: GitLabPipeline; projectId: number; onViewLog: (jobId: number, jobName: string) => void }) {
+function PipelineRow({ pipeline, projectId, onViewLog }: { pipeline: GitLabPipeline; projectId: number; onViewLog: (jobId: number, jobName: string, status: string) => void }) {
   const [expanded, setExpanded] = useState(false);
   const [jobs, setJobs] = useState<GitLabJob[]>([]);
   const [loadingJobs, setLoadingJobs] = useState(false);
@@ -126,7 +128,7 @@ function PipelineRow({ pipeline, projectId, onViewLog }: { pipeline: GitLabPipel
                 )}
                 <button
                   className={styles.jobLogBtn}
-                  onClick={() => onViewLog(job.id, job.name)}
+                  onClick={() => onViewLog(job.id, job.name, job.status)}
                   title="View job log"
                 >
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>

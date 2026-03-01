@@ -84,6 +84,19 @@
   word-break: break-all;
 }
 
+.liveIndicator {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--red);
+  letter-spacing: 0.06em;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
 .loading {
   padding: 40px;
   text-align: center;

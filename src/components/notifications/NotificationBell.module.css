@@ -1,0 +1,27 @@
+.bell {
+  position: relative;
+  background: none;
+  border: none;
+  color: var(--t2);
+  cursor: pointer;
+  padding: 6px;
+  display: flex;
+  align-items: center;
+  border-radius: var(--rs);
+}
+
+.bell:hover {
+  color: var(--t1);
+  background: var(--bg-sh);
+}
+
+.dot {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--red);
+  border: 1.5px solid var(--bg-sr);
+}

@@ -2,12 +2,23 @@
 
 import { useState, useRef, useEffect } from "react";
 import { signOut, useSession } from "next-auth/react";
+import { NotificationBell } from "@/components/notifications/NotificationBell";
+import { NotificationPanel } from "@/components/notifications/NotificationPanel";
+import type { Notification } from "@/hooks/use-notifications";
 import styles from "./TopBar.module.css";
 
-export function TopBar() {
+interface Props {
+  notifications: Notification[];
+  unreadCount: number;
+  onMarkRead: () => void;
+}
+
+export function TopBar({ notifications, unreadCount, onMarkRead }: Props) {
   const { data: session } = useSession();
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [notifPanelOpen, setNotifPanelOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const notifRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -34,12 +45,19 @@ export function TopBar() {
         <span className={styles.title}>Shipyard</span>
       </div>
       <div className={styles.right}>
-        <button className={styles.iconBtn} title="Notifications">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
-            <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
-          </svg>
-        </button>
+        <div ref={notifRef} style={{ position: "relative" }}>
+          <NotificationBell
+            unreadCount={unreadCount}
+            onClick={() => setNotifPanelOpen(!notifPanelOpen)}
+          />
+          {notifPanelOpen && (
+            <NotificationPanel
+              notifications={notifications}
+              onClose={() => setNotifPanelOpen(false)}
+              onMarkRead={onMarkRead}
+            />
+          )}
+        </div>
         <div ref={menuRef} style={{ position: "relative" }}>
           <button
             className={styles.iconBtn}
