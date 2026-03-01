@@ -1,0 +1,137 @@
+.section {
+  padding-bottom: 16px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--brd-s);
+}
+
+.section:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.sectionTitle {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--t1);
+  margin: 0 0 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.sectionDesc {
+  font-size: 12px;
+  color: var(--tm);
+  margin: 0 0 10px;
+  line-height: 1.4;
+}
+
+/* Number inputs row */
+.inputRow {
+  display: flex;
+  gap: 12px;
+}
+
+.inputLabel {
+  flex: 1;
+  font-size: 12px;
+  color: var(--t2);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.inputWrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.numberInput {
+  width: 70px;
+  padding: 5px 8px;
+  border-radius: var(--rs);
+  border: 1px solid var(--brd);
+  background: var(--bg-sr);
+  color: var(--t1);
+  font-size: 13px;
+  font-family: var(--mono);
+}
+
+.numberInput:focus {
+  outline: none;
+  border-color: var(--acc);
+}
+
+.inputSuffix {
+  font-size: 12px;
+  color: var(--tm);
+}
+
+/* Toggle rows */
+.toggleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 0;
+  cursor: pointer;
+}
+
+.toggleLabel {
+  font-size: 13px;
+  color: var(--t2);
+}
+
+.toggle {
+  position: relative;
+  width: 36px;
+  height: 20px;
+  border-radius: 10px;
+  border: none;
+  background: var(--bg-sa);
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.15s;
+}
+
+.toggleOn {
+  background: var(--acc);
+}
+
+.toggleKnob {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--t1);
+  transition: transform 0.15s;
+}
+
+.toggleOn .toggleKnob {
+  transform: translateX(16px);
+  background: var(--bg-root);
+}
+
+/* Text input */
+.textInput {
+  width: 100%;
+  padding: 7px 10px;
+  border-radius: var(--rs);
+  border: 1px solid var(--brd);
+  background: var(--bg-sr);
+  color: var(--t1);
+  font-size: 13px;
+  font-family: var(--sans);
+  box-sizing: border-box;
+}
+
+.textInput:focus {
+  outline: none;
+  border-color: var(--acc);
+}
+
+.textInput::placeholder {
+  color: var(--tm);
+}

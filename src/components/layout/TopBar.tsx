@@ -5,7 +5,8 @@ import { signOut, useSession } from "next-auth/react";
 import { useClickOutside } from "@/hooks/use-click-outside";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { NotificationPanel } from "@/components/notifications/NotificationPanel";
-import { RocketIcon, UserIcon, SignOutIcon } from "@/components/shared/icons";
+import { RocketIcon, UserIcon, SettingsIcon, SignOutIcon } from "@/components/shared/icons";
+import { PreferencesModal } from "@/components/user/PreferencesModal";
 import type { Notification } from "@/hooks/use-notifications";
 import styles from "./TopBar.module.css";
 
@@ -19,6 +20,7 @@ export function TopBar({ notifications, unreadCount, onMarkRead }: Props) {
   const { data: session } = useSession();
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [notifPanelOpen, setNotifPanelOpen] = useState(false);
+  const [prefsOpen, setPrefsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const notifRef = useRef<HTMLDivElement>(null);
 
@@ -26,6 +28,7 @@ export function TopBar({ notifications, unreadCount, onMarkRead }: Props) {
   useClickOutside(menuRef, closeMenu);
 
   return (
+    <>
     <header className={styles.topbar}>
       <div className={styles.left}>
         <div className={styles.logo}>
@@ -63,6 +66,13 @@ export function TopBar({ notifications, unreadCount, onMarkRead }: Props) {
               </div>
               <button
                 className={styles.userMenuItem}
+                onClick={() => { setUserMenuOpen(false); setPrefsOpen(true); }}
+              >
+                <SettingsIcon />
+                Preferences
+              </button>
+              <button
+                className={styles.userMenuItem}
                 onClick={() => signOut({ callbackUrl: "/auth/signin" })}
               >
                 <SignOutIcon />
@@ -73,5 +83,7 @@ export function TopBar({ notifications, unreadCount, onMarkRead }: Props) {
         </div>
       </div>
     </header>
+    <PreferencesModal open={prefsOpen} onClose={() => setPrefsOpen(false)} />
+    </>
   );
 }

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useSession } from "next-auth/react";
 import type { MRDetailData } from "@/hooks/use-mr-detail";
 import type { MRSummary } from "@/lib/types/mr";
+import { usePreferencesContext } from "@/components/providers/PreferencesProvider";
 import { MergeIcon, ChevronIcon } from "@/components/shared/icons";
 import { BranchIndicator } from "./BranchIndicator";
 import { LabelPills } from "./LabelPills";
@@ -20,6 +21,7 @@ interface Props {
 
 export function MROverview({ summary, detail, onRefetch }: Props) {
   const { data: session } = useSession();
+  const { preferences } = usePreferencesContext();
   const [expanded, setExpanded] = useState(true);
   const mr = detail.mr;
   const approvals = detail.approvals;
@@ -43,7 +45,7 @@ export function MROverview({ summary, detail, onRefetch }: Props) {
           <BranchIndicator source={mr.source_branch} target={mr.target_branch} />
           {mr.description && (
             <div className={styles.description}>
-              <DescriptionBody text={mr.description} />
+              <DescriptionBody text={mr.description} jiraBaseUrl={preferences.jiraBaseUrl} />
             </div>
           )}
           <LabelPills labels={mr.labels} draft={mr.draft} conflicts={mr.has_conflicts} />

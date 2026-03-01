@@ -1,6 +1,7 @@
 "use client";
 
 import { useAppState } from "@/components/providers/AppStateProvider";
+import { usePreferencesContext } from "@/components/providers/PreferencesProvider";
 import { StatusDot } from "@/components/shared/StatusDot";
 import { CheckIcon } from "@/components/shared/icons";
 import { RelativeTime, hoursOld } from "@/components/shared/RelativeTime";
@@ -12,27 +13,26 @@ interface MRCardProps {
   mr: MRSummary;
 }
 
-const WARNING_HOURS = 10;
-const CRITICAL_HOURS = 20;
 const CRITICAL_BG = "rgba(220, 38, 38, 0.12)";
 const WARNING_BG = "rgba(234, 179, 8, 0.10)";
 
-function cardBackground(createdAt: string): string {
+function cardBackground(createdAt: string, warningHours: number, criticalHours: number): string {
   const hours = hoursOld(createdAt);
-  if (hours > CRITICAL_HOURS) return CRITICAL_BG;
-  if (hours > WARNING_HOURS) return WARNING_BG;
+  if (hours > criticalHours) return CRITICAL_BG;
+  if (hours > warningHours) return WARNING_BG;
   return "transparent";
 }
 
 export function MRCard({ mr }: MRCardProps) {
   const { selectedMR, selectMR } = useAppState();
+  const { preferences } = usePreferencesContext();
   const isSelected = selectedMR?.id === mr.id;
   const isMergeable = mr.detailedMergeStatus === "mergeable" && !mr.draft;
 
   return (
     <div
       className={`${styles.card} ${isSelected ? styles.selected : ""}`}
-      style={{ background: isSelected ? undefined : cardBackground(mr.createdAt) }}
+      style={{ background: isSelected ? undefined : cardBackground(mr.createdAt, preferences.warningHours, preferences.criticalHours) }}
       onClick={() => selectMR(mr)}
     >
       <div className={styles.title}>

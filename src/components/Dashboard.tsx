@@ -3,6 +3,7 @@
 import { useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { AppStateProvider } from "@/components/providers/AppStateProvider";
+import { PreferencesProvider, usePreferencesContext } from "@/components/providers/PreferencesProvider";
 import { ToastProvider, useToastContext } from "@/components/providers/ToastProvider";
 import { TopBar } from "@/components/layout/TopBar";
 import { Sidebar } from "@/components/layout/Sidebar";
@@ -19,6 +20,7 @@ function DashboardInner() {
   const { updateSelectedMR, pushDetailPatch } = useAppState();
   const { notifications, unreadCount, addNotification, markAllRead } = useNotifications();
   const { toasts, addToast, dismiss } = useToastContext();
+  const { preferences } = usePreferencesContext();
   const { playNewMR, playAssignedToMe, playReadyToMerge } = useAudio();
 
   const currentUserId = session?.gitlabUserId;
@@ -28,14 +30,16 @@ function DashboardInner() {
       switch (event.type) {
         case "mr-new": {
           const mr = event.data;
-          addNotification("New MR", `!${mr.iid} ${mr.title}`);
-          addToast("New MR", `!${mr.iid} ${mr.title}`, "info");
+          const isAssigned = currentUserId && mr.reviewers.some((r) => r.id === currentUserId);
 
-          // Check if assigned to current user as reviewer
-          if (currentUserId && mr.reviewers.some((r) => r.id === currentUserId)) {
-            playAssignedToMe();
-          } else {
-            playNewMR();
+          if (isAssigned && preferences.notifyAssigned) {
+            addNotification("Assigned to you", `!${mr.iid} ${mr.title}`);
+            addToast("Assigned to you", `!${mr.iid} ${mr.title}`, "info");
+            if (preferences.soundNewMR) playAssignedToMe();
+          } else if (preferences.notifyNewMR) {
+            addNotification("New MR", `!${mr.iid} ${mr.title}`);
+            addToast("New MR", `!${mr.iid} ${mr.title}`, "info");
+            if (preferences.soundNewMR) playNewMR();
           }
           break;
         }
@@ -50,8 +54,7 @@ function DashboardInner() {
         }
         case "mr-ready-to-merge": {
           const mr = event.data;
-          // Only notify if current user is the author
-          if (currentUserId && mr.author.id === currentUserId) {
+          if (preferences.notifyReadyToMerge && currentUserId && mr.author.id === currentUserId) {
             addNotification("Ready to merge", `!${mr.iid} ${mr.title}`);
             addToast("Ready to merge", `!${mr.iid} ${mr.title}`, "success");
             playReadyToMerge();
@@ -60,7 +63,7 @@ function DashboardInner() {
         }
       }
     },
-    [currentUserId, updateSelectedMR, pushDetailPatch, addNotification, addToast, playNewMR, playAssignedToMe, playReadyToMerge],
+    [currentUserId, preferences, updateSelectedMR, pushDetailPatch, addNotification, addToast, playNewMR, playAssignedToMe, playReadyToMerge],
   );
 
   const { mrs, isLoading, error } = useMRList(handleMREvent);
@@ -89,9 +92,11 @@ function DashboardInner() {
 export function Dashboard() {
   return (
     <AppStateProvider>
-      <ToastProvider>
-        <DashboardInner />
-      </ToastProvider>
+      <PreferencesProvider>
+        <ToastProvider>
+          <DashboardInner />
+        </ToastProvider>
+      </PreferencesProvider>
     </AppStateProvider>
   );
 }
