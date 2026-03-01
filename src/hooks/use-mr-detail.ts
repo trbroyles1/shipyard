@@ -104,5 +104,9 @@ export function useMRDetail(selected: MRSummary | null, detailVersion = 0) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [detailVersion]);
 
-  return { data, isLoading, error, refetch: selected ? () => fetchDetail(selected) : undefined };
+  const refetch = useCallback(async () => {
+    if (selected) await silentRefetch(selected);
+  }, [selected, silentRefetch]);
+
+  return { data, isLoading, error, refetch };
 }

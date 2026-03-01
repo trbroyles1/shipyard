@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useSession } from "next-auth/react";
 import type { MRDetailData } from "@/hooks/use-mr-detail";
 import type { MRSummary } from "@/lib/types/mr";
 import { BranchIndicator } from "./BranchIndicator";
@@ -13,12 +14,15 @@ import styles from "./MROverview.module.css";
 interface Props {
   summary: MRSummary;
   detail: MRDetailData;
+  onRefetch: () => Promise<void>;
 }
 
-export function MROverview({ summary, detail }: Props) {
+export function MROverview({ summary, detail, onRefetch }: Props) {
+  const { data: session } = useSession();
   const [expanded, setExpanded] = useState(true);
   const mr = detail.mr;
   const approvals = detail.approvals;
+  const currentUserId = session?.gitlabUserId;
 
   return (
     <div className={`${styles.overview} ${expanded ? styles.expanded : styles.collapsed}`}>
@@ -61,9 +65,10 @@ export function MROverview({ summary, detail }: Props) {
             authorUrl={mr.author.web_url}
           />
           <ActionButtons
-            mergeable={mr.detailed_merge_status === "mergeable" && !mr.draft}
-            mergeStatus={mr.detailed_merge_status}
-            webUrl={mr.web_url}
+            mr={mr}
+            approvals={approvals}
+            currentUserId={currentUserId}
+            onRefetch={onRefetch}
           />
         </div>
       )}

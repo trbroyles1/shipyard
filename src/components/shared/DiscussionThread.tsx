@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback, useRef, type KeyboardEvent } from "react";
 import type { GitLabDiscussion } from "@/lib/types/gitlab";
 import { Avatar } from "./Avatar";
 import { RelativeTime } from "./RelativeTime";
@@ -11,11 +11,17 @@ interface Props {
   defaultExpanded?: boolean;
   compact?: boolean;
   fileLink?: { label: string; title?: string; onClick: () => void };
+  onReply?: (discussionId: string, body: string) => Promise<void>;
+  onResolve?: (discussionId: string, resolved: boolean) => Promise<void>;
 }
 
-export function DiscussionThread({ discussion, defaultExpanded = false, compact = false, fileLink }: Props) {
+export function DiscussionThread({ discussion, defaultExpanded = false, compact = false, fileLink, onReply, onResolve }: Props) {
   const notes = discussion.notes.filter((n) => !n.system);
   const [expanded, setExpanded] = useState(defaultExpanded);
+  const [replyText, setReplyText] = useState("");
+  const [replying, setReplying] = useState(false);
+  const [resolving, setResolving] = useState(false);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   if (notes.length === 0) return null;
 
@@ -28,6 +34,34 @@ export function DiscussionThread({ discussion, defaultExpanded = false, compact 
     compact ? styles.compact : "",
     isResolved ? styles.resolved : "",
   ].filter(Boolean).join(" ");
+
+  const handleReply = useCallback(async () => {
+    if (!onReply || !replyText.trim()) return;
+    setReplying(true);
+    try {
+      await onReply(discussion.id, replyText.trim());
+      setReplyText("");
+    } finally {
+      setReplying(false);
+    }
+  }, [onReply, replyText, discussion.id]);
+
+  const handleKeyDown = useCallback((e: KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
+      e.preventDefault();
+      handleReply();
+    }
+  }, [handleReply]);
+
+  const handleResolve = useCallback(async () => {
+    if (!onResolve) return;
+    setResolving(true);
+    try {
+      await onResolve(discussion.id, !isResolved);
+    } finally {
+      setResolving(false);
+    }
+  }, [onResolve, discussion.id, isResolved]);
 
   return (
     <div className={rootClass}>
@@ -56,6 +90,15 @@ export function DiscussionThread({ discussion, defaultExpanded = false, compact 
         )}
         <span className={styles.meta}>
           {isResolved && <span className={styles.resolvedBadge}>Resolved</span>}
+          {onResolve && firstNote.resolvable && expanded && (
+            <button
+              className={`${styles.resolveBtn} ${isResolved ? styles.resolveBtnActive : ""}`}
+              onClick={(e) => { e.stopPropagation(); handleResolve(); }}
+              disabled={resolving}
+            >
+              {resolving ? "..." : isResolved ? "Unresolve" : "Resolve"}
+            </button>
+          )}
           {replyCount > 0 && (
             <span className={styles.replyCount}>
               {replyCount} {replyCount === 1 ? "reply" : "replies"}
@@ -87,6 +130,27 @@ export function DiscussionThread({ discussion, defaultExpanded = false, compact 
               </div>
             </div>
           ))}
+          {onReply && (
+            <div className={styles.replyBox}>
+              <textarea
+                ref={textareaRef}
+                className={styles.replyInput}
+                placeholder="Reply... (Ctrl+Enter to send)"
+                value={replyText}
+                onChange={(e) => setReplyText(e.target.value)}
+                onKeyDown={handleKeyDown}
+                rows={1}
+                disabled={replying}
+              />
+              <button
+                className={styles.replyBtn}
+                onClick={handleReply}
+                disabled={replying || !replyText.trim()}
+              >
+                {replying ? "Sending..." : "Reply"}
+              </button>
+            </div>
+          )}
         </div>
       )}
     </div>

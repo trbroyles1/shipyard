@@ -10,7 +10,7 @@ import styles from "./MainContent.module.css";
 
 export function MainContent() {
   const { selectedMR, detailVersion } = useAppState();
-  const { data, isLoading, error } = useMRDetail(selectedMR, detailVersion);
+  const { data, isLoading, error, refetch } = useMRDetail(selectedMR, detailVersion);
 
   if (!selectedMR) {
     return (
@@ -44,7 +44,7 @@ export function MainContent() {
 
   return (
     <main className={styles.main}>
-      <MROverview summary={selectedMR} detail={data} />
+      <MROverview summary={selectedMR} detail={data} onRefetch={refetch} />
       <TabBar
         changesCount={data.diffs.length}
         commitsCount={data.commits.length}
@@ -52,7 +52,7 @@ export function MainContent() {
         pipelinesCount={data.pipelines.length}
         notesCount={data.notes.length}
       />
-      <TabContent data={data} />
+      <TabContent data={data} onRefetch={refetch} />
     </main>
   );
 }

@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useMemo, useEffect, useRef } from "react";
+import { useState, useMemo, useEffect, useRef, useCallback } from "react";
 import type { EnrichedDiffFile, GitLabDiscussion } from "@/lib/types/gitlab";
 import type { FileWithStats } from "./changes/diff-stats";
 import { useAppState } from "@/components/providers/AppStateProvider";
+import { useToastContext } from "@/components/providers/ToastProvider";
 import { FileTree } from "./changes/FileTree";
 import { DiffViewer } from "./changes/DiffViewer";
 import styles from "./ChangesTab.module.css";
@@ -13,10 +14,49 @@ interface Props {
   discussions: GitLabDiscussion[];
   projectId: number;
   iid: number;
+  onRefetch: () => Promise<void>;
 }
 
-export function ChangesTab({ diffs, discussions, projectId, iid }: Props) {
+export function ChangesTab({ diffs, discussions, projectId, iid, onRefetch }: Props) {
   const { scrollToFile, setScrollToFile } = useAppState();
+  const { addToast } = useToastContext();
+
+  const base = `/api/gitlab/merge-requests/${projectId}/${iid}`;
+
+  const handleReply = useCallback(async (discussionId: string, body: string) => {
+    try {
+      const res = await fetch(`${base}/discussions/${discussionId}/notes`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ body }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || `HTTP ${res.status}`);
+      }
+      await onRefetch();
+    } catch (err) {
+      addToast("Reply failed", err instanceof Error ? err.message : "Unknown error", "warning");
+      throw err;
+    }
+  }, [base, onRefetch, addToast]);
+
+  const handleResolve = useCallback(async (discussionId: string, resolved: boolean) => {
+    try {
+      const res = await fetch(`${base}/discussions/${discussionId}/resolve`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ resolved }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || `HTTP ${res.status}`);
+      }
+      await onRefetch();
+    } catch (err) {
+      addToast("Resolve failed", err instanceof Error ? err.message : "Unknown error", "warning");
+    }
+  }, [base, onRefetch, addToast]);
   const [selectedFile, setSelectedFile] = useState<string | null>(null);
   const [treeOpen, setTreeOpen] = useState(true);
   const diffAreaRef = useRef<HTMLDivElement>(null);
@@ -67,20 +107,27 @@ export function ChangesTab({ diffs, discussions, projectId, iid }: Props) {
           </button>
         )}
         {selectedFile && fileMap.has(selectedFile) ? (
-          <DiffViewer file={fileMap.get(selectedFile)!} discussions={discussions} projectId={projectId} iid={iid} />
+          <DiffViewer file={fileMap.get(selectedFile)!} discussions={discussions} projectId={projectId} iid={iid} onReply={handleReply} onResolve={handleResolve} />
         ) : (
-          <DiffAllFiles files={diffs} discussions={discussions} projectId={projectId} iid={iid} />
+          <DiffAllFiles files={diffs} discussions={discussions} projectId={projectId} iid={iid} onReply={handleReply} onResolve={handleResolve} />
         )}
       </div>
     </div>
   );
 }
 
-function DiffAllFiles({ files, discussions, projectId, iid }: { files: FileWithStats[]; discussions: GitLabDiscussion[]; projectId: number; iid: number }) {
+function DiffAllFiles({ files, discussions, projectId, iid, onReply, onResolve }: {
+  files: FileWithStats[];
+  discussions: GitLabDiscussion[];
+  projectId: number;
+  iid: number;
+  onReply: (discussionId: string, body: string) => Promise<void>;
+  onResolve: (discussionId: string, resolved: boolean) => Promise<void>;
+}) {
   return (
     <div className={styles.allFiles}>
       {files.map((f) => (
-        <DiffViewer key={f.new_path || f.old_path} file={f} discussions={discussions} projectId={projectId} iid={iid} />
+        <DiffViewer key={f.new_path || f.old_path} file={f} discussions={discussions} projectId={projectId} iid={iid} onReply={onReply} onResolve={onResolve} />
       ))}
     </div>
   );

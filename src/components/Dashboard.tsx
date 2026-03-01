@@ -3,6 +3,7 @@
 import { useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { AppStateProvider } from "@/components/providers/AppStateProvider";
+import { ToastProvider, useToastContext } from "@/components/providers/ToastProvider";
 import { TopBar } from "@/components/layout/TopBar";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { MainContent } from "@/components/layout/MainContent";
@@ -10,7 +11,6 @@ import { ToastContainer } from "@/components/notifications/ToastContainer";
 import { useAppState } from "@/components/providers/AppStateProvider";
 import { useMRList, type MREvent } from "@/hooks/use-mr-list";
 import { useNotifications } from "@/hooks/use-notifications";
-import { useToasts } from "@/hooks/use-toasts";
 import { useAudio } from "@/hooks/use-audio";
 import styles from "./Dashboard.module.css";
 
@@ -18,7 +18,7 @@ function DashboardInner() {
   const { data: session } = useSession();
   const { updateSelectedMR } = useAppState();
   const { notifications, unreadCount, addNotification, markAllRead } = useNotifications();
-  const { toasts, addToast, dismiss } = useToasts();
+  const { toasts, addToast, dismiss } = useToastContext();
   const { playNewMR, playAssignedToMe, playReadyToMerge } = useAudio();
 
   const currentUserId = session?.gitlabUserId;
@@ -84,7 +84,9 @@ function DashboardInner() {
 export function Dashboard() {
   return (
     <AppStateProvider>
-      <DashboardInner />
+      <ToastProvider>
+        <DashboardInner />
+      </ToastProvider>
     </AppStateProvider>
   );
 }

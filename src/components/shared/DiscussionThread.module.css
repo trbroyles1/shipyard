@@ -198,3 +198,90 @@
   font-size: 12px;
   line-height: 1.45;
 }
+
+/* Resolve button */
+.resolveBtn {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 1px 8px;
+  border-radius: 3px;
+  border: 1px solid var(--brd);
+  background: transparent;
+  color: var(--t2);
+  cursor: pointer;
+  font-family: var(--sans);
+}
+
+.resolveBtn:hover:not(:disabled) {
+  border-color: var(--grn);
+  color: var(--grn);
+}
+
+.resolveBtnActive {
+  color: var(--grn);
+  border-color: var(--grn);
+}
+
+.resolveBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Reply box */
+.replyBox {
+  display: flex;
+  gap: 8px;
+  padding: 8px 12px;
+  border-top: 1px solid var(--brd-s);
+  align-items: flex-end;
+}
+
+.compact .replyBox {
+  padding: 6px 8px;
+}
+
+.replyInput {
+  flex: 1;
+  min-height: 28px;
+  max-height: 120px;
+  padding: 6px 8px;
+  border: 1px solid var(--brd);
+  border-radius: var(--rs);
+  background: var(--bg-sd);
+  color: var(--t1);
+  font-size: 12px;
+  font-family: var(--sans);
+  resize: vertical;
+  line-height: 1.4;
+}
+
+.replyInput::placeholder {
+  color: var(--tm);
+}
+
+.replyInput:focus {
+  outline: none;
+  border-color: var(--acc);
+}
+
+.replyBtn {
+  padding: 6px 12px;
+  border-radius: var(--rs);
+  border: 1px solid var(--acc);
+  background: var(--acc);
+  color: #0a0c10;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: var(--sans);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.replyBtn:hover:not(:disabled) {
+  background: #5cc8f8;
+}
+
+.replyBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}

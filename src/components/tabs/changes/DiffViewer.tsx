@@ -14,6 +14,8 @@ interface Props {
   discussions: GitLabDiscussion[];
   projectId: number;
   iid: number;
+  onReply?: (discussionId: string, body: string) => Promise<void>;
+  onResolve?: (discussionId: string, resolved: boolean) => Promise<void>;
 }
 
 /** Get the anchor line for a discussion (where the widget renders). */
@@ -29,7 +31,7 @@ function getAnchorLine(discussion: GitLabDiscussion): number | null {
   return pos.new_line ?? pos.old_line;
 }
 
-export function DiffViewer({ file: initialFile, discussions, projectId, iid }: Props) {
+export function DiffViewer({ file: initialFile, discussions, projectId, iid, onReply, onResolve }: Props) {
   const [collapsed, setCollapsed] = useState(false);
   const [loadedDiff, setLoadedDiff] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -101,7 +103,7 @@ export function DiffViewer({ file: initialFile, discussions, projectId, iid }: P
       const key = getChangeKey(change);
       if (!widgetMap[key]) widgetMap[key] = [];
       widgetMap[key].push(
-        <DiscussionThread key={d.id} discussion={d} compact defaultExpanded />
+        <DiscussionThread key={d.id} discussion={d} compact defaultExpanded onReply={onReply} onResolve={onResolve} />
       );
     });
 
@@ -115,7 +117,7 @@ export function DiffViewer({ file: initialFile, discussions, projectId, iid }: P
       );
     });
     return result;
-  }, [fileDiscussions, parsedFiles]);
+  }, [fileDiscussions, parsedFiles, onReply, onResolve]);
 
   const handleLoad = useCallback(async () => {
     setLoading(true);

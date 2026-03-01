@@ -38,4 +38,22 @@
 }
 .merge:hover:not(:disabled) { background: #5cc8f8; }
 
+.unapprove { border-color: var(--grn); color: var(--grn); background: var(--grn-d); }
+.unapprove:hover:not(:disabled) { background: transparent; }
+
+.mergeWrap { position: relative; }
+
 .external { margin-left: auto; }
+
+.spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
