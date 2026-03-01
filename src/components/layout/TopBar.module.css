@@ -7,6 +7,10 @@
   padding: 0 var(--sp-7);
   background: var(--bg-s);
   border-bottom: var(--bw) solid var(--brd);
+  border-radius: var(--panel-r);
+  box-shadow: var(--panel-sh);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
   z-index: 100;
 }
 
@@ -66,6 +70,8 @@
   border: var(--bw) solid var(--brd);
   border-radius: var(--r);
   box-shadow: var(--sh-lg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
   z-index: 200;
   overflow: hidden;
   min-width: var(--user-menu-min-w);

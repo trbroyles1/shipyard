@@ -4,6 +4,8 @@
   border: var(--bw) solid var(--brd);
   border-radius: var(--r);
   box-shadow: var(--sh-lg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
   min-width: var(--merge-dialog-min-w);
   color: inherit;
 }

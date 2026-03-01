@@ -3,7 +3,7 @@
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: var(--bg-root);
+  background: var(--bg-canvas);
 }
 
 .card {
@@ -16,6 +16,8 @@
   border: var(--bw) solid var(--brd);
   border-radius: var(--rl);
   box-shadow: var(--sh-xl);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
 }
 
 .logo {

@@ -16,7 +16,7 @@
 html,
 body {
   font-family: var(--sans);
-  background: var(--bg-root);
+  background: var(--bg-canvas);
   color: var(--t1);
   height: 100vh;
   overflow: hidden;

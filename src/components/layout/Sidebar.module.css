@@ -5,6 +5,10 @@
   display: flex;
   flex-direction: column;
   background: var(--bg-s);
+  border-radius: var(--panel-r);
+  box-shadow: var(--panel-sh);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
   transition: width var(--dur-layout) ease, min-width var(--dur-layout) ease, opacity var(--dur-slow) ease;
   overflow: hidden;
 }
@@ -25,7 +29,7 @@
 
 .toggle {
   position: absolute;
-  left: 0;
+  left: var(--shell-p);
   top: var(--topbar-h);
   z-index: 50;
   background: var(--bg-sr);
@@ -48,5 +52,5 @@
 }
 
 .toggleOpen {
-  left: var(--sidebar-w);
+  left: calc(var(--sidebar-w) + var(--shell-p) + var(--body-gap));
 }

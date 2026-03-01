@@ -1,4 +1,7 @@
 :root {
+  /* Canvas (behind floating panels — aliases --bg-root in Classic) */
+  --bg-canvas: var(--bg-root);
+
   /* Backgrounds */
   --bg-root: #0a0c10;
   --bg-s: #12151c;
@@ -54,16 +57,79 @@
   --red-brd: rgba(248, 113, 113, 0.3);
 }
 
-/*
- * Theme overrides — future themes override :root values via data-theme.
- * Classic is the default and needs no override (values live on :root).
- *
- * Example:
- * [data-theme="midnight"] {
- *   --bg-root: #030305;
- *   --bg-s: #0a0b12;
- *   --acc: #818cf8;
- *   --sh-md: 0 4px 20px rgba(0, 0, 0, 0.6);
- *   --fs-2: 13px;
- * }
- */
+/* ─── Brinjal ─── deep purple + lime-green accent + frosted glass */
+[data-theme="brinjal"] {
+  /* Canvas */
+  --bg-canvas: #110c1a;
+
+  /* Backgrounds (semi-transparent for glass) */
+  --bg-root: #16111f;
+  --bg-s: rgba(26, 20, 38, 0.75);
+  --bg-sr: rgba(32, 25, 48, 0.80);
+  --bg-sh: rgba(40, 32, 58, 0.85);
+  --bg-sa: rgba(50, 40, 72, 0.9);
+
+  /* Borders */
+  --brd: rgba(120, 90, 180, 0.25);
+  --brd-s: rgba(100, 75, 150, 0.18);
+
+  /* Text */
+  --t1: #ede8f5;
+  --t2: #9e8fbc;
+  --tm: #6b5a88;
+
+  /* Accent (lime green) */
+  --acc: #b8e636;
+  --acc-h: #c8ee5c;
+  --acc-d: rgba(184, 230, 54, 0.18);
+  --acc-g: rgba(184, 230, 54, 0.10);
+  --acc-txt: #110c1a;
+  --acc-purple: #c792ea;
+
+  /* Semantic colors */
+  --grn: #5ee8a0;
+  --grn-d: rgba(94, 232, 160, 0.15);
+  --grn-g: rgba(94, 232, 160, 0.08);
+  --grn-dd: rgba(94, 232, 160, 0.12);
+  --yel: #f0d060;
+  --yel-d: rgba(240, 208, 96, 0.12);
+  --red: #f07070;
+  --red-d: rgba(240, 112, 112, 0.12);
+  --red-g: rgba(240, 112, 112, 0.08);
+  --red-brd: rgba(240, 112, 112, 0.3);
+  --org: #f0a050;
+  --org-d: rgba(240, 160, 80, 0.12);
+
+  /* Overlays & terminal */
+  --overlay: rgba(10, 6, 18, 0.55);
+  --overlay-heavy: rgba(10, 6, 18, 0.7);
+  --bg-terminal: #0f0a16;
+  --t-terminal: #d8d0e0;
+
+  /* Selection */
+  --sel: rgba(184, 230, 54, 0.18);
+  --sel-g: rgba(184, 230, 54, 0.10);
+
+  /* Shadows (purple-tinted) */
+  --sh-sm: 0 1px 4px rgba(10, 6, 18, 0.4);
+  --sh-md: 0 4px 20px rgba(10, 6, 18, 0.5);
+  --sh-lg: 0 8px 32px rgba(10, 6, 18, 0.5);
+  --sh-xl: 0 20px 60px rgba(10, 6, 18, 0.6);
+  --panel-sh: 0 4px 24px rgba(10, 6, 18, 0.4);
+
+  /* Radii (slightly rounder) */
+  --rxs: 4px;
+  --rs: 6px;
+  --r: 10px;
+  --rl: 14px;
+
+  /* Glass */
+  --glass-blur: 16px;
+  --glass-sat: 140%;
+
+  /* Layout (floating panels) */
+  --shell-p: 10px;
+  --shell-gap: 10px;
+  --body-gap: 10px;
+  --panel-r: 12px;
+}

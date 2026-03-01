@@ -1,7 +1,8 @@
-export type Theme = "classic";
+export type Theme = "classic" | "brinjal";
 
 export const THEMES: { value: Theme; label: string }[] = [
   { value: "classic", label: "Classic" },
+  { value: "brinjal", label: "Brinjal" },
 ];
 
 export interface UserPreferences {

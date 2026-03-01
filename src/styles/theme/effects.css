@@ -16,6 +16,13 @@
   --dur-expand: 0.3s;
 }
 
+/* Glass / panel effects (inert in Classic) */
+:root {
+  --glass-blur: 0;
+  --glass-sat: 100%;
+  --panel-sh: none;
+}
+
 /* Border widths */
 :root {
   --bw: 1px;

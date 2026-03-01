@@ -15,4 +15,10 @@
   --overview-desc-max-h: 80px;
   --icon-btn-size: 36px;
   --scrollbar-w: 6px;
+
+  /* Shell / panel layout (inert in Classic) */
+  --shell-p: 0;
+  --shell-gap: 0;
+  --body-gap: 0;
+  --panel-r: 0;
 }
