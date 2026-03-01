@@ -23,10 +23,22 @@
   /* Semantic colors */
   --grn: #34d399;
   --grn-d: rgba(52, 211, 153, 0.15);
+  --grn-g: rgba(52, 211, 153, 0.08);
   --yel: #facc15;
   --yel-d: rgba(250, 204, 21, 0.12);
   --red: #f87171;
   --red-d: rgba(248, 113, 113, 0.12);
+  --red-g: rgba(248, 113, 113, 0.08);
   --org: #fb923c;
   --org-d: rgba(251, 146, 60, 0.12);
+
+  /* Accent variants */
+  --acc-h: #5cc8f8;
+  --acc-txt: #0a0c10;
+  --acc-purple: #a78bfa;
+
+  /* Overlays & terminal */
+  --overlay: rgba(0, 0, 0, 0.5);
+  --bg-terminal: #0d0d0d;
+  --t-terminal: #d4d4d4;
 }

@@ -1,0 +1,23 @@
+/* Shadows */
+:root {
+  --sh-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --sh-md: 0 4px 20px rgba(0, 0, 0, 0.4);
+  --sh-lg: 0 8px 32px rgba(0, 0, 0, 0.4);
+  --sh-xl: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+/* Transition durations */
+:root {
+  --dur-fast: 0.1s;
+  --dur-base: 0.15s;
+  --dur-slow: 0.2s;
+  --dur-layout: 0.25s;
+  --dur-expand: 0.3s;
+}
+
+/* Border widths */
+:root {
+  --bw: 1px;
+  --bw-thick: 2px;
+  --bw-accent: 3px;
+}
