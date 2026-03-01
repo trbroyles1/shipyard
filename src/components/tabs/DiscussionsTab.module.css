@@ -19,7 +19,7 @@
 .commentPlaceholder {
   width: 100%;
   padding: var(--sp-4) var(--sp-5);
-  border: 1px solid var(--brd);
+  border: var(--bw) solid var(--brd);
   border-radius: var(--r);
   background: var(--bg-sr);
   color: var(--tm);
@@ -35,7 +35,7 @@
 }
 
 .commentBox {
-  border: 1px solid var(--brd);
+  border: var(--bw) solid var(--brd);
   border-radius: var(--r);
   background: var(--bg-sr);
   padding: var(--sp-4);
@@ -46,9 +46,9 @@
   min-height: 60px;
   max-height: 200px;
   padding: var(--sp-3);
-  border: 1px solid var(--brd);
+  border: var(--bw) solid var(--brd);
   border-radius: var(--rs);
-  background: var(--bg-sd);
+  background: var(--bg-s);
   color: var(--t1);
   font-size: var(--fs-3);
   font-family: var(--sans);
@@ -76,7 +76,7 @@
 .commentCancel {
   padding: var(--sp-2) var(--sp-5);
   border-radius: var(--rs);
-  border: 1px solid var(--brd);
+  border: var(--bw) solid var(--brd);
   background: transparent;
   color: var(--t2);
   font-size: var(--fs-2);
@@ -91,9 +91,9 @@
 .commentSubmit {
   padding: var(--sp-2) var(--sp-6);
   border-radius: var(--rs);
-  border: 1px solid var(--acc);
+  border: var(--bw) solid var(--acc);
   background: var(--acc);
-  color: #0a0c10;
+  color: var(--acc-txt);
   font-size: var(--fs-2);
   font-weight: var(--fw-sb);
   font-family: var(--sans);
@@ -101,7 +101,7 @@
 }
 
 .commentSubmit:hover:not(:disabled) {
-  background: #5cc8f8;
+  background: var(--acc-h);
 }
 
 .commentSubmit:disabled {

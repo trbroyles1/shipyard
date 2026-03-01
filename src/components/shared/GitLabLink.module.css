@@ -1,7 +1,7 @@
 .link {
   color: var(--t2);
   text-decoration: none;
-  transition: color 0.15s;
+  transition: color var(--dur-base);
 }
 
 .link:hover {

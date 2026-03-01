@@ -1,15 +1,15 @@
 .dialog {
   padding: 0;
   background: var(--bg-s);
-  border: 1px solid var(--brd);
+  border: var(--bw) solid var(--brd);
   border-radius: var(--r);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  box-shadow: var(--sh-lg);
   min-width: 260px;
   color: inherit;
 }
 
 .dialog::backdrop {
-  background: rgba(0, 0, 0, 0.5);
+  background: var(--overlay);
 }
 
 .content {
@@ -47,7 +47,7 @@
 .cancel {
   padding: var(--sp-2) var(--sp-5);
   border-radius: var(--rs);
-  border: 1px solid var(--brd);
+  border: var(--bw) solid var(--brd);
   background: transparent;
   color: var(--t2);
   font-size: var(--fs-2);
@@ -62,9 +62,9 @@
 .confirm {
   padding: var(--sp-2) var(--sp-6);
   border-radius: var(--rs);
-  border: 1px solid var(--acc);
+  border: var(--bw) solid var(--acc);
   background: var(--acc);
-  color: #0a0c10;
+  color: var(--acc-txt);
   font-size: var(--fs-2);
   font-weight: var(--fw-sb);
   font-family: var(--sans);
@@ -75,7 +75,7 @@
 }
 
 .confirm:hover:not(:disabled) {
-  background: #5cc8f8;
+  background: var(--acc-h);
 }
 
 .confirm:disabled {
@@ -86,7 +86,7 @@
 .spinner {
   width: 12px;
   height: 12px;
-  border: 2px solid currentColor;
+  border: var(--bw-thick) solid currentColor;
   border-top-color: transparent;
   border-radius: 50%;
   animation: spin 0.6s linear infinite;

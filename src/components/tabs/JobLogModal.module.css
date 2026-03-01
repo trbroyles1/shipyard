@@ -17,11 +17,11 @@
   display: flex;
   flex-direction: column;
   background: var(--bg-root);
-  border: 1px solid var(--brd);
+  border: var(--bw) solid var(--brd);
   border-radius: var(--r);
   overflow: hidden;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-  transition: all 0.2s ease;
+  box-shadow: var(--sh-xl);
+  transition: all var(--dur-slow) ease;
 }
 
 .maximized {
@@ -36,7 +36,7 @@
   gap: var(--sp-3);
   padding: var(--sp-4) var(--sp-6);
   background: var(--bg-sr);
-  border-bottom: 1px solid var(--brd);
+  border-bottom: var(--bw) solid var(--brd);
   color: var(--t2);
   flex-shrink: 0;
 }
@@ -59,7 +59,7 @@
   padding: var(--sp-1);
   display: flex;
   align-items: center;
-  border-radius: 3px;
+  border-radius: var(--rxs);
 }
 
 .headerBtn:hover {
@@ -70,7 +70,7 @@
 .content {
   flex: 1;
   overflow: auto;
-  background: #0d0d0d;
+  background: var(--bg-terminal);
 }
 
 .log {
@@ -79,7 +79,7 @@
   font-family: var(--mono);
   font-size: var(--fs-2);
   line-height: 1.5;
-  color: #d4d4d4;
+  color: var(--t-terminal);
   white-space: pre-wrap;
   word-break: break-all;
 }

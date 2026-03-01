@@ -21,7 +21,7 @@
 
 .comment {
   background: var(--bg-sr);
-  border: 1px solid var(--brd-s);
+  border: var(--bw) solid var(--brd-s);
 }
 
 .entryHeader {

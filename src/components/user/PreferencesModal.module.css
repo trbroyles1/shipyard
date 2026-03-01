@@ -1,7 +1,7 @@
 .section {
   padding-bottom: var(--sp-7);
   margin-bottom: var(--sp-7);
-  border-bottom: 1px solid var(--brd-s);
+  border-bottom: var(--bw) solid var(--brd-s);
 }
 
 .section:last-child {
@@ -51,7 +51,7 @@
   width: 70px;
   padding: 5px var(--sp-3);
   border-radius: var(--rs);
-  border: 1px solid var(--brd);
+  border: var(--bw) solid var(--brd);
   background: var(--bg-sr);
   color: var(--t1);
   font-size: var(--fs-3);
@@ -91,7 +91,7 @@
   background: var(--bg-sa);
   cursor: pointer;
   padding: 0;
-  transition: background 0.15s;
+  transition: background var(--dur-base);
 }
 
 .toggleOn {
@@ -106,7 +106,7 @@
   height: 14px;
   border-radius: 50%;
   background: var(--t1);
-  transition: transform 0.15s;
+  transition: transform var(--dur-base);
 }
 
 .toggleOn .toggleKnob {
@@ -119,7 +119,7 @@
   width: 100%;
   padding: 7px var(--sp-4);
   border-radius: var(--rs);
-  border: 1px solid var(--brd);
+  border: var(--bw) solid var(--brd);
   background: var(--bg-sr);
   color: var(--t1);
   font-size: var(--fs-3);

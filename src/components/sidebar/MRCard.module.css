@@ -2,8 +2,8 @@
   padding: var(--sp-4) var(--sp-5);
   border-radius: var(--r);
   cursor: pointer;
-  transition: all 0.15s;
-  border: 1px solid transparent;
+  transition: all var(--dur-base);
+  border: var(--bw) solid transparent;
   margin-bottom: var(--sp-1);
 }
 

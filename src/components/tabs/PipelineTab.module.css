@@ -5,7 +5,7 @@
 }
 
 .pipeline {
-  border: 1px solid var(--brd);
+  border: var(--bw) solid var(--brd);
   border-radius: var(--rs);
   background: var(--bg-sr);
   overflow: hidden;
@@ -68,7 +68,7 @@
 
 .chevron {
   color: var(--tm);
-  transition: transform 0.2s;
+  transition: transform var(--dur-slow);
 }
 
 .chevronOpen {
@@ -76,7 +76,7 @@
 }
 
 .jobs {
-  border-top: 1px solid var(--brd-s);
+  border-top: var(--bw) solid var(--brd-s);
   background: var(--bg-s);
 }
 
@@ -89,7 +89,7 @@
 }
 
 .job + .job {
-  border-top: 1px solid var(--brd-s);
+  border-top: var(--bw) solid var(--brd-s);
 }
 
 .jobStatus {
@@ -124,7 +124,7 @@
   padding: var(--sp-0);
   display: flex;
   align-items: center;
-  border-radius: 3px;
+  border-radius: var(--rxs);
 }
 
 .jobLogBtn:hover {

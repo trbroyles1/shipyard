@@ -1,5 +1,5 @@
 .thread {
-  border: 1px solid var(--brd);
+  border: var(--bw) solid var(--brd);
   border-radius: var(--r);
   background: var(--bg-sr);
   overflow: hidden;
@@ -40,7 +40,7 @@
 .chevron {
   flex-shrink: 0;
   color: var(--tm);
-  transition: transform 0.15s ease;
+  transition: transform var(--dur-base) ease;
 }
 
 .chevronOpen {
@@ -66,7 +66,7 @@
   border: none;
   cursor: pointer;
   padding: 1px var(--sp-1);
-  border-radius: 3px;
+  border-radius: var(--rxs);
   flex-shrink: 0;
 }
 
@@ -103,7 +103,7 @@
   color: var(--grn);
   background: var(--grn-d);
   padding: 1px var(--sp-2);
-  border-radius: 3px;
+  border-radius: var(--rxs);
 }
 
 .replyCount {
@@ -118,7 +118,7 @@
 
 /* Expanded notes */
 .notes {
-  border-top: 1px solid var(--brd-s);
+  border-top: var(--bw) solid var(--brd-s);
 }
 
 .note {
@@ -134,7 +134,7 @@
 }
 
 .note + .note {
-  border-top: 1px solid var(--brd-s);
+  border-top: var(--bw) solid var(--brd-s);
 }
 
 /* Vertical connector line between notes */
@@ -204,8 +204,8 @@
   font-size: var(--fs-0);
   font-weight: var(--fw-sb);
   padding: 1px var(--sp-3);
-  border-radius: 3px;
-  border: 1px solid var(--brd);
+  border-radius: var(--rxs);
+  border: var(--bw) solid var(--brd);
   background: transparent;
   color: var(--t2);
   cursor: pointer;
@@ -232,7 +232,7 @@
   display: flex;
   gap: var(--sp-3);
   padding: var(--sp-3) var(--sp-5);
-  border-top: 1px solid var(--brd-s);
+  border-top: var(--bw) solid var(--brd-s);
   align-items: flex-end;
 }
 
@@ -245,9 +245,9 @@
   min-height: 28px;
   max-height: 120px;
   padding: var(--sp-2) var(--sp-3);
-  border: 1px solid var(--brd);
+  border: var(--bw) solid var(--brd);
   border-radius: var(--rs);
-  background: var(--bg-sd);
+  background: var(--bg-s);
   color: var(--t1);
   font-size: var(--fs-2);
   font-family: var(--sans);
@@ -267,9 +267,9 @@
 .replyBtn {
   padding: var(--sp-2) var(--sp-5);
   border-radius: var(--rs);
-  border: 1px solid var(--acc);
+  border: var(--bw) solid var(--acc);
   background: var(--acc);
-  color: #0a0c10;
+  color: var(--acc-txt);
   font-size: var(--fs-1);
   font-weight: var(--fw-sb);
   font-family: var(--sans);
@@ -278,7 +278,7 @@
 }
 
 .replyBtn:hover:not(:disabled) {
-  background: #5cc8f8;
+  background: var(--acc-h);
 }
 
 .replyBtn:disabled {

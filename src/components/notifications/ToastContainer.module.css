@@ -15,10 +15,10 @@
   gap: var(--sp-4);
   padding: var(--sp-5) var(--sp-6);
   background: var(--bg-sr);
-  border: 1px solid var(--brd);
-  border-left: 3px solid var(--acc);
+  border: var(--bw) solid var(--brd);
+  border-left: var(--bw-accent) solid var(--acc);
   border-radius: var(--rs);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  box-shadow: var(--sh-md);
   animation: slideIn 0.25s ease-out;
 }
 

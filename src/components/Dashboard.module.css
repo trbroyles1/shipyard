@@ -22,6 +22,6 @@
   color: var(--red);
   font-size: var(--fs-2);
   text-align: center;
-  border-top: 1px solid rgba(248, 113, 113, 0.3);
+  border-top: var(--bw) solid rgba(248, 113, 113, 0.3);
   z-index: 1000;
 }

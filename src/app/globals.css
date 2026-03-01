@@ -41,7 +41,7 @@ button {
 
 ::-webkit-scrollbar-thumb {
   background: var(--brd);
-  border-radius: 3px;
+  border-radius: var(--rxs);
 }
 
 ::-webkit-scrollbar-thumb:hover {

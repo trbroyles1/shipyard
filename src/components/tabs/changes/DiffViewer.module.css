@@ -1,5 +1,5 @@
 .file {
-  border: 1px solid var(--brd);
+  border: var(--bw) solid var(--brd);
   border-radius: var(--r);
   overflow: hidden;
   background: var(--bg-sr);
@@ -14,7 +14,7 @@
   gap: var(--sp-3);
   padding: var(--sp-3) var(--sp-5);
   background: var(--bg-sr);
-  border-bottom: 1px solid var(--brd-s);
+  border-bottom: var(--bw) solid var(--brd-s);
   font-size: var(--fs-3);
   font-family: var(--mono);
   cursor: pointer;
@@ -26,7 +26,7 @@
 }
 
 .chevron {
-  transition: transform 0.2s;
+  transition: transform var(--dur-slow);
   color: var(--tm);
   flex-shrink: 0;
 }
@@ -77,7 +77,7 @@
   text-align: right;
   user-select: none;
   background: var(--bg-s);
-  border-right: 1px solid var(--brd-s);
+  border-right: var(--bw) solid var(--brd-s);
 }
 
 .diffContent :global(.diff-code) {
@@ -91,12 +91,12 @@
 }
 
 .diffContent :global(.diff-code-insert) {
-  background: rgba(52, 211, 153, 0.08);
+  background: var(--grn-g);
   color: var(--t1);
 }
 
 .diffContent :global(.diff-code-delete) {
-  background: rgba(248, 113, 113, 0.08);
+  background: var(--red-g);
   color: var(--t1);
 }
 
@@ -137,7 +137,7 @@
   gap: var(--sp-5);
   padding: var(--sp-7) var(--sp-8);
   background: var(--bg-s);
-  border-top: 1px solid var(--brd-s);
+  border-top: var(--bw) solid var(--brd-s);
 }
 
 .largeDiffText {
@@ -148,7 +148,7 @@
 .loadBtn {
   padding: 5px var(--sp-6);
   border-radius: var(--rs);
-  border: 1px solid var(--acc);
+  border: var(--bw) solid var(--acc);
   background: var(--acc-d);
   color: var(--acc);
   font-size: var(--fs-2);
@@ -156,12 +156,12 @@
   font-family: var(--sans);
   cursor: pointer;
   white-space: nowrap;
-  transition: all 0.15s;
+  transition: all var(--dur-base);
 }
 
 .loadBtn:hover:not(:disabled) {
   background: var(--acc);
-  color: #0a0c10;
+  color: var(--acc-txt);
 }
 
 .loadBtn:disabled {
@@ -192,8 +192,8 @@
   flex-direction: column;
   gap: var(--sp-2);
   background: var(--bg-s);
-  border-top: 1px solid var(--brd-s);
-  border-bottom: 1px solid var(--brd-s);
+  border-top: var(--bw) solid var(--brd-s);
+  border-bottom: var(--bw) solid var(--brd-s);
 }
 
 /* Gutter add-comment icon */
@@ -209,9 +209,9 @@
   transform: translateY(-50%);
   width: 16px;
   height: 16px;
-  border-radius: 3px;
+  border-radius: var(--rxs);
   background: var(--acc);
-  color: #0a0c10;
+  color: var(--acc-txt);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -220,7 +220,7 @@
   line-height: 1;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.1s;
+  transition: opacity var(--dur-fast);
 }
 
 .diffContent :global(.diff-gutter:hover) .addCommentIcon {
@@ -243,8 +243,8 @@
   flex-direction: column;
   gap: var(--sp-2);
   background: var(--bg-s);
-  border-top: 1px solid var(--brd-s);
-  border-bottom: 1px solid var(--brd-s);
+  border-top: var(--bw) solid var(--brd-s);
+  border-bottom: var(--bw) solid var(--brd-s);
 }
 
 .commentFormLabel {
@@ -254,7 +254,7 @@
 }
 
 .commentFormBox {
-  border: 1px solid var(--brd);
+  border: var(--bw) solid var(--brd);
   border-radius: var(--r);
   background: var(--bg-sr);
   padding: var(--sp-4);
@@ -265,7 +265,7 @@
   min-height: 60px;
   max-height: 200px;
   padding: var(--sp-3);
-  border: 1px solid var(--brd);
+  border: var(--bw) solid var(--brd);
   border-radius: var(--rs);
   background: var(--bg-s);
   color: var(--t1);
@@ -295,7 +295,7 @@
 .commentFormCancel {
   padding: var(--sp-2) var(--sp-5);
   border-radius: var(--rs);
-  border: 1px solid var(--brd);
+  border: var(--bw) solid var(--brd);
   background: transparent;
   color: var(--t2);
   font-size: var(--fs-2);
@@ -310,9 +310,9 @@
 .commentFormSubmit {
   padding: var(--sp-2) var(--sp-6);
   border-radius: var(--rs);
-  border: 1px solid var(--acc);
+  border: var(--bw) solid var(--acc);
   background: var(--acc);
-  color: #0a0c10;
+  color: var(--acc-txt);
   font-size: var(--fs-2);
   font-weight: var(--fw-sb);
   font-family: var(--sans);
@@ -320,7 +320,7 @@
 }
 
 .commentFormSubmit:hover:not(:disabled) {
-  background: #5cc8f8;
+  background: var(--acc-h);
 }
 
 .commentFormSubmit:disabled {

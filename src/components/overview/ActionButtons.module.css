@@ -7,7 +7,7 @@
 .btn {
   padding: 7px var(--sp-6);
   border-radius: var(--rs);
-  border: 1px solid var(--brd);
+  border: var(--bw) solid var(--brd);
   background: var(--bg-sr);
   color: var(--t1);
   font-size: var(--fs-2);
@@ -17,7 +17,7 @@
   display: flex;
   align-items: center;
   gap: var(--sp-2);
-  transition: all 0.15s;
+  transition: all var(--dur-base);
   text-decoration: none;
 }
 
@@ -32,11 +32,11 @@
 
 .merge {
   background: var(--acc);
-  color: #0a0c10;
+  color: var(--acc-txt);
   border-color: var(--acc);
   font-weight: var(--fw-sb);
 }
-.merge:hover:not(:disabled) { background: #5cc8f8; }
+.merge:hover:not(:disabled) { background: var(--acc-h); }
 
 .unapprove { border-color: var(--grn); color: var(--grn); background: var(--grn-d); }
 .unapprove:hover:not(:disabled) { background: transparent; }
@@ -46,7 +46,7 @@
 .spinner {
   width: 14px;
   height: 14px;
-  border: 2px solid currentColor;
+  border: var(--bw-thick) solid currentColor;
   border-top-color: transparent;
   border-radius: 50%;
   animation: spin 0.6s linear infinite;

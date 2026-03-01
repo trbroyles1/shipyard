@@ -1,7 +1,7 @@
 .tabBar {
   display: flex;
   gap: 0;
-  border-bottom: 1px solid var(--brd);
+  border-bottom: var(--bw) solid var(--brd);
   background: var(--bg-s);
   padding: 0 var(--sp-7);
   overflow-x: auto;
@@ -24,7 +24,7 @@
   display: flex;
   align-items: center;
   gap: var(--sp-2);
-  transition: color 0.15s;
+  transition: color var(--dur-base);
 }
 
 .tab:hover { color: var(--t1); }
@@ -38,7 +38,7 @@
   height: 2px;
   background: transparent;
   border-radius: 1px 1px 0 0;
-  transition: background 0.15s;
+  transition: background var(--dur-base);
 }
 
 .active {

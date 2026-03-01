@@ -13,9 +13,9 @@
   gap: var(--sp-7);
   padding: var(--sp-10);
   background: var(--bg-s);
-  border: 1px solid var(--brd);
+  border: var(--bw) solid var(--brd);
   border-radius: var(--rl);
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  box-shadow: var(--sh-xl);
 }
 
 .logo {
@@ -29,7 +29,7 @@
   font-size: var(--fs-7);
   font-weight: var(--fw-bd);
   letter-spacing: -0.3px;
-  background: linear-gradient(135deg, var(--acc), #a78bfa);
+  background: linear-gradient(135deg, var(--acc), var(--acc-purple));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -46,16 +46,16 @@
   padding: var(--sp-5) var(--sp-9);
   margin-top: var(--sp-3);
   background: var(--acc);
-  color: #0a0c10;
+  color: var(--acc-txt);
   border: none;
   border-radius: var(--r);
   font-size: var(--fs-4);
   font-weight: var(--fw-sb);
   font-family: var(--sans);
   cursor: pointer;
-  transition: background 0.15s;
+  transition: background var(--dur-base);
 }
 
 .button:hover {
-  background: #5cc8f8;
+  background: var(--acc-h);
 }

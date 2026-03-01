@@ -1,11 +1,11 @@
 .sidebar {
   width: 340px;
   min-width: 0;
-  border-right: 1px solid var(--brd);
+  border-right: var(--bw) solid var(--brd);
   display: flex;
   flex-direction: column;
   background: var(--bg-s);
-  transition: width 0.25s ease, min-width 0.25s ease, opacity 0.2s ease;
+  transition: width var(--dur-layout) ease, min-width var(--dur-layout) ease, opacity var(--dur-slow) ease;
   overflow: hidden;
 }
 
@@ -19,7 +19,7 @@
 
 .header {
   padding: var(--sp-5) var(--sp-6) var(--sp-4);
-  border-bottom: 1px solid var(--brd-s);
+  border-bottom: var(--bw) solid var(--brd-s);
   flex-shrink: 0;
 }
 
@@ -29,7 +29,7 @@
   top: 52px;
   z-index: 50;
   background: var(--bg-sr);
-  border: 1px solid var(--brd);
+  border: var(--bw) solid var(--brd);
   border-left: none;
   border-radius: 0 var(--rs) var(--rs) 0;
   width: 24px;
@@ -39,7 +39,7 @@
   justify-content: center;
   cursor: pointer;
   color: var(--t2);
-  transition: all 0.15s;
+  transition: all var(--dur-base);
 }
 
 .toggle:hover {

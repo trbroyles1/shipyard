@@ -1,8 +1,8 @@
 .overview {
-  border-bottom: 1px solid var(--brd);
+  border-bottom: var(--bw) solid var(--brd);
   background: var(--bg-s);
   overflow: hidden;
-  transition: max-height 0.3s ease;
+  transition: max-height var(--dur-expand) ease;
 }
 
 .collapsed { max-height: 40px; }
@@ -29,7 +29,7 @@
 }
 
 .chevron {
-  transition: transform 0.2s;
+  transition: transform var(--dur-slow);
   color: var(--tm);
 }
 

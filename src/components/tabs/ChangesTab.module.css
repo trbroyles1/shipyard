@@ -8,7 +8,7 @@
 .tree {
   width: 260px;
   min-width: 260px;
-  border-right: 1px solid var(--brd);
+  border-right: var(--bw) solid var(--brd);
   overflow-y: auto;
   background: var(--bg-s);
 }
@@ -31,7 +31,7 @@
   top: 12px;
   left: 12px;
   background: var(--bg-sr);
-  border: 1px solid var(--brd);
+  border: var(--bw) solid var(--brd);
   border-radius: var(--rs);
   padding: var(--sp-2);
   cursor: pointer;

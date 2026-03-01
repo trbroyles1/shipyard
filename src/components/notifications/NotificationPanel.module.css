@@ -5,9 +5,9 @@
   width: 320px;
   max-height: 400px;
   background: var(--bg-sr);
-  border: 1px solid var(--brd);
+  border: var(--bw) solid var(--brd);
   border-radius: var(--r);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  box-shadow: var(--sh-lg);
   z-index: 200;
   overflow: hidden;
   display: flex;
@@ -20,7 +20,7 @@
   font-size: var(--fs-2);
   font-weight: var(--fw-sb);
   color: var(--t1);
-  border-bottom: 1px solid var(--brd);
+  border-bottom: var(--bw) solid var(--brd);
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
@@ -32,7 +32,7 @@
 
 .item {
   padding: var(--sp-4) var(--sp-6);
-  border-bottom: 1px solid var(--brd-s);
+  border-bottom: var(--bw) solid var(--brd-s);
 }
 
 .item:last-child {
