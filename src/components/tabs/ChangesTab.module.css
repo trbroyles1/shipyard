@@ -6,8 +6,8 @@
 }
 
 .tree {
-  width: 260px;
-  min-width: 260px;
+  width: var(--filetree-w);
+  min-width: var(--filetree-w);
   border-right: var(--bw) solid var(--brd);
   overflow-y: auto;
   background: var(--bg-s);

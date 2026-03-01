@@ -4,7 +4,7 @@
   border: var(--bw) solid var(--brd);
   border-radius: var(--r);
   box-shadow: var(--sh-lg);
-  min-width: 260px;
+  min-width: var(--merge-dialog-min-w);
   color: inherit;
 }
 

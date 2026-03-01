@@ -45,7 +45,7 @@
 
 .body {
   font-size: var(--fs-3);
-  line-height: 1.5;
+  line-height: var(--lh-normal);
   color: var(--t2);
   white-space: pre-wrap;
   word-break: break-word;

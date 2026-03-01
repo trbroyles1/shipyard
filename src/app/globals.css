@@ -3,6 +3,7 @@
 @import "../styles/theme/typography.css";
 @import "../styles/theme/spacing.css";
 @import "../styles/theme/effects.css";
+@import "../styles/theme/layout.css";
 
 *,
 *::before,
@@ -32,7 +33,7 @@ button {
 
 /* Scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: var(--scrollbar-w);
 }
 
 ::-webkit-scrollbar-track {

@@ -5,8 +5,8 @@
   transition: max-height var(--dur-expand) ease;
 }
 
-.collapsed { max-height: 40px; }
-.expanded { max-height: 600px; }
+.collapsed { max-height: var(--overview-collapsed-h); }
+.expanded { max-height: var(--overview-expanded-h); }
 
 .toggle {
   display: flex;
@@ -43,14 +43,14 @@
   font-size: var(--fs-6);
   font-weight: var(--fw-sb);
   margin-bottom: var(--sp-2);
-  line-height: 1.3;
+  line-height: var(--lh-tight);
 }
 
 .description {
   font-size: var(--fs-3);
   color: var(--t2);
-  line-height: 1.5;
+  line-height: var(--lh-normal);
   margin-bottom: var(--sp-5);
-  max-height: 80px;
+  max-height: var(--overview-desc-max-h);
   overflow-y: auto;
 }

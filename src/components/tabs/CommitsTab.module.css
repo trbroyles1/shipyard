@@ -42,7 +42,7 @@
   font-size: var(--fs-3);
   font-weight: var(--fw-md);
   color: var(--t1);
-  line-height: 1.4;
+  line-height: var(--lh-snug);
 }
 
 .author {

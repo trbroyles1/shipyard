@@ -15,7 +15,7 @@
 .selected {
   background: var(--acc-g) !important;
   border-color: var(--acc);
-  box-shadow: 0 0 0 1px var(--acc), inset 0 0 12px var(--acc-g);
+  box-shadow: var(--sh-selected);
 }
 
 .title {

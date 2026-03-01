@@ -39,8 +39,19 @@
 
   /* Overlays & terminal */
   --overlay: rgba(0, 0, 0, 0.5);
+  --overlay-heavy: rgba(0, 0, 0, 0.6);
   --bg-terminal: #0d0d0d;
   --t-terminal: #d4d4d4;
+
+  /* Diff gutter tints */
+  --grn-dd: rgba(52, 211, 153, 0.12);
+
+  /* Diff selection highlights */
+  --sel: rgba(79, 172, 254, 0.18);
+  --sel-g: rgba(79, 172, 254, 0.10);
+
+  /* Error border tint */
+  --red-brd: rgba(248, 113, 113, 0.3);
 }
 
 /*

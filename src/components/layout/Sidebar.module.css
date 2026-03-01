@@ -1,5 +1,5 @@
 .sidebar {
-  width: 340px;
+  width: var(--sidebar-w);
   min-width: 0;
   border-right: var(--bw) solid var(--brd);
   display: flex;
@@ -26,14 +26,14 @@
 .toggle {
   position: absolute;
   left: 0;
-  top: 52px;
+  top: var(--topbar-h);
   z-index: 50;
   background: var(--bg-sr);
   border: var(--bw) solid var(--brd);
   border-left: none;
   border-radius: 0 var(--rs) var(--rs) 0;
   width: 24px;
-  height: 36px;
+  height: var(--icon-btn-size);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -48,5 +48,5 @@
 }
 
 .toggleOpen {
-  left: 340px;
+  left: var(--sidebar-w);
 }

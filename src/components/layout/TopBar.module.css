@@ -2,8 +2,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 52px;
-  min-height: 52px;
+  height: var(--topbar-h);
+  min-height: var(--topbar-h);
   padding: 0 var(--sp-7);
   background: var(--bg-s);
   border-bottom: var(--bw) solid var(--brd);
@@ -25,7 +25,7 @@
 .title {
   font-weight: var(--fw-bd);
   font-size: var(--fs-5);
-  letter-spacing: -0.3px;
+  letter-spacing: var(--ls-tight);
   background: linear-gradient(135deg, var(--acc), var(--acc-purple));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -39,8 +39,8 @@
 }
 
 .iconBtn {
-  width: 36px;
-  height: 36px;
+  width: var(--icon-btn-size);
+  height: var(--icon-btn-size);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -68,7 +68,7 @@
   box-shadow: var(--sh-lg);
   z-index: 200;
   overflow: hidden;
-  min-width: 180px;
+  min-width: var(--user-menu-min-w);
   animation: fadeIn 0.1s ease;
 }
 

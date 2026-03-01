@@ -2,8 +2,8 @@
   position: absolute;
   top: 100%;
   right: 0;
-  width: 320px;
-  max-height: 400px;
+  width: var(--notif-panel-w);
+  max-height: var(--notif-panel-max-h);
   background: var(--bg-sr);
   border: var(--bw) solid var(--brd);
   border-radius: var(--r);
@@ -49,7 +49,7 @@
 .message {
   font-size: var(--fs-2);
   color: var(--t2);
-  line-height: 1.4;
+  line-height: var(--lh-snug);
 }
 
 .time {

@@ -23,7 +23,7 @@
   font-size: var(--fs-2);
   color: var(--tm);
   margin: 0 0 var(--sp-4);
-  line-height: 1.4;
+  line-height: var(--lh-snug);
 }
 
 /* Theme selector */

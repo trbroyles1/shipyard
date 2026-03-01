@@ -1,0 +1,18 @@
+:root {
+  --topbar-h: 52px;
+  --sidebar-w: 340px;
+  --filetree-w: 260px;
+  --notif-panel-w: 320px;
+  --notif-panel-max-h: 400px;
+  --toast-max-w: 380px;
+  --toast-offset: 20px;
+  --joblog-w: 900px;
+  --joblog-h: 600px;
+  --merge-dialog-min-w: 260px;
+  --user-menu-min-w: 180px;
+  --overview-collapsed-h: 40px;
+  --overview-expanded-h: 600px;
+  --overview-desc-max-h: 80px;
+  --icon-btn-size: 36px;
+  --scrollbar-w: 6px;
+}

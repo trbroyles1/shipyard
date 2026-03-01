@@ -53,7 +53,7 @@
   font-size: var(--fs-3);
   font-family: var(--sans);
   resize: vertical;
-  line-height: 1.5;
+  line-height: var(--lh-normal);
   box-sizing: border-box;
 }
 

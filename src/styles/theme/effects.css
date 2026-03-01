@@ -4,6 +4,7 @@
   --sh-md: 0 4px 20px rgba(0, 0, 0, 0.4);
   --sh-lg: 0 8px 32px rgba(0, 0, 0, 0.4);
   --sh-xl: 0 20px 60px rgba(0, 0, 0, 0.5);
+  --sh-selected: 0 0 0 1px var(--acc), inset 0 0 12px var(--acc-g);
 }
 
 /* Transition durations */

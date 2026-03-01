@@ -61,7 +61,7 @@
   overflow-x: auto;
   font-family: var(--mono);
   font-size: var(--fs-2);
-  line-height: 1.6;
+  line-height: var(--lh-relaxed);
 }
 
 /* Override react-diff-view colors for dark theme */
@@ -101,12 +101,12 @@
 }
 
 .diffContent :global(.diff-gutter-insert) {
-  background: rgba(52, 211, 153, 0.12);
+  background: var(--grn-dd);
   color: var(--grn);
 }
 
 .diffContent :global(.diff-gutter-delete) {
-  background: rgba(248, 113, 113, 0.12);
+  background: var(--red-d);
   color: var(--red);
 }
 
@@ -217,7 +217,7 @@
   justify-content: center;
   font-size: var(--fs-3);
   font-weight: var(--fw-bd);
-  line-height: 1;
+  line-height: var(--lh-none);
   opacity: 0;
   pointer-events: none;
   transition: opacity var(--dur-fast);
@@ -229,11 +229,11 @@
 
 /* Selected gutter + code rows */
 .diffContent :global(.diff-gutter-selected) {
-  background: rgba(79, 172, 254, 0.18) !important;
+  background: var(--sel) !important;
 }
 
 .diffContent :global(.diff-code-selected) {
-  background: rgba(79, 172, 254, 0.10) !important;
+  background: var(--sel-g) !important;
 }
 
 /* Inline comment form (rendered as a widget) */
@@ -272,7 +272,7 @@
   font-size: var(--fs-3);
   font-family: var(--sans);
   resize: vertical;
-  line-height: 1.5;
+  line-height: var(--lh-normal);
   box-sizing: border-box;
 }
 

@@ -28,7 +28,7 @@
 .title {
   font-size: var(--fs-7);
   font-weight: var(--fw-bd);
-  letter-spacing: -0.3px;
+  letter-spacing: var(--ls-tight);
   background: linear-gradient(135deg, var(--acc), var(--acc-purple));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;

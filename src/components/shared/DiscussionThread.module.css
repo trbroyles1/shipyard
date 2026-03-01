@@ -188,7 +188,7 @@
 
 .noteBody {
   font-size: var(--fs-3);
-  line-height: 1.5;
+  line-height: var(--lh-normal);
   color: var(--t2);
   white-space: pre-wrap;
   word-break: break-word;
@@ -252,7 +252,7 @@
   font-size: var(--fs-2);
   font-family: var(--sans);
   resize: vertical;
-  line-height: 1.4;
+  line-height: var(--lh-snug);
 }
 
 .replyInput::placeholder {
