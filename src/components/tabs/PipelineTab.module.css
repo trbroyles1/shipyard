@@ -116,6 +116,22 @@
   font-size: 11px;
 }
 
+.jobLogBtn {
+  background: none;
+  border: none;
+  color: var(--tm);
+  cursor: pointer;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+  border-radius: 3px;
+}
+
+.jobLogBtn:hover {
+  color: var(--acc);
+  background: var(--acc-d);
+}
+
 .jobLink {
   color: var(--t2);
   display: flex;

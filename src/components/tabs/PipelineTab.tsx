@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import type { GitLabPipeline, GitLabMergeRequest, GitLabJob } from "@/lib/types/gitlab";
 import { RelativeTime } from "@/components/shared/RelativeTime";
+import { JobLogModal } from "./JobLogModal";
 import styles from "./PipelineTab.module.css";
 
 interface Props {
@@ -21,7 +22,15 @@ const STATUS_ICON: Record<string, { color: string; symbol: string }> = {
   created: { color: "var(--t2)", symbol: "\u25cf" },
 };
 
+interface LogTarget {
+  jobId: number;
+  jobName: string;
+  pipelineId: number;
+}
+
 export function PipelineTab({ pipelines, mr }: Props) {
+  const [logTarget, setLogTarget] = useState<LogTarget | null>(null);
+
   if (pipelines.length === 0) {
     return <div className={styles.empty}>No pipelines found.</div>;
   }
@@ -29,13 +38,29 @@ export function PipelineTab({ pipelines, mr }: Props) {
   return (
     <div className={styles.list}>
       {pipelines.map((pipeline) => (
-        <PipelineRow key={pipeline.id} pipeline={pipeline} projectId={mr.project_id} />
+        <PipelineRow
+          key={pipeline.id}
+          pipeline={pipeline}
+          projectId={mr.project_id}
+          onViewLog={(jobId, jobName) =>
+            setLogTarget({ jobId, jobName, pipelineId: pipeline.id })
+          }
+        />
       ))}
+      {logTarget && (
+        <JobLogModal
+          jobName={logTarget.jobName}
+          projectId={mr.project_id}
+          pipelineId={logTarget.pipelineId}
+          jobId={logTarget.jobId}
+          onClose={() => setLogTarget(null)}
+        />
+      )}
     </div>
   );
 }
 
-function PipelineRow({ pipeline, projectId }: { pipeline: GitLabPipeline; projectId: number }) {
+function PipelineRow({ pipeline, projectId, onViewLog }: { pipeline: GitLabPipeline; projectId: number; onViewLog: (jobId: number, jobName: string) => void }) {
   const [expanded, setExpanded] = useState(false);
   const [jobs, setJobs] = useState<GitLabJob[]>([]);
   const [loadingJobs, setLoadingJobs] = useState(false);
@@ -99,6 +124,13 @@ function PipelineRow({ pipeline, projectId }: { pipeline: GitLabPipeline; projec
                 {job.duration != null && (
                   <span className={styles.jobDuration}>{formatDuration(job.duration)}</span>
                 )}
+                <button
+                  className={styles.jobLogBtn}
+                  onClick={() => onViewLog(job.id, job.name)}
+                  title="View job log"
+                >
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+                </button>
                 <a
                   href={job.web_url}
                   target="_blank"
