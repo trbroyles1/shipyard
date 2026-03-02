@@ -29,8 +29,8 @@
 
 .toggle {
   position: absolute;
-  left: var(--shell-p);
-  top: calc(var(--shell-p) + var(--topbar-h) + var(--shell-gap));
+  left: 0;
+  top: var(--sp-5);
   z-index: 50;
   background: var(--bg-sr);
   border: var(--bw) solid var(--brd);
@@ -55,5 +55,5 @@
 }
 
 .toggleOpen {
-  left: calc(var(--sidebar-w) + var(--shell-p) + var(--body-gap));
+  left: var(--sidebar-w);
 }
