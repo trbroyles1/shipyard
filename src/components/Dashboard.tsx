@@ -11,6 +11,7 @@ import { MainContent } from "@/components/layout/MainContent";
 import { ToastContainer } from "@/components/notifications/ToastContainer";
 import { useAppState } from "@/components/providers/AppStateProvider";
 import { AUTH_EXPIRED_EVENT } from "@/lib/client-errors";
+import { SSE_ERROR_AUTH_EXPIRED } from "@/lib/errors";
 import { useMRList, type MREvent } from "@/hooks/use-mr-list";
 import { useNotifications } from "@/hooks/use-notifications";
 import { useAudio } from "@/hooks/use-audio";
@@ -76,7 +77,7 @@ function DashboardInner() {
         }
         case "error": {
           const { code } = event.data;
-          if (code === "auth_expired") {
+          if (code === SSE_ERROR_AUTH_EXPIRED) {
             signOut({ callbackUrl: SIGN_IN_URL });
           }
           break;

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { AnsiUp } from "ansi_up";
+import { apiFetch } from "@/lib/client-errors";
 import styles from "./JobLogModal.module.css";
 
 interface Props {
@@ -46,7 +47,7 @@ export function JobLogModal({ jobName, projectId, pipelineId, jobId, jobStatus, 
       headers["Range"] = `bytes=${byteOffsetRef.current}-`;
     }
 
-    const res = await fetch(traceUrl, { headers });
+    const res = await apiFetch(traceUrl, { headers });
 
     if (!res.ok && res.status !== 206) {
       throw new Error(`HTTP ${res.status}`);

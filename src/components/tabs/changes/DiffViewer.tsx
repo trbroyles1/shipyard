@@ -7,6 +7,7 @@ import type { GitLabDiscussion, GitLabDiffPosition } from "@/lib/types/gitlab";
 import type { FileWithStats } from "./diff-stats";
 import { DiscussionThread } from "@/components/shared/DiscussionThread";
 import { useGutterLineSelect, buildPosition } from "@/hooks/use-gutter-line-select";
+import { apiFetch } from "@/lib/client-errors";
 import styles from "./DiffViewer.module.css";
 import "react-diff-view/style/index.css";
 
@@ -267,7 +268,7 @@ export function DiffViewer({ file: initialFile, discussions, projectId, iid, dif
     setLoadError(null);
     try {
       const base = `/api/gitlab/merge-requests/${projectId}/${iid}/changes/file`;
-      const res = await fetch(`${base}?path=${encodeURIComponent(path)}`);
+      const res = await apiFetch(`${base}?path=${encodeURIComponent(path)}`);
       if (!res.ok) {
         const body = await res.json().catch(() => ({}));
         throw new Error(body.error || `HTTP ${res.status}`);

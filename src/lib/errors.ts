@@ -18,7 +18,7 @@ export function isTransientError(error: unknown): boolean {
     return (TRANSIENT_STATUSES as readonly number[]).includes(error.status);
   }
   if (error instanceof TypeError) return true;
-  if (error instanceof DOMException && error.name === "AbortError") return true;
+  if (error instanceof DOMException && (error.name === "AbortError" || error.name === "TimeoutError")) return true;
   return false;
 }
 

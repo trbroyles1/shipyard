@@ -65,6 +65,8 @@ async function fetchWithRetry(
       lastError = error;
 
       if (attempt < MAX_RETRIES) {
+        // Honor server's Retry-After for 429s without capping — GitLab sets reasonable values
+        // and we should respect rate-limit signals to avoid escalating to longer bans.
         const backoff = response.status === 429 && Number.isFinite(retryAfter)
           ? retryAfter! * 1_000
           : Math.min(INITIAL_BACKOFF_MS * Math.pow(2, attempt), MAX_BACKOFF_MS) *

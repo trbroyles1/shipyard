@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import type { GitLabPipeline, GitLabMergeRequest, GitLabJob } from "@/lib/types/gitlab";
 import { RelativeTime } from "@/components/shared/RelativeTime";
+import { apiFetch } from "@/lib/client-errors";
 import { JobLogModal } from "./JobLogModal";
 import styles from "./PipelineTab.module.css";
 
@@ -72,7 +73,7 @@ function PipelineRow({ pipeline, projectId, onViewLog }: { pipeline: GitLabPipel
   useEffect(() => {
     if (!expanded || jobs.length > 0) return;
     setLoadingJobs(true);
-    fetch(`/api/gitlab/merge-requests/${projectId}/0/pipelines/${pipeline.id}/jobs`)
+    apiFetch(`/api/gitlab/merge-requests/${projectId}/0/pipelines/${pipeline.id}/jobs`)
       .then((r) => r.ok ? r.json() : [])
       .then((data: GitLabJob[]) => setJobs(data))
       .catch(() => setJobs([]))

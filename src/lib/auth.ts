@@ -23,7 +23,7 @@ function isTransientRefreshFailure(status: number): boolean {
 function isNetworkOrTimeoutError(error: unknown): boolean {
   return (
     error instanceof TypeError ||
-    (error instanceof DOMException && error.name === "AbortError")
+    (error instanceof DOMException && (error.name === "AbortError" || error.name === "TimeoutError"))
   );
 }
 
