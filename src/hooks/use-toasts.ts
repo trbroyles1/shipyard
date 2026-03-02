@@ -6,8 +6,15 @@ export interface Toast {
   id: number;
   title: string;
   message: string;
-  type: "info" | "success" | "warning";
+  type: "info" | "success" | "warning" | "error";
 }
+
+const TOAST_DURATIONS: Record<Toast["type"], number> = {
+  info: 4_000,
+  success: 4_000,
+  warning: 6_000,
+  error: 10_000,
+};
 
 export function useToasts() {
   const [toasts, setToasts] = useState<Toast[]>([]);
@@ -28,7 +35,7 @@ export function useToasts() {
       idRef.current += 1;
       const id = idRef.current;
       setToasts((prev) => [...prev, { id, title, message, type }]);
-      const timer = setTimeout(() => dismiss(id), 4000);
+      const timer = setTimeout(() => dismiss(id), TOAST_DURATIONS[type]);
       timersRef.current.set(id, timer);
       return id;
     },

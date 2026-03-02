@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from "react";
 import type { GitLabMergeRequest, GitLabApprovals } from "@/lib/types/gitlab";
+import { apiFetch } from "@/lib/client-errors";
 import { useToastContext } from "@/components/providers/ToastProvider";
 import { CheckIcon, DoubleCheckIcon, XIcon, MergeIcon, ExternalLinkIcon } from "@/components/shared/icons";
 import { MergeDialog } from "./MergeDialog";
@@ -27,7 +28,7 @@ export function ActionButtons({ mr, approvals, currentUserId, onRefetch }: Props
     setApproving(true);
     try {
       const endpoint = hasApproved ? `${base}/unapprove` : `${base}/approve`;
-      const res = await fetch(endpoint, { method: "POST" });
+      const res = await apiFetch(endpoint, { method: "POST" });
       if (!res.ok) {
         const body = await res.json().catch(() => ({}));
         throw new Error(body.error || `HTTP ${res.status}`);
@@ -35,7 +36,7 @@ export function ActionButtons({ mr, approvals, currentUserId, onRefetch }: Props
       addToast(hasApproved ? "Unapproved" : "Approved", `!${mr.iid} ${mr.title}`, "success");
       await onRefetch();
     } catch (err) {
-      addToast("Error", err instanceof Error ? err.message : "Action failed", "warning");
+      addToast("Error", err instanceof Error ? err.message : "Action failed", "error");
     } finally {
       setApproving(false);
     }

@@ -2,6 +2,7 @@
 
 import { useState, useCallback, type KeyboardEvent } from "react";
 import type { GitLabDiscussion } from "@/lib/types/gitlab";
+import { apiFetch } from "@/lib/client-errors";
 import { useAppState } from "@/components/providers/AppStateProvider";
 import { useToastContext } from "@/components/providers/ToastProvider";
 import { DiscussionThread } from "@/components/shared/DiscussionThread";
@@ -64,7 +65,7 @@ export function DiscussionsTab({ discussions, projectId, iid, onRefetch }: Props
 
   const handleReply = useCallback(async (discussionId: string, body: string) => {
     try {
-      const res = await fetch(`${base}/discussions/${discussionId}/notes`, {
+      const res = await apiFetch(`${base}/discussions/${discussionId}/notes`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ body }),
@@ -75,14 +76,14 @@ export function DiscussionsTab({ discussions, projectId, iid, onRefetch }: Props
       }
       await onRefetch();
     } catch (err) {
-      addToast("Reply failed", err instanceof Error ? err.message : "Unknown error", "warning");
+      addToast("Reply failed", err instanceof Error ? err.message : "Unknown error", "error");
       throw err;
     }
   }, [base, onRefetch, addToast]);
 
   const handleResolve = useCallback(async (discussionId: string, resolved: boolean) => {
     try {
-      const res = await fetch(`${base}/discussions/${discussionId}/resolve`, {
+      const res = await apiFetch(`${base}/discussions/${discussionId}/resolve`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ resolved }),
@@ -93,7 +94,7 @@ export function DiscussionsTab({ discussions, projectId, iid, onRefetch }: Props
       }
       await onRefetch();
     } catch (err) {
-      addToast("Resolve failed", err instanceof Error ? err.message : "Unknown error", "warning");
+      addToast("Resolve failed", err instanceof Error ? err.message : "Unknown error", "error");
     }
   }, [base, onRefetch, addToast]);
 
@@ -101,7 +102,7 @@ export function DiscussionsTab({ discussions, projectId, iid, onRefetch }: Props
     if (!commentText.trim()) return;
     setCommenting(true);
     try {
-      const res = await fetch(`${base}/discussions`, {
+      const res = await apiFetch(`${base}/discussions`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ body: commentText.trim() }),
@@ -114,7 +115,7 @@ export function DiscussionsTab({ discussions, projectId, iid, onRefetch }: Props
       setCommentOpen(false);
       await onRefetch();
     } catch (err) {
-      addToast("Comment failed", err instanceof Error ? err.message : "Unknown error", "warning");
+      addToast("Comment failed", err instanceof Error ? err.message : "Unknown error", "error");
     } finally {
       setCommenting(false);
     }

@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAuthenticatedSession, extractAccessToken } from "@/lib/auth-helpers";
-import { gitlabFetch, GitLabApiError } from "@/lib/gitlab-client";
+import { gitlabFetch } from "@/lib/gitlab-client";
 import { setViewedMR } from "@/lib/viewed-mr-store";
 import { createLogger } from "@/lib/logger";
+import { handleApiRouteError } from "@/lib/api-error-handler";
 import type { GitLabMergeRequest, GitLabApprovals } from "@/lib/types/gitlab";
 
 const log = createLogger("api/mr-detail");
@@ -35,13 +36,6 @@ export async function GET(
 
     return NextResponse.json({ mr, approvals });
   } catch (error) {
-    if (error instanceof GitLabApiError) {
-      return NextResponse.json({ error: error.message }, { status: error.status });
-    }
-    if (error instanceof Error && error.message.includes("Not authenticated")) {
-      return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
-    }
-    log.error(`Unexpected error: ${error}`);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return handleApiRouteError(error, log);
   }
 }

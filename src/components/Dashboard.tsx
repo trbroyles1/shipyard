@@ -1,7 +1,7 @@
 "use client";
 
-import { useCallback } from "react";
-import { useSession } from "next-auth/react";
+import { useCallback, useEffect, useRef } from "react";
+import { useSession, signOut } from "next-auth/react";
 import { AppStateProvider } from "@/components/providers/AppStateProvider";
 import { PreferencesProvider, usePreferencesContext } from "@/components/providers/PreferencesProvider";
 import { ToastProvider, useToastContext } from "@/components/providers/ToastProvider";
@@ -10,10 +10,13 @@ import { Sidebar } from "@/components/layout/Sidebar";
 import { MainContent } from "@/components/layout/MainContent";
 import { ToastContainer } from "@/components/notifications/ToastContainer";
 import { useAppState } from "@/components/providers/AppStateProvider";
+import { AUTH_EXPIRED_EVENT } from "@/lib/client-errors";
 import { useMRList, type MREvent } from "@/hooks/use-mr-list";
 import { useNotifications } from "@/hooks/use-notifications";
 import { useAudio } from "@/hooks/use-audio";
 import styles from "./Dashboard.module.css";
+
+const SIGN_IN_URL = "/auth/signin";
 
 function DashboardInner() {
   const { data: session } = useSession();
@@ -22,8 +25,18 @@ function DashboardInner() {
   const { toasts, addToast, dismiss } = useToastContext();
   const { preferences } = usePreferencesContext();
   const { playNewMR, playAssignedToMe, playReadyToMerge } = useAudio();
+  const degradedToastShownRef = useRef(false);
 
   const currentUserId = session?.gitlabUserId;
+
+  // Global 401 handling — any apiFetch that gets a 401 dispatches this event
+  useEffect(() => {
+    const handleAuthExpired = () => {
+      signOut({ callbackUrl: SIGN_IN_URL });
+    };
+    window.addEventListener(AUTH_EXPIRED_EVENT, handleAuthExpired);
+    return () => window.removeEventListener(AUTH_EXPIRED_EVENT, handleAuthExpired);
+  }, []);
 
   const handleMREvent = useCallback(
     (event: MREvent) => {
@@ -61,12 +74,33 @@ function DashboardInner() {
           }
           break;
         }
+        case "error": {
+          const { code } = event.data;
+          if (code === "auth_expired") {
+            signOut({ callbackUrl: SIGN_IN_URL });
+          }
+          break;
+        }
+        case "warning": {
+          if (!degradedToastShownRef.current) {
+            addToast("Connection Issue", event.data.message, "warning");
+            degradedToastShownRef.current = true;
+          }
+          break;
+        }
       }
     },
     [currentUserId, preferences, updateSelectedMR, pushDetailPatch, addNotification, addToast, playNewMR, playAssignedToMe, playReadyToMerge],
   );
 
-  const { mrs, isLoading, error } = useMRList(handleMREvent);
+  const { mrs, isLoading, connectionHealth } = useMRList(handleMREvent);
+
+  // Reset degraded toast flag when connection recovers
+  useEffect(() => {
+    if (connectionHealth === "connected") {
+      degradedToastShownRef.current = false;
+    }
+  }, [connectionHealth]);
 
   return (
     <div className={styles.shell}>
@@ -79,9 +113,14 @@ function DashboardInner() {
         <Sidebar mrs={mrs} isLoading={isLoading} />
         <MainContent />
       </div>
-      {error && (
+      {connectionHealth === "error" && (
         <div className={styles.errorBar}>
-          Failed to load merge requests: {error}
+          Lost connection to GitLab.
+        </div>
+      )}
+      {connectionHealth === "degraded" && (
+        <div className={styles.warningBar}>
+          Having trouble reaching GitLab. Data may be stale.
         </div>
       )}
       <ToastContainer toasts={toasts} onDismiss={dismiss} />

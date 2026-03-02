@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAuthenticatedSession, extractAccessToken } from "@/lib/auth-helpers";
-import { gitlabFetchAllPages, GitLabApiError } from "@/lib/gitlab-client";
+import { gitlabFetchAllPages } from "@/lib/gitlab-client";
 import { createLogger } from "@/lib/logger";
+import { handleApiRouteError } from "@/lib/api-error-handler";
 import type { GitLabNote } from "@/lib/types/gitlab";
 
 const log = createLogger("api/mr-notes");
@@ -25,13 +26,6 @@ export async function GET(
 
     return NextResponse.json(notes);
   } catch (error) {
-    if (error instanceof GitLabApiError) {
-      return NextResponse.json({ error: error.message }, { status: error.status });
-    }
-    if (error instanceof Error && error.message.includes("Not authenticated")) {
-      return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
-    }
-    log.error(`Unexpected error: ${error}`);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return handleApiRouteError(error, log);
   }
 }

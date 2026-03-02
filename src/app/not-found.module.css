@@ -1,0 +1,32 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  padding: var(--sp-9, 3rem);
+  text-align: center;
+}
+
+.heading {
+  font-size: var(--fs-5, 1.5rem);
+  font-weight: 600;
+  color: var(--fg-1);
+  margin: 0 0 var(--sp-3, 0.75rem);
+}
+
+.message {
+  font-size: var(--fs-2, 0.875rem);
+  color: var(--fg-3);
+  margin: 0 0 var(--sp-7, 1.5rem);
+}
+
+.backLink {
+  font-size: var(--fs-2, 0.875rem);
+  color: var(--acc);
+  text-decoration: none;
+}
+
+.backLink:hover {
+  text-decoration: underline;
+}

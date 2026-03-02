@@ -30,6 +30,8 @@ export function useSSE({ onEvent }: UseSSEOptions) {
         "mr-ready-to-merge",
         "mr-detail-update",
         "status",
+        "error",
+        "warning",
       ];
 
       for (const type of eventTypes) {

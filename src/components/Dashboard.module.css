@@ -29,3 +29,18 @@
   border-radius: var(--panel-r);
   z-index: 1000;
 }
+
+.warningBar {
+  position: fixed;
+  bottom: var(--shell-p);
+  left: var(--shell-p);
+  right: var(--shell-p);
+  padding: var(--sp-3) var(--sp-7);
+  background: var(--org-d, rgba(200, 140, 50, 0.15));
+  color: var(--org);
+  font-size: var(--fs-2);
+  text-align: center;
+  border-top: var(--bw) solid var(--org-brd, var(--org));
+  border-radius: var(--panel-r);
+  z-index: 1000;
+}

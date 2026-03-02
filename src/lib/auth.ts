@@ -5,12 +5,65 @@ import { createLogger } from "./logger";
 
 const log = createLogger("auth");
 
+const TOKEN_REFRESH_TIMEOUT_MS = 15_000;
+const TOKEN_REFRESH_RETRY_DELAY_MS = 2_000;
+const TRANSIENT_REFRESH_STATUSES = [500, 502, 503, 504] as const;
+
 function gitlabUrl(): string {
   return process.env.GITLAB_URL || "https://gitlab.com";
 }
 
 // Mutex to prevent concurrent token refresh races (rotation means old refresh token is revoked)
 let refreshPromise: Promise<JWT> | null = null;
+
+function isTransientRefreshFailure(status: number): boolean {
+  return (TRANSIENT_REFRESH_STATUSES as readonly number[]).includes(status);
+}
+
+function isNetworkOrTimeoutError(error: unknown): boolean {
+  return (
+    error instanceof TypeError ||
+    (error instanceof DOMException && error.name === "AbortError")
+  );
+}
+
+async function attemptTokenRefresh(token: JWT): Promise<JWT> {
+  const response = await fetch(`${gitlabUrl()}/oauth/token`, {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({
+      client_id: process.env.AUTH_GITLAB_ID!,
+      client_secret: process.env.AUTH_GITLAB_SECRET!,
+      grant_type: "refresh_token",
+      refresh_token: token.refreshToken as string,
+    }),
+    signal: AbortSignal.timeout(TOKEN_REFRESH_TIMEOUT_MS),
+  });
+
+  let data: Record<string, unknown>;
+  try {
+    data = await response.json();
+  } catch {
+    throw new Error(`Malformed JSON from token endpoint (status ${response.status})`);
+  }
+
+  if (!response.ok) {
+    if (isTransientRefreshFailure(response.status)) {
+      throw new Error(`Transient token refresh failure: ${response.status}`);
+    }
+    log.error(`Token refresh failed: ${response.status} ${JSON.stringify(data)}`);
+    return { ...token, error: "RefreshAccessTokenError" };
+  }
+
+  log.info("Access token refreshed successfully");
+  return {
+    ...token,
+    accessToken: data.access_token as string,
+    refreshToken: data.refresh_token as string,
+    expiresAt: Math.floor(Date.now() / 1000) + (data.expires_in as number),
+    error: undefined,
+  };
+}
 
 async function refreshAccessToken(token: JWT): Promise<JWT> {
   if (refreshPromise) {
@@ -20,34 +73,18 @@ async function refreshAccessToken(token: JWT): Promise<JWT> {
   refreshPromise = (async () => {
     try {
       log.info("Refreshing access token");
-
-      const response = await fetch(`${gitlabUrl()}/oauth/token`, {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams({
-          client_id: process.env.AUTH_GITLAB_ID!,
-          client_secret: process.env.AUTH_GITLAB_SECRET!,
-          grant_type: "refresh_token",
-          refresh_token: token.refreshToken as string,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        log.error(`Token refresh failed: ${response.status} ${JSON.stringify(data)}`);
-        return { ...token, error: "RefreshAccessTokenError" };
-      }
-
-      log.info("Access token refreshed successfully");
-      return {
-        ...token,
-        accessToken: data.access_token,
-        refreshToken: data.refresh_token,
-        expiresAt: Math.floor(Date.now() / 1000) + data.expires_in,
-        error: undefined,
-      };
+      return await attemptTokenRefresh(token);
     } catch (error) {
+      if (isNetworkOrTimeoutError(error) || (error instanceof Error && error.message.startsWith("Transient")) || (error instanceof Error && error.message.startsWith("Malformed"))) {
+        log.warn(`Token refresh transient error, retrying in ${TOKEN_REFRESH_RETRY_DELAY_MS}ms: ${error}`);
+        await new Promise((resolve) => setTimeout(resolve, TOKEN_REFRESH_RETRY_DELAY_MS));
+        try {
+          return await attemptTokenRefresh(token);
+        } catch (retryError) {
+          log.error(`Token refresh retry failed: ${retryError}`);
+          return { ...token, error: "RefreshAccessTokenError" };
+        }
+      }
       log.error(`Token refresh error: ${error}`);
       return { ...token, error: "RefreshAccessTokenError" };
     } finally {

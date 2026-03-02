@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAuthenticatedSession, extractAccessToken } from "@/lib/auth-helpers";
-import { gitlabFetch, GitLabApiError } from "@/lib/gitlab-client";
+import { getAuthenticatedSession, extractAccessToken, parseBody } from "@/lib/auth-helpers";
+import { gitlabFetch } from "@/lib/gitlab-client";
 import { createLogger } from "@/lib/logger";
+import { handleApiRouteError } from "@/lib/api-error-handler";
 
 const log = createLogger("api/mr-discussion-resolve");
 
@@ -14,7 +15,9 @@ export async function PUT(
     const token = extractAccessToken(session);
     const { projectId, iid, discussionId } = params;
 
-    const body = await req.json();
+    const parsed = await parseBody<{ resolved?: boolean }>(req);
+    if ("error" in parsed) return parsed.error;
+    const body = parsed.data;
 
     log.info(`${body.resolved ? "Resolving" : "Unresolving"} discussion: project=${projectId} iid=${iid} discussion=${discussionId}`);
 
@@ -26,13 +29,6 @@ export async function PUT(
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    if (error instanceof GitLabApiError) {
-      return NextResponse.json({ error: error.message }, { status: error.status });
-    }
-    if (error instanceof Error && error.message.includes("Not authenticated")) {
-      return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
-    }
-    log.error(`Unexpected error: ${error}`);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return handleApiRouteError(error, log);
   }
 }

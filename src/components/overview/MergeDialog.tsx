@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useEffect, useRef } from "react";
 import type { GitLabMergeRequest } from "@/lib/types/gitlab";
+import { apiFetch } from "@/lib/client-errors";
 import { useToastContext } from "@/components/providers/ToastProvider";
 import styles from "./MergeDialog.module.css";
 
@@ -37,13 +38,13 @@ export function MergeDialog({ mr, onClose, onRefetch }: Props) {
 
   const handleMerge = useCallback(async () => {
     if (!mr.diff_refs?.head_sha) {
-      addToast("Error", "Missing head SHA — cannot merge safely", "warning");
+      addToast("Error", "Missing head SHA — cannot merge safely", "error");
       return;
     }
     setMerging(true);
     try {
       const base = `/api/gitlab/merge-requests/${mr.project_id}/${mr.iid}/merge`;
-      const res = await fetch(base, {
+      const res = await apiFetch(base, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -61,7 +62,7 @@ export function MergeDialog({ mr, onClose, onRefetch }: Props) {
       onClose();
       await onRefetch();
     } catch (err) {
-      addToast("Merge failed", err instanceof Error ? err.message : "Unknown error", "warning");
+      addToast("Merge failed", err instanceof Error ? err.message : "Unknown error", "error");
     } finally {
       setMerging(false);
     }

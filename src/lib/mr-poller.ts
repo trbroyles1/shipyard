@@ -1,6 +1,7 @@
 import { gitlabFetch, gitlabFetchAllPages } from "./gitlab-client";
 import { env } from "./env";
 import { createLogger } from "./logger";
+import { isAuthError, SSE_ERROR_AUTH_EXPIRED, SSE_WARNING_POLL_FAILED } from "./errors";
 import { MRStore } from "./mr-store";
 import { getViewedMR } from "./viewed-mr-store";
 import type { GitLabMergeRequest, GitLabApprovals } from "./types/gitlab";
@@ -14,11 +15,14 @@ import type {
   MRDetailUpdateEvent,
   MRListEvent,
   StatusEvent,
+  ErrorEvent,
+  WarningEvent,
 } from "./types/events";
 
 const log = createLogger("mr-poller");
 
 const POLL_INTERVAL_MS = 25_000; // 25 seconds
+const DEGRADED_THRESHOLD = 3;
 
 type SSEEventPayload =
   | MRListEvent
@@ -27,7 +31,9 @@ type SSEEventPayload =
   | MRRemovedEvent
   | MRReadyToMergeEvent
   | MRDetailUpdateEvent
-  | StatusEvent;
+  | StatusEvent
+  | ErrorEvent
+  | WarningEvent;
 
 function extractRepoSlug(webUrl: string): { slug: string; repoUrl: string } {
   const match = webUrl.match(/^(https?:\/\/[^/]+\/(.+))\/-\/merge_requests\/\d+$/);
@@ -178,6 +184,7 @@ export function startPoller(
   const store = new MRStore();
   let timer: ReturnType<typeof setTimeout> | null = null;
   let stopped = false;
+  let consecutiveErrors = 0;
   const lastApprovalKey = { value: "" };
 
   async function poll() {
@@ -185,14 +192,33 @@ export function startPoller(
 
     try {
       await pollMRList(store, token, emit);
+      if (consecutiveErrors >= DEGRADED_THRESHOLD) {
+        emit({ type: "status", data: { state: "ready" } });
+      }
+      consecutiveErrors = 0;
     } catch (err) {
-      log.error(`Poll error: ${err}`);
+      if (isAuthError(err)) {
+        emit({ type: "error", data: { code: SSE_ERROR_AUTH_EXPIRED, message: "Your session has expired. Please sign in again." } });
+        stopped = true;
+        return;
+      }
+      consecutiveErrors++;
+      log.error(`Poll error (${consecutiveErrors}): ${err}`);
+      emit({ type: "warning", data: { code: SSE_WARNING_POLL_FAILED, message: "Temporary issue reaching GitLab. Retrying..." } });
+      if (consecutiveErrors >= DEGRADED_THRESHOLD) {
+        emit({ type: "status", data: { state: "degraded" } });
+      }
     }
 
-    if (userId) {
+    if (userId && !stopped) {
       try {
         await pollViewedMRApprovals(token, userId, emit, lastApprovalKey);
       } catch (err) {
+        if (isAuthError(err)) {
+          emit({ type: "error", data: { code: SSE_ERROR_AUTH_EXPIRED, message: "Your session has expired. Please sign in again." } });
+          stopped = true;
+          return;
+        }
         log.error(`Viewed MR poll error: ${err}`);
       }
     }

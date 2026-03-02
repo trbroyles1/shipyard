@@ -1,0 +1,55 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  padding: var(--sp-9, 3rem);
+  text-align: center;
+}
+
+.heading {
+  font-size: var(--fs-5, 1.5rem);
+  font-weight: 600;
+  color: var(--fg-1);
+  margin: 0 0 var(--sp-3, 0.75rem);
+}
+
+.message {
+  font-size: var(--fs-2, 0.875rem);
+  color: var(--fg-3);
+  margin: 0 0 var(--sp-7, 1.5rem);
+  max-width: 40ch;
+}
+
+.actions {
+  display: flex;
+  gap: var(--sp-4, 1rem);
+  align-items: center;
+}
+
+.retryBtn {
+  padding: var(--sp-2, 0.5rem) var(--sp-5, 1.25rem);
+  background: var(--acc);
+  color: var(--bg-1);
+  border: none;
+  border-radius: var(--panel-r, 8px);
+  font-size: var(--fs-2, 0.875rem);
+  font-weight: 500;
+  cursor: pointer;
+  font-family: var(--font-outfit), sans-serif;
+}
+
+.retryBtn:hover {
+  opacity: 0.9;
+}
+
+.signInLink {
+  font-size: var(--fs-2, 0.875rem);
+  color: var(--acc);
+  text-decoration: none;
+}
+
+.signInLink:hover {
+  text-decoration: underline;
+}

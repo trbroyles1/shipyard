@@ -3,6 +3,7 @@
 import { useState, useMemo, useEffect, useRef, useCallback } from "react";
 import type { EnrichedDiffFile, GitLabDiscussion, GitLabDiffPosition } from "@/lib/types/gitlab";
 import type { FileWithStats } from "./changes/diff-stats";
+import { apiFetch } from "@/lib/client-errors";
 import { useAppState } from "@/components/providers/AppStateProvider";
 import { useToastContext } from "@/components/providers/ToastProvider";
 import { FileTree } from "./changes/FileTree";
@@ -32,7 +33,7 @@ export function ChangesTab({ diffs, discussions, projectId, iid, diffRefs, onRef
 
   const handleReply = useCallback(async (discussionId: string, body: string) => {
     try {
-      const res = await fetch(`${base}/discussions/${discussionId}/notes`, {
+      const res = await apiFetch(`${base}/discussions/${discussionId}/notes`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ body }),
@@ -43,14 +44,14 @@ export function ChangesTab({ diffs, discussions, projectId, iid, diffRefs, onRef
       }
       await onRefetch();
     } catch (err) {
-      addToast("Reply failed", err instanceof Error ? err.message : "Unknown error", "warning");
+      addToast("Reply failed", err instanceof Error ? err.message : "Unknown error", "error");
       throw err;
     }
   }, [base, onRefetch, addToast]);
 
   const handleResolve = useCallback(async (discussionId: string, resolved: boolean) => {
     try {
-      const res = await fetch(`${base}/discussions/${discussionId}/resolve`, {
+      const res = await apiFetch(`${base}/discussions/${discussionId}/resolve`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ resolved }),
@@ -61,7 +62,7 @@ export function ChangesTab({ diffs, discussions, projectId, iid, diffRefs, onRef
       }
       await onRefetch();
     } catch (err) {
-      addToast("Resolve failed", err instanceof Error ? err.message : "Unknown error", "warning");
+      addToast("Resolve failed", err instanceof Error ? err.message : "Unknown error", "error");
     }
   }, [base, onRefetch, addToast]);
 
@@ -69,7 +70,7 @@ export function ChangesTab({ diffs, discussions, projectId, iid, diffRefs, onRef
     try {
       const payload: Record<string, unknown> = { body };
       if (position) payload.position = position;
-      const res = await fetch(`${base}/discussions`, {
+      const res = await apiFetch(`${base}/discussions`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -80,7 +81,7 @@ export function ChangesTab({ diffs, discussions, projectId, iid, diffRefs, onRef
       }
       await onRefetch();
     } catch (err) {
-      addToast("Comment failed", err instanceof Error ? err.message : "Unknown error", "warning");
+      addToast("Comment failed", err instanceof Error ? err.message : "Unknown error", "error");
       throw err;
     }
   }, [base, onRefetch, addToast]);

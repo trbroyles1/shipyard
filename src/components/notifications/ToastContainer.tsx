@@ -12,6 +12,7 @@ const TYPE_COLORS: Record<Toast["type"], string> = {
   info: "var(--acc)",
   success: "var(--grn)",
   warning: "var(--org)",
+  error: "var(--red)",
 };
 
 export function ToastContainer({ toasts, onDismiss }: Props) {

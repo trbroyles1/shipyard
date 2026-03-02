@@ -8,7 +8,9 @@ export type SSEEventType =
   | "mr-removed"
   | "mr-ready-to-merge"
   | "mr-detail-update"
-  | "status";
+  | "status"
+  | "error"
+  | "warning";
 
 export interface SSEEvent {
   type: SSEEventType;
@@ -47,5 +49,15 @@ export interface MRDetailUpdateEvent {
 
 export interface StatusEvent {
   type: "status";
-  data: { state: "hydrating" | "ready" };
+  data: { state: "hydrating" | "ready" | "degraded" };
+}
+
+export interface ErrorEvent {
+  type: "error";
+  data: { code: string; message: string };
+}
+
+export interface WarningEvent {
+  type: "warning";
+  data: { code: string; message: string };
 }

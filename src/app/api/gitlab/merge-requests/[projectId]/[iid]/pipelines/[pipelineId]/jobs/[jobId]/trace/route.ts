@@ -3,6 +3,7 @@ import { getAuthenticatedSession, extractAccessToken } from "@/lib/auth-helpers"
 import { env } from "@/lib/env";
 import { acquire } from "@/lib/rate-limiter";
 import { createLogger } from "@/lib/logger";
+import { handleApiRouteError } from "@/lib/api-error-handler";
 
 const log = createLogger("api/job-trace");
 
@@ -65,10 +66,6 @@ export async function GET(
       headers: resHeaders,
     });
   } catch (error) {
-    if (error instanceof Error && error.message.includes("Not authenticated")) {
-      return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
-    }
-    log.error(`Unexpected error: ${error}`);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return handleApiRouteError(error, log);
   }
 }
