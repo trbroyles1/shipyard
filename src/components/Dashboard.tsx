@@ -15,6 +15,7 @@ import { SSE_ERROR_AUTH_EXPIRED } from "@/lib/errors";
 import { useMRList, type MREvent } from "@/hooks/use-mr-list";
 import { useNotifications } from "@/hooks/use-notifications";
 import { useAudio } from "@/hooks/use-audio";
+import { SessionDisplacedOverlay } from "@/components/SessionDisplacedOverlay";
 import styles from "./Dashboard.module.css";
 
 const SIGN_IN_URL = "/auth/signin";
@@ -94,7 +95,7 @@ function DashboardInner() {
     [currentUserId, preferences, updateSelectedMR, pushDetailPatch, addNotification, addToast, playNewMR, playAssignedToMe, playReadyToMerge],
   );
 
-  const { mrs, isLoading, connectionHealth } = useMRList(handleMREvent);
+  const { mrs, isLoading, connectionHealth, isDisplaced } = useMRList(handleMREvent);
 
   // Reset degraded toast flag when connection recovers
   useEffect(() => {
@@ -125,6 +126,7 @@ function DashboardInner() {
         </div>
       )}
       <ToastContainer toasts={toasts} onDismiss={dismiss} />
+      {isDisplaced && <SessionDisplacedOverlay />}
     </div>
   );
 }

@@ -15,13 +15,15 @@ export type MREvent =
   | { type: "mr-ready-to-merge"; data: MRSummary }
   | { type: "mr-detail-update"; data: { mr: GitLabMergeRequest; approvals: GitLabApprovals } }
   | { type: "error"; data: { code: string; message: string } }
-  | { type: "warning"; data: { code: string; message: string } };
+  | { type: "warning"; data: { code: string; message: string } }
+  | { type: "session-displaced"; data: { code: string; message: string } };
 
 interface UseMRListResult {
   mrs: MRSummary[];
   isLoading: boolean;
   error: string | null;
   connectionHealth: ConnectionHealth;
+  isDisplaced: boolean;
 }
 
 export function useMRList(onMREvent?: (event: MREvent) => void) {
@@ -91,10 +93,15 @@ export function useMRList(onMREvent?: (event: MREvent) => void) {
         onMREventRef.current?.({ type: "warning", data: warningData });
         break;
       }
+      case "session-displaced": {
+        const displacedData = data as { code: string; message: string };
+        onMREventRef.current?.({ type: "session-displaced", data: displacedData });
+        break;
+      }
     }
   }, []);
 
-  useSSE({ onEvent: handleSSE });
+  const { isDisplaced } = useSSE({ onEvent: handleSSE });
 
-  return { mrs, isLoading, error, connectionHealth } as UseMRListResult;
+  return { mrs, isLoading, error, connectionHealth, isDisplaced } as UseMRListResult;
 }

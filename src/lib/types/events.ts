@@ -10,7 +10,8 @@ export type SSEEventType =
   | "mr-detail-update"
   | "status"
   | "error"
-  | "warning";
+  | "warning"
+  | "session-displaced";
 
 export interface SSEEvent {
   type: SSEEventType;
@@ -59,5 +60,10 @@ export interface ErrorEvent {
 
 export interface WarningEvent {
   type: "warning";
+  data: { code: string; message: string };
+}
+
+export interface SessionDisplacedEvent {
+  type: "session-displaced";
   data: { code: string; message: string };
 }
