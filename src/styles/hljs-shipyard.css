@@ -68,6 +68,28 @@
   --hljs-property: #d08858;   /* copper (same as number) */
 }
 
+[data-theme="bermude"] {
+  --hljs-keyword: #8b3a8b;     /* sea plum — deep orchid purple */
+  --hljs-string: #2a7a4c;     /* palm frond — tropical green */
+  --hljs-number: #b45a18;     /* sunset orange — warm copper */
+  --hljs-comment: #7a8e96;    /* driftwood — matches --tm */
+  --hljs-function: #0868a0;   /* deep water — strong blue */
+  --hljs-variable: #c03030;   /* port red — signal buoy */
+  --hljs-type: #7c5e10;       /* aged teak — golden brown */
+  --hljs-built-in: #0891b2;   /* ocean teal — matches --acc */
+  --hljs-attr: #7c5e10;       /* aged teak (same as type) */
+  --hljs-literal: #c03030;    /* port red (same as variable) */
+  --hljs-title: #0868a0;      /* deep water (same as function) */
+  --hljs-params: #4a6068;     /* harbor stone — matches --t2 */
+  --hljs-meta: #7a8e96;       /* driftwood (same as comment) */
+  --hljs-regexp: #0891b2;     /* ocean teal */
+  --hljs-addition: #2a7a4c;   /* palm frond */
+  --hljs-deletion: #c03030;   /* port red */
+  --hljs-punctuation: #0891b2; /* ocean teal */
+  --hljs-selector: #8b3a8b;   /* sea plum (same as keyword) */
+  --hljs-property: #b45a18;   /* sunset orange (same as number) */
+}
+
 /* ── Token class mappings ── */
 .hljs { color: var(--t-terminal); }
 

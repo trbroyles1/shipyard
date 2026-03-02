@@ -14,8 +14,8 @@ interface MRCardProps {
   mr: MRSummary;
 }
 
-const CRITICAL_BG = "rgba(220, 38, 38, 0.12)";
-const WARNING_BG = "rgba(234, 179, 8, 0.10)";
+const CRITICAL_BG = "var(--red-d)";
+const WARNING_BG = "var(--org-d)";
 
 function cardBackground(createdAt: string, warningHours: number, criticalHours: number): string {
   const hours = hoursOld(createdAt);

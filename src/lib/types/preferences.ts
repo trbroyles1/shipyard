@@ -1,9 +1,10 @@
-export type Theme = "classic" | "brinjal" | "drydock";
+export type Theme = "classic" | "brinjal" | "drydock" | "bermude";
 
 export const THEMES: { value: Theme; label: string }[] = [
   { value: "classic", label: "Classic" },
   { value: "brinjal", label: "Brinjal" },
   { value: "drydock", label: "Drydock" },
+  { value: "bermude", label: "Bermude" },
 ];
 
 export interface UserPreferences {

@@ -6,6 +6,9 @@
 @import "../styles/hljs-shipyard.css";
 @import "../styles/theme/tokens.css";     /* last — theme overrides win the cascade */
 
+:root { color-scheme: dark; }
+[data-theme="bermude"] { color-scheme: light; }
+
 *,
 *::before,
 *::after {
