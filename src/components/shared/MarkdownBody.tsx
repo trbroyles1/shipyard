@@ -4,10 +4,9 @@ import { type ReactNode, Children, type ComponentPropsWithoutRef } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
+import { JIRA_TICKET_RE, normalizeJiraBaseUrl, jiraTicketUrl } from "@/lib/jira-utils";
 import { MermaidBlock } from "./MermaidBlock";
 import styles from "./MarkdownBody.module.css";
-
-const JIRA_PATTERN = /\b([A-Z]{2,10}-\d{1,6})\b/g;
 
 interface Props {
   content: string;
@@ -20,10 +19,10 @@ function processJiraInString(text: string, baseUrl: string | undefined): (string
   const parts: (string | ReactNode)[] = [];
   let last = 0;
   let match: RegExpExecArray | null;
-  const normalized = baseUrl?.replace(/\/+$/, "");
+  const normalized = normalizeJiraBaseUrl(baseUrl);
 
-  JIRA_PATTERN.lastIndex = 0;
-  while ((match = JIRA_PATTERN.exec(text)) !== null) {
+  JIRA_TICKET_RE.lastIndex = 0;
+  while ((match = JIRA_TICKET_RE.exec(text)) !== null) {
     if (match.index > last) {
       parts.push(text.slice(last, match.index));
     }
@@ -33,7 +32,7 @@ function processJiraInString(text: string, baseUrl: string | undefined): (string
         <a
           key={`jira-${match.index}`}
           className={styles.jiraLink}
-          href={`${normalized}/browse/${ticket}`}
+          href={jiraTicketUrl(normalized, ticket)}
           target="_blank"
           rel="noopener noreferrer"
           onClick={(e) => e.stopPropagation()}

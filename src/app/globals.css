@@ -3,8 +3,8 @@
 @import "../styles/theme/spacing.css";
 @import "../styles/theme/effects.css";
 @import "../styles/theme/layout.css";
-@import "../styles/theme/tokens.css";     /* last — theme overrides win the cascade */
 @import "../styles/hljs-shipyard.css";
+@import "../styles/theme/tokens.css";     /* last — theme overrides win the cascade */
 
 *,
 *::before,
