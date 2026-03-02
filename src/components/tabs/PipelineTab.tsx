@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import type { GitLabPipeline, GitLabMergeRequest, GitLabJob } from "@/lib/types/gitlab";
 import { RelativeTime } from "@/components/shared/RelativeTime";
 import { apiFetch } from "@/lib/client-errors";
@@ -67,6 +67,13 @@ function PipelineRow({ pipeline, projectId, onViewLog }: { pipeline: GitLabPipel
   const [expanded, setExpanded] = useState(false);
   const [jobs, setJobs] = useState<GitLabJob[]>([]);
   const [loadingJobs, setLoadingJobs] = useState(false);
+  const lastFetchedStatusRef = useRef(pipeline.status);
+
+  // Clear cached jobs when pipeline status changes so the fetch effect re-runs
+  if (lastFetchedStatusRef.current !== pipeline.status) {
+    lastFetchedStatusRef.current = pipeline.status;
+    setJobs([]);
+  }
 
   const statusInfo = STATUS_ICON[pipeline.status] || STATUS_ICON.created;
 

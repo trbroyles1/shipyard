@@ -52,7 +52,8 @@ function hasChanged(a: MRSummary, b: MRSummary): boolean {
     || a.detailedMergeStatus !== b.detailedMergeStatus
     || a.draft !== b.draft
     || a.title !== b.title
-    || a.hasConflicts !== b.hasConflicts;
+    || a.hasConflicts !== b.hasConflicts
+    || a.pipeline?.status !== b.pipeline?.status;
 }
 
 export interface PollerHandle {
@@ -158,6 +159,7 @@ async function pollViewedMRApprovals(
     merge_status: mr.detailed_merge_status,
     state: mr.state,
     user_notes_count: mr.user_notes_count,
+    head_pipeline_status: mr.head_pipeline?.status ?? null,
   });
 
   if (!lastKeyRef.value) {

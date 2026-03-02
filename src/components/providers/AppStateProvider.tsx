@@ -53,7 +53,6 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
   const updateSelectedMR = useCallback((mr: MRSummary) => {
     setSelectedMR((prev) => {
       if (!prev || prev.id !== mr.id) return prev;
-      if (prev.updatedAt === mr.updatedAt) return prev;
       setDetailVersion((v) => v + 1);
       return mr;
     });
