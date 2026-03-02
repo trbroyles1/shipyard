@@ -162,3 +162,114 @@
   --scrollbar-thumb: rgba(155, 100, 200, 0.35);
   --scrollbar-thumb-hover: rgba(175, 118, 220, 0.50);
 }
+
+/* ─── Drydock ─── dark iron + polished brass + solid floating plates */
+[data-theme="drydock"] {
+  /* Canvas (the void — deep harbor water) */
+  --bg-canvas: #0b0a08;
+
+  /* Backgrounds (opaque, warm charcoal — layered iron plate) */
+  --bg-root: #14120f;
+  --bg-s: #1b1815;
+  --bg-sr: #22201b;
+  --bg-sh: #2a2720;
+  --bg-sa: #32302a;
+
+  /* Borders (oxidized seam lines) */
+  --brd: #3d362a;
+  --brd-s: #2d2820;
+
+  /* Text (warm parchment under incandescent light) */
+  --t1: #e4dcd0;
+  --t2: #9c9080;
+  --tm: #6d6050;
+
+  /* Accent — polished brass */
+  --acc: #d89830;
+  --acc-h: #e4a848;
+  --acc-d: rgba(216, 152, 48, 0.16);
+  --acc-g: rgba(216, 152, 48, 0.09);
+  --acc-txt: #0b0a08;
+
+  /* Secondary accent — oxidized copper patina */
+  --acc-purple: #4aac96;
+
+  /* Semantic — workshop safety markers */
+  --grn: #48b880;
+  --grn-d: rgba(72, 184, 128, 0.14);
+  --grn-g: rgba(72, 184, 128, 0.08);
+  --grn-dd: rgba(72, 184, 128, 0.11);
+  --yel: #e0bc38;
+  --yel-d: rgba(224, 188, 56, 0.12);
+  --red: #c85448;
+  --red-d: rgba(200, 84, 72, 0.13);
+  --red-g: rgba(200, 84, 72, 0.08);
+  --red-brd: rgba(200, 84, 72, 0.28);
+  --org: #cc7838;
+  --org-d: rgba(204, 120, 56, 0.12);
+
+  /* Overlays */
+  --overlay: rgba(6, 5, 3, 0.55);
+  --overlay-heavy: rgba(6, 5, 3, 0.72);
+
+  /* Terminal */
+  --bg-terminal: #0a0908;
+  --t-terminal: #ccc4b4;
+
+  /* Selection (amber tint) */
+  --sel: rgba(216, 152, 48, 0.20);
+  --sel-g: rgba(216, 152, 48, 0.11);
+
+  /* Shadows (warm-tinted, heavy — grounded steel) */
+  --sh-sm: 0 1px 4px rgba(6, 4, 0, 0.50);
+  --sh-md: 0 4px 16px rgba(6, 4, 0, 0.55);
+  --sh-lg: 0 8px 32px rgba(6, 4, 0, 0.55);
+  --sh-xl: 0 16px 48px rgba(6, 4, 0, 0.65);
+
+  /* Panel shadow — steel plate with faint top-edge gleam */
+  --panel-sh:
+    0 6px 24px rgba(6, 4, 0, 0.50),
+    0 0 0 1px rgba(80, 70, 50, 0.22),
+    inset 0 1px 0 0 rgba(180, 160, 120, 0.06);
+
+  /* Radii — machine-cut, angular (tightest of all themes) */
+  --rxs: 2px;
+  --rs: 3px;
+  --r: 5px;
+  --rl: 8px;
+
+  /* No glass — opaque steel plates */
+  --glass-blur: 0;
+  --glass-sat: 100%;
+
+  /* Layout — floating plates, tight workshop spacing */
+  --shell-p: 10px;
+  --shell-gap: 10px;
+  --body-gap: 10px;
+  --panel-r: 8px;
+
+  /* Canvas gradient — harbor at dusk (very subtle warm ambient glow) */
+  --canvas-bg-image:
+    radial-gradient(ellipse 70% 50% at 15% 20%, rgba(80, 48, 12, 0.14) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 60% at 80% 75%, rgba(60, 36, 8, 0.11) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 45% at 50% 50%, rgba(45, 30, 12, 0.08) 0%, transparent 55%);
+
+  /* Floating panels — no inter-panel borders */
+  --panel-separator: none;
+
+  /* Card inset — faint brushed-metal top highlight */
+  --card-inset: inset 0 1px 0 0 rgba(180, 160, 120, 0.05);
+
+  /* Active tab — warm amber underglow */
+  --tab-glow: 0 2px 8px rgba(216, 152, 48, 0.18);
+
+  /* Input focus — brass ring */
+  --focus-glow: 0 0 0 1px var(--acc), 0 0 8px rgba(216, 152, 48, 0.12);
+
+  /* Solid background (opaque equivalent) */
+  --solid-bg: #14120f;
+
+  /* Scrollbar — warm bronze */
+  --scrollbar-thumb: rgba(110, 95, 65, 0.40);
+  --scrollbar-thumb-hover: rgba(140, 120, 80, 0.55);
+}

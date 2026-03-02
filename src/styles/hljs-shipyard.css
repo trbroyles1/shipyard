@@ -46,6 +46,28 @@
   --hljs-property: #f0a050;
 }
 
+[data-theme="drydock"] {
+  --hljs-keyword: #cc8854;     /* brass — structural tokens */
+  --hljs-string: #8aad6c;     /* moss/sage — natural, organic */
+  --hljs-number: #d08858;     /* copper */
+  --hljs-comment: #6d6050;    /* weathered — matches --tm */
+  --hljs-function: #5c94b8;   /* steel blue — the cool counterpoint */
+  --hljs-variable: #c46050;   /* rust oxide */
+  --hljs-type: #c8ac4c;       /* golden brass nameplate */
+  --hljs-built-in: #4aac96;   /* patina teal — matches --acc-purple */
+  --hljs-attr: #c8ac4c;       /* golden (same as type) */
+  --hljs-literal: #c46050;    /* rust (same as variable) */
+  --hljs-title: #5c94b8;      /* steel blue (same as function) */
+  --hljs-params: #b4a898;     /* warm stone */
+  --hljs-meta: #6d6050;       /* weathered (same as comment) */
+  --hljs-regexp: #4aac96;     /* patina teal */
+  --hljs-addition: #8aad6c;   /* moss green */
+  --hljs-deletion: #c46050;   /* rust */
+  --hljs-punctuation: #4aac96; /* patina teal */
+  --hljs-selector: #cc8854;   /* brass (same as keyword) */
+  --hljs-property: #d08858;   /* copper (same as number) */
+}
+
 /* ── Token class mappings ── */
 .hljs { color: var(--t-terminal); }
 
