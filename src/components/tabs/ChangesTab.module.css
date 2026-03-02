@@ -26,24 +26,32 @@
   gap: var(--sp-5);
 }
 
-.showTree {
-  position: absolute;
-  top: 12px;
-  left: 12px;
-  background: var(--bg-sr);
-  border: var(--bw) solid var(--brd);
-  border-radius: var(--rs);
-  padding: var(--sp-2);
-  cursor: pointer;
-  color: var(--t2);
-  z-index: 2;
+.treeRail {
+  width: var(--filetree-collapsed-w);
+  min-width: var(--filetree-collapsed-w);
+  border-right: var(--bw) solid var(--brd);
+  background: var(--bg-s);
   display: flex;
   align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background var(--dur-base);
 }
 
-.showTree:hover {
-  color: var(--t1);
+.treeRail:hover {
   background: var(--bg-sh);
+}
+
+.treeRailLabel {
+  writing-mode: vertical-lr;
+  transform: rotate(180deg);
+  font-size: var(--fs-1);
+  font-weight: var(--fw-sb);
+  color: var(--t2);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  user-select: none;
 }
 
 .empty {
