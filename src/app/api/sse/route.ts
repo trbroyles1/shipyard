@@ -6,8 +6,12 @@ import { clearViewedMR } from "@/lib/viewed-mr-store";
 import {
   registerSession,
   unregisterSession,
+  getActiveTabId,
 } from "@/lib/active-session-store";
-import { SSE_ERROR_SESSION_DISPLACED } from "@/lib/errors";
+import {
+  SSE_ERROR_SESSION_DISPLACED,
+  SSE_EVENT_SESSION_DISPLACED,
+} from "@/lib/errors";
 
 const log = createLogger("api/sse");
 
@@ -56,7 +60,7 @@ export async function GET(req: NextRequest) {
 
       if (userId !== undefined) {
         const displaceFn = () => {
-          send("session-displaced", {
+          send(SSE_EVENT_SESSION_DISPLACED, {
             code: SSE_ERROR_SESSION_DISPLACED,
             message: SESSION_DISPLACED_MESSAGE,
           });
@@ -70,7 +74,9 @@ export async function GET(req: NextRequest) {
       log.info(`SSE connection closed for user ${userId} — clearing viewed MR`);
       pollerHandle?.stop();
       if (userId !== undefined) {
-        clearViewedMR(userId);
+        if (getActiveTabId(userId) === tabId) {
+          clearViewedMR(userId);
+        }
         unregisterSession(userId, tabId);
       }
     },

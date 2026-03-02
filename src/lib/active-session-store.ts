@@ -33,8 +33,8 @@ function getStore(): Map<number, ActiveSession> {
 
 /**
  * Registers a tab as the active session for a user.
- * If the user already has a different tab registered, the old tab's
- * displace callback is invoked before the new one is stored.
+ * If the user already has a different tab registered, the store is
+ * updated first, then the old tab's displace callback is invoked.
  * Returns true if an existing session was displaced, false otherwise.
  */
 export function registerSession(
@@ -49,8 +49,8 @@ export function registerSession(
     log.info(
       `Displacing session for user ${userId}: tab ${existing.tabId} -> ${tabId}`,
     );
-    existing.displace();
     store.set(userId, { tabId, displace });
+    existing.displace();
     return true;
   }
 

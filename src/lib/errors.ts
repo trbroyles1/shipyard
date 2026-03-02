@@ -34,6 +34,7 @@ export const SSE_ERROR_AUTH_EXPIRED = "auth_expired";
 export const SSE_ERROR_GITLAB_UNAVAILABLE = "gitlab_unavailable";
 export const SSE_WARNING_POLL_FAILED = "poll_failed";
 export const SSE_ERROR_SESSION_DISPLACED = "session_displaced";
+export const SSE_EVENT_SESSION_DISPLACED = "session-displaced" as const;
 
 // API error codes
 export const API_ERROR_NOT_AUTHENTICATED = "not_authenticated";
