@@ -23,6 +23,11 @@
   --panel-sh: none;
 }
 
+/* Solid background (for elements that must stay opaque) */
+:root {
+  --solid-bg: var(--bg-root);
+}
+
 /* Glass-enhanced tokens (inert in Classic) */
 :root {
   --canvas-bg-image: none;

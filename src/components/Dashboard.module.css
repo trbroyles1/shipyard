@@ -17,14 +17,15 @@
 
 .errorBar {
   position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  bottom: var(--shell-p);
+  left: var(--shell-p);
+  right: var(--shell-p);
   padding: var(--sp-3) var(--sp-7);
   background: var(--red-d);
   color: var(--red);
   font-size: var(--fs-2);
   text-align: center;
   border-top: var(--bw) solid var(--red-brd);
+  border-radius: var(--panel-r);
   z-index: 1000;
 }

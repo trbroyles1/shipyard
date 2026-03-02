@@ -140,7 +140,7 @@
 
 .toggleOn .toggleKnob {
   transform: translateX(16px);
-  background: var(--bg-root);
+  background: var(--solid-bg);
 }
 
 /* Text input */

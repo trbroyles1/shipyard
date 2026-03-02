@@ -23,5 +23,5 @@
   height: 7px;
   border-radius: 50%;
   background: var(--red);
-  border: 1.5px solid var(--bg-sr);
+  border: 1.5px solid var(--solid-bg);
 }

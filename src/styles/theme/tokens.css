@@ -155,6 +155,9 @@
   /* Input focus glow */
   --focus-glow: 0 0 0 1px var(--acc), 0 0 12px rgba(184, 230, 54, 0.15);
 
+  /* Solid background (opaque equivalent of --bg-root for knobs, badges, etc.) */
+  --solid-bg: #110c1a;
+
   /* Glass-coherent scrollbar */
   --scrollbar-thumb: rgba(140, 110, 200, 0.35);
   --scrollbar-thumb-hover: rgba(160, 130, 220, 0.50);

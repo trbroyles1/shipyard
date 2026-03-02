@@ -30,7 +30,7 @@
 .toggle {
   position: absolute;
   left: var(--shell-p);
-  top: var(--topbar-h);
+  top: calc(var(--shell-p) + var(--topbar-h) + var(--shell-gap));
   z-index: 50;
   background: var(--bg-sr);
   border: var(--bw) solid var(--brd);
