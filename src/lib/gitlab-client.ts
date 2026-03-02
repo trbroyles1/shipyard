@@ -11,6 +11,7 @@ const DEFAULT_TIMEOUT_MS = 30_000;
 const MAX_RETRIES = 2;
 const INITIAL_BACKOFF_MS = 1_000;
 const MAX_BACKOFF_MS = 10_000;
+const DEFAULT_MAX_PAGES = 50;
 
 interface FetchOptions {
   method?: string;
@@ -144,6 +145,7 @@ export async function gitlabFetchAllPages<T>(
   path: string,
   token: string,
   params: Record<string, string> = {},
+  maxPages: number = DEFAULT_MAX_PAGES,
 ): Promise<T[]> {
   const results: T[] = [];
   let page = 1;
@@ -170,6 +172,10 @@ export async function gitlabFetchAllPages<T>(
     const totalPages = parseInt(response.headers.get("x-total-pages") || "1", 10);
     if (page >= totalPages) break;
     page++;
+    if (page > maxPages) {
+      log.warn(`Pagination limit reached (${maxPages} pages) for ${path}`);
+      break;
+    }
   }
 
   return results;

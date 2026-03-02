@@ -1,9 +1,11 @@
 import { NextResponse } from "next/server";
+import { NextRequest } from "next/server";
+import { getToken } from "next-auth/jwt";
 import { auth } from "./auth";
 
 export async function getAuthenticatedSession() {
   const session = await auth();
-  if (!session?.accessToken) {
+  if (!session) {
     throw new Error("Not authenticated");
   }
   if (session.error === "RefreshAccessTokenError") {
@@ -12,11 +14,12 @@ export async function getAuthenticatedSession() {
   return session;
 }
 
-export function extractAccessToken(session: { accessToken?: string }): string {
-  if (!session.accessToken) {
-    throw new Error("No access token in session");
+export async function getAccessToken(req: NextRequest): Promise<string> {
+  const jwt = await getToken({ req, secret: process.env.AUTH_SECRET });
+  if (!jwt?.accessToken) {
+    throw new Error("Not authenticated");
   }
-  return session.accessToken;
+  return jwt.accessToken as string;
 }
 
 const DEFAULT_MAX_BYTES = 1_048_576; // 1 MB

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAuthenticatedSession, extractAccessToken, parseBody } from "@/lib/auth-helpers";
+import { getAuthenticatedSession, getAccessToken, parseBody } from "@/lib/auth-helpers";
 import { gitlabFetch, gitlabFetchAllPages } from "@/lib/gitlab-client";
+import { validateNumericId } from "@/lib/validation";
 import { createLogger } from "@/lib/logger";
 import { handleApiRouteError } from "@/lib/api-error-handler";
 import type { GitLabDiscussion } from "@/lib/types/gitlab";
@@ -8,13 +9,14 @@ import type { GitLabDiscussion } from "@/lib/types/gitlab";
 const log = createLogger("api/mr-discussions");
 
 export async function GET(
-  _req: NextRequest,
+  req: NextRequest,
   { params }: { params: { projectId: string; iid: string } },
 ) {
   try {
-    const session = await getAuthenticatedSession();
-    const token = extractAccessToken(session);
-    const { projectId, iid } = params;
+    await getAuthenticatedSession();
+    const token = await getAccessToken(req);
+    const projectId = validateNumericId(params.projectId, "projectId");
+    const iid = validateNumericId(params.iid, "iid");
 
     log.info(`Fetching MR discussions: project=${projectId} iid=${iid}`);
 
@@ -34,9 +36,10 @@ export async function POST(
   { params }: { params: { projectId: string; iid: string } },
 ) {
   try {
-    const session = await getAuthenticatedSession();
-    const token = extractAccessToken(session);
-    const { projectId, iid } = params;
+    await getAuthenticatedSession();
+    const token = await getAccessToken(req);
+    const projectId = validateNumericId(params.projectId, "projectId");
+    const iid = validateNumericId(params.iid, "iid");
 
     const parsed = await parseBody<{ body?: string; position?: unknown }>(req);
     if ("error" in parsed) return parsed.error;

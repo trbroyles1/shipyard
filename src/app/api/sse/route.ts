@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { auth } from "@/lib/auth";
+import { getToken } from "next-auth/jwt";
 import { createLogger } from "@/lib/logger";
 import { startPoller } from "@/lib/mr-poller";
 import { clearViewedMR } from "@/lib/viewed-mr-store";
@@ -8,14 +8,15 @@ const log = createLogger("api/sse");
 
 export const dynamic = "force-dynamic";
 
-export async function GET(_req: NextRequest) {
-  const session = await auth();
-  if (!session?.accessToken) {
+export async function GET(req: NextRequest) {
+  const jwt = await getToken({ req, secret: process.env.AUTH_SECRET });
+  if (!jwt?.accessToken) {
     return new Response("Unauthorized", { status: 401 });
   }
 
-  const token = session.accessToken;
-  const userId = session.gitlabUserId;
+  const token = jwt.accessToken as string;
+  const userId = jwt.gitlabUserId as number | undefined;
+  const expiresAt = jwt.expiresAt as number;
 
   log.info(`SSE connection opened for user ${userId}`);
 
@@ -35,7 +36,7 @@ export async function GET(_req: NextRequest) {
         }
       }
 
-      pollerHandle = startPoller(token, userId, (event) => {
+      pollerHandle = startPoller(token, userId, expiresAt, (event) => {
         send(event.type, event.data);
       });
     },

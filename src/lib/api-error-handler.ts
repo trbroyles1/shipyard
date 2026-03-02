@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { GitLabApiError } from "./gitlab-client";
+import { ValidationError } from "./validation";
 import { createLogger } from "./logger";
 
 type Logger = ReturnType<typeof createLogger>;
@@ -78,6 +79,14 @@ const AUTH_ERROR_SUBSTRINGS = ["Not authenticated", "No access token"] as const;
 const TOKEN_REFRESH_SUBSTRING = "Token refresh failed";
 
 export function handleApiRouteError(error: unknown, log: Logger): NextResponse {
+  if (error instanceof ValidationError) {
+    log.warn(`Validation error: ${error.message}`);
+    return NextResponse.json(
+      { error: error.message, code: CODE_VALIDATION },
+      { status: 400 },
+    );
+  }
+
   if (error instanceof GitLabApiError) {
     const mapped = mapGitLabError(error.status, error.body);
     log.warn(`GitLab API ${error.status}: ${mapped.error}`);

@@ -35,7 +35,7 @@ export function useNotifications() {
   const markAllRead = useCallback(() => {
     const now = Date.now();
     setReadAt(now);
-    document.cookie = `notificationsReadAt=${now};path=/;max-age=${60 * 60 * 24 * 365}`;
+    document.cookie = `notificationsReadAt=${now};path=/;max-age=${60 * 60 * 24 * 365};SameSite=Lax`;
   }, []);
 
   return { notifications, unreadCount, addNotification, markAllRead };

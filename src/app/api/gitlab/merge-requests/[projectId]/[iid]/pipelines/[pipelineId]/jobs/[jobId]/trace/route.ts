@@ -1,20 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAuthenticatedSession, extractAccessToken } from "@/lib/auth-helpers";
+import { getAuthenticatedSession, getAccessToken } from "@/lib/auth-helpers";
 import { env } from "@/lib/env";
 import { acquire } from "@/lib/rate-limiter";
+import { validateNumericId } from "@/lib/validation";
 import { createLogger } from "@/lib/logger";
 import { handleApiRouteError } from "@/lib/api-error-handler";
 
 const log = createLogger("api/job-trace");
+
+const RANGE_PATTERN = /^bytes=\d+-\d*$/;
 
 export async function GET(
   req: NextRequest,
   { params }: { params: { projectId: string; jobId: string } },
 ) {
   try {
-    const session = await getAuthenticatedSession();
-    const token = extractAccessToken(session);
-    const { projectId, jobId } = params;
+    await getAuthenticatedSession();
+    const token = await getAccessToken(req);
+    const projectId = validateNumericId(params.projectId, "projectId");
+    const jobId = validateNumericId(params.jobId, "jobId");
 
     log.info(`Fetching job trace: project=${projectId} job=${jobId}`);
     await acquire();
@@ -25,19 +29,22 @@ export async function GET(
 
     // Forward Range header for incremental fetches
     const rangeHeader = req.headers.get("Range");
-    if (rangeHeader) {
+    if (rangeHeader && RANGE_PATTERN.test(rangeHeader)) {
       headers["Range"] = rangeHeader;
     }
 
     const response = await fetch(
       `${env.GITLAB_URL}/api/v4/projects/${projectId}/jobs/${jobId}/trace`,
-      { headers },
+      { headers, signal: AbortSignal.timeout(30_000) },
     );
 
     if (!response.ok && response.status !== 206) {
       const errorBody = await response.text();
       log.error(`Job trace error ${response.status}: ${errorBody}`);
-      return NextResponse.json({ error: errorBody }, { status: response.status });
+      return NextResponse.json(
+        { error: "Failed to fetch job trace" },
+        { status: response.status >= 500 ? 502 : response.status },
+      );
     }
 
     const text = await response.text();
@@ -49,7 +56,7 @@ export async function GET(
     await acquire();
     const jobRes = await fetch(
       `${env.GITLAB_URL}/api/v4/projects/${projectId}/jobs/${jobId}`,
-      { headers: { Authorization: `Bearer ${token}` } },
+      { headers: { Authorization: `Bearer ${token}` }, signal: AbortSignal.timeout(30_000) },
     );
     const jobStatus = jobRes.ok ? (await jobRes.json()).status : "unknown";
 

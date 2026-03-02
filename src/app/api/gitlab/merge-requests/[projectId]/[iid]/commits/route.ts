@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAuthenticatedSession, extractAccessToken } from "@/lib/auth-helpers";
+import { getAuthenticatedSession, getAccessToken } from "@/lib/auth-helpers";
 import { gitlabFetchAllPages } from "@/lib/gitlab-client";
+import { validateNumericId } from "@/lib/validation";
 import { createLogger } from "@/lib/logger";
 import { handleApiRouteError } from "@/lib/api-error-handler";
 import type { GitLabCommit } from "@/lib/types/gitlab";
@@ -8,13 +9,14 @@ import type { GitLabCommit } from "@/lib/types/gitlab";
 const log = createLogger("api/mr-commits");
 
 export async function GET(
-  _req: NextRequest,
+  req: NextRequest,
   { params }: { params: { projectId: string; iid: string } },
 ) {
   try {
-    const session = await getAuthenticatedSession();
-    const token = extractAccessToken(session);
-    const { projectId, iid } = params;
+    await getAuthenticatedSession();
+    const token = await getAccessToken(req);
+    const projectId = validateNumericId(params.projectId, "projectId");
+    const iid = validateNumericId(params.iid, "iid");
 
     log.info(`Fetching MR commits: project=${projectId} iid=${iid}`);
 

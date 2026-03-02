@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAuthenticatedSession, extractAccessToken, parseBody } from "@/lib/auth-helpers";
+import { getAuthenticatedSession, getAccessToken, parseBody } from "@/lib/auth-helpers";
 import { gitlabFetch } from "@/lib/gitlab-client";
+import { validateNumericId, validateDiscussionId } from "@/lib/validation";
 import { createLogger } from "@/lib/logger";
 import { handleApiRouteError } from "@/lib/api-error-handler";
 
@@ -11,9 +12,11 @@ export async function POST(
   { params }: { params: { projectId: string; iid: string; discussionId: string } },
 ) {
   try {
-    const session = await getAuthenticatedSession();
-    const token = extractAccessToken(session);
-    const { projectId, iid, discussionId } = params;
+    await getAuthenticatedSession();
+    const token = await getAccessToken(req);
+    const projectId = validateNumericId(params.projectId, "projectId");
+    const iid = validateNumericId(params.iid, "iid");
+    const discussionId = validateDiscussionId(params.discussionId);
 
     const parsed = await parseBody<{ body?: string }>(req);
     if ("error" in parsed) return parsed.error;

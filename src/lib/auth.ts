@@ -51,7 +51,7 @@ async function attemptTokenRefresh(token: JWT): Promise<JWT> {
     if (isTransientRefreshFailure(response.status)) {
       throw new Error(`Transient token refresh failure: ${response.status}`);
     }
-    log.error(`Token refresh failed: ${response.status} ${JSON.stringify(data)}`);
+    log.error(`Token refresh failed: ${response.status} error=${data.error} description=${data.error_description}`);
     return { ...token, error: "RefreshAccessTokenError" };
   }
 
@@ -146,7 +146,6 @@ export const authConfig: NextAuthConfig = {
       return refreshAccessToken(token);
     },
     async session({ session, token }) {
-      session.accessToken = token.accessToken as string;
       session.error = token.error as string | undefined;
       session.gitlabUserId = token.gitlabUserId as number;
       session.gitlabUsername = token.gitlabUsername as string;

@@ -23,6 +23,7 @@ const log = createLogger("mr-poller");
 
 const POLL_INTERVAL_MS = 25_000; // 25 seconds
 const DEGRADED_THRESHOLD = 3;
+const TOKEN_EXPIRY_BUFFER_MS = 5 * 60 * 1000;
 
 type SSEEventPayload =
   | MRListEvent
@@ -179,6 +180,7 @@ async function pollViewedMRApprovals(
 export function startPoller(
   token: string,
   userId: number | undefined,
+  expiresAt: number,
   emit: (event: SSEEventPayload) => void,
 ): PollerHandle {
   const store = new MRStore();
@@ -189,6 +191,12 @@ export function startPoller(
 
   async function poll() {
     if (stopped) return;
+
+    if (Date.now() > expiresAt * 1000 - TOKEN_EXPIRY_BUFFER_MS) {
+      emit({ type: "error", data: { code: SSE_ERROR_AUTH_EXPIRED, message: "Token expiring, reconnect required" } });
+      stopped = true;
+      return;
+    }
 
     try {
       await pollMRList(store, token, emit);

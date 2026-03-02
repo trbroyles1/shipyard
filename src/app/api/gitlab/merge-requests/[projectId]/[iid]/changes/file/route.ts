@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAuthenticatedSession, extractAccessToken } from "@/lib/auth-helpers";
+import { getAuthenticatedSession, getAccessToken } from "@/lib/auth-helpers";
 import { gitlabFetch } from "@/lib/gitlab-client";
+import { validateNumericId } from "@/lib/validation";
 import { createLogger } from "@/lib/logger";
 import { handleApiRouteError } from "@/lib/api-error-handler";
 import type { GitLabDiffFile } from "@/lib/types/gitlab";
@@ -22,9 +23,10 @@ export async function GET(
   { params }: { params: { projectId: string; iid: string } },
 ) {
   try {
-    const session = await getAuthenticatedSession();
-    const token = extractAccessToken(session);
-    const { projectId, iid } = params;
+    await getAuthenticatedSession();
+    const token = await getAccessToken(req);
+    const projectId = validateNumericId(params.projectId, "projectId");
+    const iid = validateNumericId(params.iid, "iid");
     const filePath = req.nextUrl.searchParams.get("path");
 
     if (!filePath) {

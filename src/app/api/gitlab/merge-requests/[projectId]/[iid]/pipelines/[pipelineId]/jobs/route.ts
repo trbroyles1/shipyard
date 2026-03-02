@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAuthenticatedSession, extractAccessToken } from "@/lib/auth-helpers";
+import { getAuthenticatedSession, getAccessToken } from "@/lib/auth-helpers";
 import { gitlabFetchAllPages } from "@/lib/gitlab-client";
+import { validateNumericId } from "@/lib/validation";
 import { createLogger } from "@/lib/logger";
 import { handleApiRouteError } from "@/lib/api-error-handler";
 import type { GitLabJob } from "@/lib/types/gitlab";
@@ -8,13 +9,14 @@ import type { GitLabJob } from "@/lib/types/gitlab";
 const log = createLogger("api/pipeline-jobs");
 
 export async function GET(
-  _req: NextRequest,
+  req: NextRequest,
   { params }: { params: { projectId: string; pipelineId: string } },
 ) {
   try {
-    const session = await getAuthenticatedSession();
-    const token = extractAccessToken(session);
-    const { projectId, pipelineId } = params;
+    await getAuthenticatedSession();
+    const token = await getAccessToken(req);
+    const projectId = validateNumericId(params.projectId, "projectId");
+    const pipelineId = validateNumericId(params.pipelineId, "pipelineId");
 
     log.info(`Fetching pipeline jobs: project=${projectId} pipeline=${pipelineId}`);
 

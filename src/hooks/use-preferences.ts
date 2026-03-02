@@ -20,7 +20,7 @@ function readCookie(): UserPreferences {
 
 function writeCookie(prefs: UserPreferences): void {
   const value = encodeURIComponent(JSON.stringify(prefs));
-  document.cookie = `${COOKIE_NAME}=${value};path=/;max-age=${MAX_AGE}`;
+  document.cookie = `${COOKIE_NAME}=${value};path=/;max-age=${MAX_AGE};SameSite=Lax`;
 }
 
 export function usePreferences() {

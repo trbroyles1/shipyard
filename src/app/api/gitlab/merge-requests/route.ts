@@ -1,5 +1,5 @@
-import { NextResponse } from "next/server";
-import { getAuthenticatedSession, extractAccessToken } from "@/lib/auth-helpers";
+import { NextRequest, NextResponse } from "next/server";
+import { getAuthenticatedSession, getAccessToken } from "@/lib/auth-helpers";
 import { gitlabFetchAllPages } from "@/lib/gitlab-client";
 import { env } from "@/lib/env";
 import { createLogger } from "@/lib/logger";
@@ -21,10 +21,10 @@ function extractRepoSlug(webUrl: string): { slug: string; repoUrl: string } {
   return { slug: "unknown", repoUrl: "" };
 }
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
-    const session = await getAuthenticatedSession();
-    const token = extractAccessToken(session);
+    await getAuthenticatedSession();
+    const token = await getAccessToken(req);
 
     log.info(`Fetching MRs for group ${env.GITLAB_GROUP_ID}`);
 

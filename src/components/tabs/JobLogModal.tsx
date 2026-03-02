@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { AnsiUp } from "ansi_up";
+import DOMPurify from "dompurify";
 import { apiFetch } from "@/lib/client-errors";
 import styles from "./JobLogModal.module.css";
 
@@ -135,7 +136,12 @@ export function JobLogModal({ jobName, projectId, pipelineId, jobId, jobStatus, 
     [onClose],
   );
 
-  const htmlContent = log ? ansi.ansi_to_html(log) : "";
+  const htmlContent = log
+    ? DOMPurify.sanitize(ansi.ansi_to_html(log), {
+        ALLOWED_TAGS: ["span"],
+        ALLOWED_ATTR: ["style", "class"],
+      })
+    : "";
   const isActive = ACTIVE_STATUSES.has(liveStatus);
 
   return (
