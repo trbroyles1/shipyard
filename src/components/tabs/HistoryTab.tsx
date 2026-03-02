@@ -1,8 +1,10 @@
 "use client";
 
 import type { GitLabNote } from "@/lib/types/gitlab";
+import { usePreferencesContext } from "@/components/providers/PreferencesProvider";
 import { RelativeTime } from "@/components/shared/RelativeTime";
 import { Avatar } from "@/components/shared/Avatar";
+import { MarkdownBody } from "@/components/shared/MarkdownBody";
 import styles from "./HistoryTab.module.css";
 
 interface Props {
@@ -10,6 +12,8 @@ interface Props {
 }
 
 export function HistoryTab({ notes }: Props) {
+  const { preferences } = usePreferencesContext();
+
   if (notes.length === 0) {
     return <div className={styles.empty}>No activity yet.</div>;
   }
@@ -28,7 +32,11 @@ export function HistoryTab({ notes }: Props) {
               <RelativeTime date={note.created_at} />
             </span>
           </div>
-          <div className={styles.body}>{note.body}</div>
+          <div className={styles.body}>
+            {note.system ? note.body : (
+              <MarkdownBody content={note.body} jiraBaseUrl={preferences.jiraBaseUrl} />
+            )}
+          </div>
         </div>
       ))}
     </div>

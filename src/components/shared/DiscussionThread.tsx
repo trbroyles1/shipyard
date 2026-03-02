@@ -2,9 +2,11 @@
 
 import { useState, useCallback, useRef, type KeyboardEvent } from "react";
 import type { GitLabDiscussion } from "@/lib/types/gitlab";
+import { usePreferencesContext } from "@/components/providers/PreferencesProvider";
 import { ChevronRightIcon } from "./icons";
 import { Avatar } from "./Avatar";
 import { RelativeTime } from "./RelativeTime";
+import { MarkdownBody } from "./MarkdownBody";
 import styles from "./DiscussionThread.module.css";
 
 interface Props {
@@ -17,6 +19,7 @@ interface Props {
 }
 
 export function DiscussionThread({ discussion, defaultExpanded = false, compact = false, fileLink, onReply, onResolve }: Props) {
+  const { preferences } = usePreferencesContext();
   const notes = discussion.notes.filter((n) => !n.system);
   const [expanded, setExpanded] = useState(defaultExpanded);
   const [replyText, setReplyText] = useState("");
@@ -123,7 +126,9 @@ export function DiscussionThread({ discussion, defaultExpanded = false, compact 
                     <RelativeTime date={note.created_at} />
                   </span>
                 </div>
-                <div className={styles.noteBody}>{note.body}</div>
+                <div className={styles.noteBody}>
+                  <MarkdownBody content={note.body} jiraBaseUrl={preferences.jiraBaseUrl} compact={compact} />
+                </div>
               </div>
             </div>
           ))}

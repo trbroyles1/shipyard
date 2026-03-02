@@ -48,10 +48,36 @@
 }
 
 .description {
+  position: relative;
   font-size: var(--fs-3);
   color: var(--t2);
   line-height: var(--lh-normal);
   margin-bottom: var(--sp-5);
   max-height: var(--overview-desc-max-h);
   overflow-y: auto;
+}
+
+.expandDescBtn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: var(--bg-sa);
+  border: var(--bw) solid var(--brd);
+  border-radius: var(--rxs);
+  color: var(--tm);
+  cursor: pointer;
+  padding: var(--sp-1);
+  display: flex;
+  align-items: center;
+  opacity: 0;
+  transition: opacity var(--dur-fast);
+}
+
+.description:hover .expandDescBtn {
+  opacity: 1;
+}
+
+.expandDescBtn:hover {
+  color: var(--t1);
+  background: var(--bg-sh);
 }

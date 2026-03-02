@@ -1,0 +1,37 @@
+.container {
+  background: var(--bg-terminal);
+  border-radius: var(--rs);
+  padding: var(--sp-6);
+  overflow-x: auto;
+  display: flex;
+  justify-content: center;
+  margin: var(--sp-4) 0;
+}
+
+.container :global(svg) {
+  max-width: 100%;
+  height: auto;
+}
+
+.error {
+  background: var(--red-d);
+  border: var(--bw) solid var(--red-brd);
+  border-radius: var(--rs);
+  padding: var(--sp-4);
+  margin: var(--sp-4) 0;
+}
+
+.errorLabel {
+  font-size: var(--fs-2);
+  font-weight: var(--fw-sb);
+  color: var(--red);
+  margin-bottom: var(--sp-2);
+}
+
+.errorCode {
+  font-family: var(--mono);
+  font-size: var(--fs-2);
+  color: var(--t2);
+  white-space: pre-wrap;
+  margin: 0;
+}

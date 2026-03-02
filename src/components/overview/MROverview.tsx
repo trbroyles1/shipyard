@@ -5,13 +5,14 @@ import { useSession } from "next-auth/react";
 import type { MRDetailData } from "@/hooks/use-mr-detail";
 import type { MRSummary } from "@/lib/types/mr";
 import { usePreferencesContext } from "@/components/providers/PreferencesProvider";
-import { MergeIcon, ChevronIcon } from "@/components/shared/icons";
+import { MergeIcon, ChevronIcon, ExpandIcon } from "@/components/shared/icons";
 import { BranchIndicator } from "./BranchIndicator";
 import { LabelPills } from "./LabelPills";
 import { StatsRow } from "./StatsRow";
 import { ActionButtons } from "./ActionButtons";
 import { JiraText } from "@/components/shared/JiraText";
 import { DescriptionBody } from "./DescriptionBody";
+import { DescriptionViewerDialog } from "./DescriptionViewerDialog";
 import styles from "./MROverview.module.css";
 
 interface Props {
@@ -24,6 +25,7 @@ export function MROverview({ summary, detail, onRefetch }: Props) {
   const { data: session } = useSession();
   const { preferences } = usePreferencesContext();
   const [expanded, setExpanded] = useState(true);
+  const [descDialogOpen, setDescDialogOpen] = useState(false);
   const mr = detail.mr;
   const approvals = detail.approvals;
   const currentUserId = session?.gitlabUserId;
@@ -47,7 +49,22 @@ export function MROverview({ summary, detail, onRefetch }: Props) {
           {mr.description && (
             <div className={styles.description}>
               <DescriptionBody text={mr.description} jiraBaseUrl={preferences.jiraBaseUrl} />
+              <button
+                className={styles.expandDescBtn}
+                onClick={() => setDescDialogOpen(true)}
+                title="View full description"
+              >
+                <ExpandIcon size={12} />
+              </button>
             </div>
+          )}
+          {descDialogOpen && mr.description && (
+            <DescriptionViewerDialog
+              title={mr.title}
+              description={mr.description}
+              jiraBaseUrl={preferences.jiraBaseUrl}
+              onClose={() => setDescDialogOpen(false)}
+            />
           )}
           <LabelPills labels={mr.labels} draft={mr.draft} conflicts={mr.has_conflicts} />
           <StatsRow
