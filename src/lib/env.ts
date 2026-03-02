@@ -14,6 +14,21 @@ function optional(name: string, fallback: string): string {
   return process.env[name] || fallback;
 }
 
+const DEFAULT_MR_POLL_INTERVAL = 25;
+
+function optionalPositiveInt(name: string, fallback: number): number {
+  const raw = process.env[name];
+  if (!raw) return fallback;
+  const parsed = parseInt(raw, 10);
+  if (!Number.isFinite(parsed) || parsed <= 0 || String(parsed) !== raw) {
+    log.warn(
+      `${name} must be a positive integer — got "${raw}", defaulting to ${fallback}`,
+    );
+    return fallback;
+  }
+  return parsed;
+}
+
 function optionalWithWarning(name: string, fallback: string, message: string): string {
   const value = process.env[name];
   if (value) return value;
@@ -48,5 +63,8 @@ export const env = {
   },
   get LOG_LEVEL() {
     return optional("LOG_LEVEL", "INFO") as "DEBUG" | "INFO" | "WARN" | "ERROR";
+  },
+  get MR_POLL_INTERVAL(): number {
+    return optionalPositiveInt("MR_POLL_INTERVAL", DEFAULT_MR_POLL_INTERVAL);
   },
 };

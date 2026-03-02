@@ -21,7 +21,7 @@ import type {
 
 const log = createLogger("mr-poller");
 
-const POLL_INTERVAL_MS = 25_000; // 25 seconds
+const POLL_INTERVAL_MS = env.MR_POLL_INTERVAL * 1000;
 const DEGRADED_THRESHOLD = 3;
 const TOKEN_EXPIRY_BUFFER_MS = 5 * 60 * 1000;
 
