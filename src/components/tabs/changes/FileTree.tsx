@@ -2,6 +2,7 @@
 
 import { useMemo } from "react";
 import type { EnrichedDiffFile } from "@/lib/types/gitlab";
+import { XIcon, DocumentIcon, FolderIcon } from "@/components/shared/icons";
 import styles from "./FileTree.module.css";
 
 const FILE_PADDING_BASE = 12;
@@ -53,14 +54,14 @@ export function FileTree({ files, selectedFile, onSelect, onClose }: Props) {
       <div className={styles.header}>
         <span className={styles.headerLabel}>Files ({files.length})</span>
         <button className={styles.close} onClick={onClose} title="Hide file tree">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          <XIcon size={12} />
         </button>
       </div>
       <button
         className={`${styles.file} ${selectedFile === null ? styles.selected : ""}`}
         onClick={() => onSelect(null)}
       >
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+        <DocumentIcon size={12} />
         <span className={styles.fileName}>All files</span>
       </button>
       {renderNodes(tree, 0, selectedFile, onSelect)}
@@ -95,7 +96,7 @@ function renderNodes(
           onClick={() => onSelect(path)}
           title={path}
         >
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+          <DocumentIcon size={12} />
           <span className={styles.fileName}>{name}</span>
           <span className={styles.stats}>
             <span className={styles.additions}>+{value.additions}</span>
@@ -107,7 +108,7 @@ function renderNodes(
       result.push(
         <div key={`dir-${depth}-${name}`} className={styles.folder}>
           <div className={styles.folderLabel} style={{ paddingLeft: DIR_PADDING_BASE + depth * DEPTH_INDENT }}>
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+            <FolderIcon size={12} />
             <span>{name}</span>
           </div>
           {renderNodes(value as TreeDir, depth + 1, selectedFile, onSelect)}

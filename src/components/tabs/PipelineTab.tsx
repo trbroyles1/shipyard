@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import type { GitLabPipeline, GitLabMergeRequest, GitLabJob } from "@/lib/types/gitlab";
 import { RelativeTime } from "@/components/shared/RelativeTime";
+import { ExternalLinkIcon, ChevronIcon, TerminalIcon } from "@/components/shared/icons";
 import { apiFetch } from "@/lib/client-errors";
 import { JobLogModal } from "./JobLogModal";
 import styles from "./PipelineTab.module.css";
@@ -104,15 +105,12 @@ function PipelineRow({ pipeline, projectId, onViewLog }: { pipeline: GitLabPipel
           className={styles.pipelineLink}
           onClick={(e) => e.stopPropagation()}
         >
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          <ExternalLinkIcon size={12} />
         </a>
-        <svg
-          width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-          strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+        <ChevronIcon
+          size={12}
           className={`${styles.chevron} ${expanded ? styles.chevronOpen : ""}`}
-        >
-          <polyline points="6 9 12 15 18 9"/>
-        </svg>
+        />
       </div>
       {expanded && (
         <div className={styles.jobs}>
@@ -135,7 +133,7 @@ function PipelineRow({ pipeline, projectId, onViewLog }: { pipeline: GitLabPipel
                   onClick={() => onViewLog(job.id, job.name, job.status)}
                   title="View job log"
                 >
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+                  <TerminalIcon size={12} />
                 </button>
                 <a
                   href={job.web_url}
@@ -143,7 +141,7 @@ function PipelineRow({ pipeline, projectId, onViewLog }: { pipeline: GitLabPipel
                   rel="noreferrer"
                   className={styles.jobLink}
                 >
-                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                  <ExternalLinkIcon size={10} />
                 </a>
               </div>
             );

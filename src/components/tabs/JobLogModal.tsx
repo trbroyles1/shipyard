@@ -5,6 +5,7 @@ import { AnsiUp } from "ansi_up";
 import DOMPurify from "dompurify";
 import { apiFetch } from "@/lib/client-errors";
 import { HEADER_JOB_STATUS } from "@/lib/constants";
+import { TerminalIcon, ExpandIcon, RestoreIcon, XIcon } from "@/components/shared/icons";
 import styles from "./JobLogModal.module.css";
 
 interface Props {
@@ -152,9 +153,7 @@ export function JobLogModal({ jobName, projectId, jobId, jobStatus, onClose }: P
     <div className={styles.backdrop} onClick={handleBackdropClick}>
       <div className={`${styles.modal} ${maximized ? styles.maximized : ""}`}>
         <div className={styles.header}>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/>
-          </svg>
+          <TerminalIcon size={14} />
           <span className={styles.title}>{jobName}</span>
           {isActive && (
             <span className={styles.liveIndicator} title={`Job is ${liveStatus}`}>
@@ -167,19 +166,13 @@ export function JobLogModal({ jobName, projectId, jobId, jobStatus, onClose }: P
             title={maximized ? "Restore" : "Maximize"}
           >
             {maximized ? (
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="14" y1="10" x2="21" y2="3"/><line x1="3" y1="21" x2="10" y2="14"/>
-              </svg>
+              <RestoreIcon size={14} />
             ) : (
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/>
-              </svg>
+              <ExpandIcon size={14} />
             )}
           </button>
           <button className={styles.headerBtn} onClick={onClose} title="Close">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-            </svg>
+            <XIcon size={14} />
           </button>
         </div>
         <div className={styles.content} ref={contentRef} onScroll={handleScroll}>

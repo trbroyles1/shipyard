@@ -1,6 +1,7 @@
 "use client";
 
 import { useFilterSort } from "@/components/providers/FilterSortProvider";
+import { CaretDownIcon } from "@/components/shared/icons";
 import styles from "./SortControl.module.css";
 
 interface SortControlProps {
@@ -22,10 +23,7 @@ export function SortControl({ count }: SortControlProps) {
         onClick={toggleSort}
         title={`Sort by ${label} (${sortDirection})`}
       >
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <line x1="12" y1="5" x2="12" y2="19"/>
-          <polyline points="19 12 12 19 5 12"/>
-        </svg>
+        <CaretDownIcon size={14} />
         {label}
       </button>
     </div>
