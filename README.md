@@ -140,12 +140,15 @@ Or pass environment variables directly:
 docker run -d \
   --name shipyard \
   -p 3000:3000 \
+  -e AUTH_URL=http://localhost:3000 \
   -e AUTH_SECRET="$(openssl rand -base64 32)" \
   -e AUTH_GITLAB_ID=your_application_id \
   -e AUTH_GITLAB_SECRET=your_application_secret \
   -e GITLAB_GROUP_ID=your_group_id \
   ghcr.io/trbroyles1/shipyard:latest
 ```
+
+`AUTH_URL` must be set to the URL users will access Shipyard at (e.g. `http://localhost:3000` for local use, or `https://shipyard.example.com` behind a reverse proxy). Auth.js uses this to construct OAuth callback URLs. When running outside Docker (`npm run dev` / `npm start`), this is auto-detected and not required.
 
 Optional environment variables:
 
