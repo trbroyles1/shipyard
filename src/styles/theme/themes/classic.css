@@ -91,6 +91,12 @@
   --shell-gap: 0;
   --body-gap: 0;
   --panel-r: 0;
+  --topbar-r: var(--panel-r);
+  --topbar-sh: var(--panel-sh);
+  --sidebar-r: var(--panel-r);
+  --sidebar-bg: var(--bg-s);
+  --sidebar-sh: var(--panel-sh);
+  --main-inset: 0;
 
   /* Font families (theme-overridable) */
   --sans: var(--font-outfit, 'Outfit', sans-serif);

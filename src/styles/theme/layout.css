@@ -24,4 +24,10 @@
   --shell-gap: 0;
   --body-gap: 0;
   --panel-r: 0;
+  --topbar-r: 0;
+  --topbar-sh: none;
+  --sidebar-r: 0;
+  --sidebar-bg: transparent;
+  --sidebar-sh: none;
+  --main-inset: 0;
 }

@@ -84,6 +84,12 @@
   --shell-gap: 14px;
   --body-gap: 14px;
   --panel-r: 14px;
+  --topbar-r: var(--panel-r);
+  --topbar-sh: var(--panel-sh);
+  --sidebar-r: var(--panel-r);
+  --sidebar-bg: var(--bg-s);
+  --sidebar-sh: var(--panel-sh);
+  --main-inset: 0;
 
   /* Canvas gradient — sunlight on shallow harbor water */
   --canvas-bg-image:

@@ -3,6 +3,7 @@ export const THEMES = [
   { value: "brinjal", label: "Brinjal" },
   { value: "drydock", label: "Drydock" },
   { value: "bermude", label: "Bermude" },
+  { value: "myrtille", label: "Myrtille" },
 ] as const;
 
 export type Theme = (typeof THEMES)[number]["value"];

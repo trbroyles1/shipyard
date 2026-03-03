@@ -17,9 +17,9 @@
 
 .errorBar {
   position: fixed;
-  bottom: var(--shell-p);
-  left: var(--shell-p);
-  right: var(--shell-p);
+  bottom: max(var(--shell-p), var(--main-inset));
+  left: max(var(--shell-p), var(--main-inset));
+  right: max(var(--shell-p), var(--main-inset));
   padding: var(--sp-3) var(--sp-7);
   background: var(--red-d);
   color: var(--red);
@@ -32,9 +32,9 @@
 
 .warningBar {
   position: fixed;
-  bottom: var(--shell-p);
-  left: var(--shell-p);
-  right: var(--shell-p);
+  bottom: max(var(--shell-p), var(--main-inset));
+  left: max(var(--shell-p), var(--main-inset));
+  right: max(var(--shell-p), var(--main-inset));
   padding: var(--sp-3) var(--sp-7);
   background: var(--org-d, rgba(200, 140, 50, 0.15));
   color: var(--org);

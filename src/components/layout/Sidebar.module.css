@@ -4,9 +4,9 @@
   border-right: var(--panel-separator);
   display: flex;
   flex-direction: column;
-  background: var(--bg-s);
-  border-radius: var(--panel-r);
-  box-shadow: var(--panel-sh);
+  background: var(--sidebar-bg);
+  border-radius: var(--sidebar-r);
+  box-shadow: var(--sidebar-sh);
   backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
   -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
   transition: width var(--dur-layout) ease, min-width var(--dur-layout) ease, opacity var(--dur-slow) ease;

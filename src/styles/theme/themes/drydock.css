@@ -84,6 +84,12 @@
   --shell-gap: 10px;
   --body-gap: 10px;
   --panel-r: 8px;
+  --topbar-r: var(--panel-r);
+  --topbar-sh: var(--panel-sh);
+  --sidebar-r: var(--panel-r);
+  --sidebar-bg: var(--bg-s);
+  --sidebar-sh: var(--panel-sh);
+  --main-inset: 0;
 
   /* Canvas gradient — harbor at dusk (very subtle warm ambient glow) */
   --canvas-bg-image:
