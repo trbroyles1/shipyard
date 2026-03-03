@@ -20,8 +20,6 @@ interface UseDiscussionActionsOptions {
 export function useDiscussionActions({ projectId, iid, onRefetch, addToast }: UseDiscussionActionsOptions) {
   const base = mrApiPath(projectId, iid);
 
-  // None of the handlers re-throw: the toast provides user feedback and
-  // callers (DiffViewer, DiscussionThread) don't catch the rejection.
   const handleReply = useCallback(async (discussionId: string, body: string) => {
     try {
       const res = await apiFetch(`${base}/discussions/${discussionId}/notes`, {
@@ -33,6 +31,7 @@ export function useDiscussionActions({ projectId, iid, onRefetch, addToast }: Us
       await onRefetch();
     } catch (err) {
       addToast("Reply failed", err instanceof Error ? err.message : FALLBACK_ERROR_MESSAGE, "error");
+      throw err;
     }
   }, [base, onRefetch, addToast]);
 
@@ -63,6 +62,7 @@ export function useDiscussionActions({ projectId, iid, onRefetch, addToast }: Us
       await onRefetch();
     } catch (err) {
       addToast("Comment failed", err instanceof Error ? err.message : FALLBACK_ERROR_MESSAGE, "error");
+      throw err;
     }
   }, [base, onRefetch, addToast]);
 

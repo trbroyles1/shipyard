@@ -1,10 +1,10 @@
 "use client";
 
-import { type ReactNode, Children, type ComponentPropsWithoutRef } from "react";
+import { useMemo, type ReactNode, Children, type ComponentPropsWithoutRef } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
-import { JIRA_TICKET_RE, normalizeJiraBaseUrl, jiraTicketUrl } from "@/lib/jira-utils";
+import { linkifyJiraTickets } from "@/lib/jira-utils";
 import { MermaidBlock } from "./MermaidBlock";
 import styles from "./MarkdownBody.module.css";
 
@@ -15,51 +15,11 @@ interface Props {
   compact?: boolean;
 }
 
-function processJiraInString(text: string, baseUrl: string | undefined): (string | ReactNode)[] {
-  const parts: (string | ReactNode)[] = [];
-  let last = 0;
-  let match: RegExpExecArray | null;
-  const normalized = normalizeJiraBaseUrl(baseUrl);
-
-  JIRA_TICKET_RE.lastIndex = 0;
-  while ((match = JIRA_TICKET_RE.exec(text)) !== null) {
-    if (match.index > last) {
-      parts.push(text.slice(last, match.index));
-    }
-    const ticket = match[1];
-    if (normalized) {
-      parts.push(
-        <a
-          key={`jira-${match.index}`}
-          className={styles.jiraLink}
-          href={jiraTicketUrl(normalized, ticket)}
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={(e) => e.stopPropagation()}
-        >
-          {ticket}
-        </a>,
-      );
-    } else {
-      parts.push(
-        <span key={`jira-${match.index}`} className={styles.jiraLink}>
-          {ticket}
-        </span>,
-      );
-    }
-    last = match.index + match[0].length;
-  }
-  if (last < text.length) {
-    parts.push(text.slice(last));
-  }
-  return parts.length > 0 ? parts : [text];
-}
-
 function processJiraInChildren(children: ReactNode, baseUrl: string | undefined): ReactNode {
   if (!baseUrl) return children;
   return Children.map(children, (child) => {
     if (typeof child === "string") {
-      const processed = processJiraInString(child, baseUrl);
+      const processed = linkifyJiraTickets(child, baseUrl, styles.jiraLink);
       return processed.length === 1 && typeof processed[0] === "string" ? child : <>{processed}</>;
     }
     return child;
@@ -151,7 +111,7 @@ export function MarkdownBody({ content, jiraBaseUrl, className, compact = false 
     className,
   ].filter(Boolean).join(" ");
 
-  const components = buildComponentMap(jiraBaseUrl);
+  const components = useMemo(() => buildComponentMap(jiraBaseUrl), [jiraBaseUrl]);
 
   return (
     <div className={rootClass}>

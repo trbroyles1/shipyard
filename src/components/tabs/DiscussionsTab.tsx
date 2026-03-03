@@ -2,11 +2,9 @@
 
 import { useState, useCallback, type KeyboardEvent } from "react";
 import type { GitLabDiscussion } from "@/lib/types/gitlab";
-import { apiFetch } from "@/lib/client-errors";
-import { mrApiPath } from "@/lib/api-path";
-import { FALLBACK_ERROR_MESSAGE } from "@/lib/constants";
 import { useUIPanel } from "@/components/providers/UIPanelProvider";
 import { useToastContext } from "@/components/providers/ToastProvider";
+import { useDiscussionActions } from "@/hooks/use-discussion-actions";
 import { DiscussionThread } from "@/components/shared/DiscussionThread";
 import styles from "./DiscussionsTab.module.css";
 
@@ -63,72 +61,30 @@ export function DiscussionsTab({ discussions, projectId, iid, onRefetch }: Props
   const [commentText, setCommentText] = useState("");
   const [commenting, setCommenting] = useState(false);
 
-  const base = mrApiPath(projectId, iid);
+  const { handleReply, handleResolve, handleNewComment } = useDiscussionActions({
+    projectId, iid, onRefetch, addToast,
+  });
 
-  const handleReply = useCallback(async (discussionId: string, body: string) => {
-    try {
-      const res = await apiFetch(`${base}/discussions/${discussionId}/notes`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ body }),
-      });
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        throw new Error(data.error || `HTTP ${res.status}`);
-      }
-      await onRefetch();
-    } catch (err) {
-      addToast("Reply failed", err instanceof Error ? err.message : FALLBACK_ERROR_MESSAGE, "error");
-      throw err;
-    }
-  }, [base, onRefetch, addToast]);
-
-  const handleResolve = useCallback(async (discussionId: string, resolved: boolean) => {
-    try {
-      const res = await apiFetch(`${base}/discussions/${discussionId}/resolve`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ resolved }),
-      });
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        throw new Error(data.error || `HTTP ${res.status}`);
-      }
-      await onRefetch();
-    } catch (err) {
-      addToast("Resolve failed", err instanceof Error ? err.message : FALLBACK_ERROR_MESSAGE, "error");
-    }
-  }, [base, onRefetch, addToast]);
-
-  const handleNewComment = useCallback(async () => {
+  const handleSubmitComment = useCallback(async () => {
     if (!commentText.trim()) return;
     setCommenting(true);
     try {
-      const res = await apiFetch(`${base}/discussions`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ body: commentText.trim() }),
-      });
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        throw new Error(data.error || `HTTP ${res.status}`);
-      }
+      await handleNewComment(commentText.trim());
       setCommentText("");
       setCommentOpen(false);
-      await onRefetch();
-    } catch (err) {
-      addToast("Comment failed", err instanceof Error ? err.message : FALLBACK_ERROR_MESSAGE, "error");
+    } catch {
+      // Toast already shown by useDiscussionActions
     } finally {
       setCommenting(false);
     }
-  }, [base, commentText, onRefetch, addToast]);
+  }, [commentText, handleNewComment]);
 
   const handleCommentKeyDown = useCallback((e: KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
       e.preventDefault();
-      handleNewComment();
+      handleSubmitComment();
     }
-  }, [handleNewComment]);
+  }, [handleSubmitComment]);
 
   // Filter out system-only discussions (just system notes)
   const humanDiscussions = discussions.filter(
@@ -157,7 +113,7 @@ export function DiscussionsTab({ discussions, projectId, iid, onRefetch }: Props
               </button>
               <button
                 className={styles.commentSubmit}
-                onClick={handleNewComment}
+                onClick={handleSubmitComment}
                 disabled={commenting || !commentText.trim()}
               >
                 {commenting ? "Sending..." : "Comment"}

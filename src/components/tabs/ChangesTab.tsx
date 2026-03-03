@@ -1,12 +1,10 @@
 "use client";
 
-import { useState, useMemo, useEffect, useRef, useCallback } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import type { EnrichedDiffFile, GitLabDiscussion, GitLabDiffPosition, DiffRefs } from "@/lib/types/gitlab";
-import { apiFetch } from "@/lib/client-errors";
-import { mrApiPath } from "@/lib/api-path";
-import { FALLBACK_ERROR_MESSAGE } from "@/lib/constants";
 import { useUIPanel } from "@/components/providers/UIPanelProvider";
 import { useToastContext } from "@/components/providers/ToastProvider";
+import { useDiscussionActions } from "@/hooks/use-discussion-actions";
 import { FileTree } from "./changes/FileTree";
 import { DiffViewer } from "./changes/DiffViewer";
 import styles from "./ChangesTab.module.css";
@@ -24,62 +22,9 @@ export function ChangesTab({ diffs, discussions, projectId, iid, diffRefs, onRef
   const { scrollToFile, setScrollToFile } = useUIPanel();
   const { addToast } = useToastContext();
 
-  const base = mrApiPath(projectId, iid);
-
-  const handleReply = useCallback(async (discussionId: string, body: string) => {
-    try {
-      const res = await apiFetch(`${base}/discussions/${discussionId}/notes`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ body }),
-      });
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        throw new Error(data.error || `HTTP ${res.status}`);
-      }
-      await onRefetch();
-    } catch (err) {
-      addToast("Reply failed", err instanceof Error ? err.message : FALLBACK_ERROR_MESSAGE, "error");
-      throw err;
-    }
-  }, [base, onRefetch, addToast]);
-
-  const handleResolve = useCallback(async (discussionId: string, resolved: boolean) => {
-    try {
-      const res = await apiFetch(`${base}/discussions/${discussionId}/resolve`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ resolved }),
-      });
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        throw new Error(data.error || `HTTP ${res.status}`);
-      }
-      await onRefetch();
-    } catch (err) {
-      addToast("Resolve failed", err instanceof Error ? err.message : FALLBACK_ERROR_MESSAGE, "error");
-    }
-  }, [base, onRefetch, addToast]);
-
-  const handleNewComment = useCallback(async (body: string, position?: GitLabDiffPosition) => {
-    try {
-      const payload: Record<string, unknown> = { body };
-      if (position) payload.position = position;
-      const res = await apiFetch(`${base}/discussions`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        throw new Error(data.error || `HTTP ${res.status}`);
-      }
-      await onRefetch();
-    } catch (err) {
-      addToast("Comment failed", err instanceof Error ? err.message : FALLBACK_ERROR_MESSAGE, "error");
-      throw err;
-    }
-  }, [base, onRefetch, addToast]);
+  const { handleReply, handleResolve, handleNewComment } = useDiscussionActions({
+    projectId, iid, onRefetch, addToast,
+  });
 
   const [selectedFile, setSelectedFile] = useState<string | null>(null);
   const [treeOpen, setTreeOpen] = useState(true);
