@@ -33,7 +33,7 @@ The build process leaned heavily on iteration: small, scope-limited loops with a
 - **Event timeline** — audit trail of MR lifecycle events
 - **Notifications** — toast + audio alerts for new MRs, reviewer assignments, and merge-readiness
 - **JIRA link detection** — ticket references in MR titles/descriptions become clickable links
-- **Themeable** — five dark themes with a CSS custom property architecture that makes adding more straightforward
+- **Themeable** — five themes (four dark, one light) with a CSS custom property architecture that makes adding more straightforward
 - **User preferences** — theme, notification toggles, warning thresholds, JIRA base URL — all stored in a cookie
 - **Single-tab enforcement** — only one active session per user; older tabs are gracefully displaced
 - **No database** — all server state is ephemeral in-memory; preferences live in cookies
@@ -158,15 +158,15 @@ Optional environment variables:
 
 ## Theming
 
-Shipyard ships with five themes, all dark-mode:
+Shipyard ships with five themes — four dark, one light:
 
-| Theme | Character |
-|---|---|
-| Classic | Default — cyan accents, clean and minimal |
-| Brinjal | Purple-hued with frosted glass effects |
-| Drydock | Navy and slate |
-| Bermude | Teal accents |
-| Myrtille | Burgundy/wine with per-panel layout and tactile buttons |
+| Theme | Mode | Character |
+|---|---|---|
+| Classic | Dark | Cyan accents on cool slate, clean and minimal |
+| Brinjal | Dark | Lime green on deep plum with frosted glass effects |
+| Drydock | Dark | Brass and amber with a warm industrial aesthetic |
+| Bermude | Light | Ocean teal and coral on warm sand |
+| Myrtille | Dark | Cyan-blue on deep navy with glass effects and 3D buttons |
 
 Switch themes from the preferences panel in the app. To create a new theme, see [`project_docs/THEMING.md`](project_docs/THEMING.md).
 
@@ -191,7 +191,6 @@ Switch themes from the preferences panel in the app. To create a new theme, see 
 ## Known Limitations
 
 - **"Request Changes"** is not yet implemented — it requires a GitLab GraphQL mutation that is on the backlog.
-- **Dark mode only** — by design.
 - **Single process** — not horizontally scalable without sticky sessions / shared state (not currently planned).
 
 ## License
