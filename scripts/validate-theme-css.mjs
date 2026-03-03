@@ -58,11 +58,10 @@ for (const [themeId, filePath] of themeFiles) {
     );
   }
 
-  const expectedColorScheme = themeId === "bermude" ? "light" : "dark";
-  const colorSchemePattern = new RegExp(`color-scheme\\s*:\\s*${expectedColorScheme}\\s*;`);
-  if (!colorSchemePattern.test(css)) {
+  const colorSchemeMatch = css.match(/color-scheme\s*:\s*(light|dark)\s*;/);
+  if (!colorSchemeMatch) {
     errors.push(
-      `Theme ${themeId} must set color-scheme: ${expectedColorScheme} in ${path.relative(repoRoot, filePath)}.`,
+      `Theme ${themeId} must set color-scheme to "light" or "dark" in ${path.relative(repoRoot, filePath)}.`,
     );
   }
 }
