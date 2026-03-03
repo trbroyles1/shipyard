@@ -2,12 +2,13 @@ import { NextResponse } from "next/server";
 import { type NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
 import { auth } from "./auth";
-import { REFRESH_TOKEN_ERROR } from "./constants";
+import { env } from "./env";
+import { REFRESH_TOKEN_ERROR, NOT_AUTHENTICATED_MESSAGE } from "./constants";
 
 export async function getAuthenticatedSession() {
   const session = await auth();
   if (!session) {
-    throw new Error("Not authenticated");
+    throw new Error(NOT_AUTHENTICATED_MESSAGE);
   }
   if (session.error === REFRESH_TOKEN_ERROR) {
     throw new Error("Token refresh failed — re-authentication required");
@@ -16,9 +17,9 @@ export async function getAuthenticatedSession() {
 }
 
 export async function getAccessToken(req: NextRequest): Promise<string> {
-  const jwt = await getToken({ req, secret: process.env.AUTH_SECRET });
+  const jwt = await getToken({ req, secret: env.AUTH_SECRET });
   if (!jwt?.accessToken) {
-    throw new Error("Not authenticated");
+    throw new Error(NOT_AUTHENTICATED_MESSAGE);
   }
   return jwt.accessToken as string;
 }

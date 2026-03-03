@@ -2,6 +2,7 @@ import NextAuth from "next-auth";
 import type { NextAuthConfig } from "next-auth";
 import type { JWT } from "next-auth/jwt";
 import { createLogger } from "./logger";
+import { env } from "./env";
 import { REFRESH_TOKEN_ERROR, SIGN_IN_PATH, GITLAB_API_VERSION_PATH } from "./constants";
 
 const log = createLogger("auth");
@@ -9,10 +10,6 @@ const log = createLogger("auth");
 const TOKEN_REFRESH_TIMEOUT_MS = 15_000;
 const TOKEN_REFRESH_RETRY_DELAY_MS = 2_000;
 const TRANSIENT_REFRESH_STATUSES = [500, 502, 503, 504] as const;
-
-function gitlabUrl(): string {
-  return process.env.GITLAB_URL || "https://gitlab.com";
-}
 
 // Mutex to prevent concurrent token refresh races (rotation means old refresh token is revoked)
 let refreshPromise: Promise<JWT> | null = null;
@@ -29,7 +26,7 @@ function isNetworkOrTimeoutError(error: unknown): boolean {
 }
 
 async function attemptTokenRefresh(token: JWT): Promise<JWT> {
-  const response = await fetch(`${gitlabUrl()}/oauth/token`, {
+  const response = await fetch(`${env.GITLAB_URL}/oauth/token`, {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: new URLSearchParams({
@@ -105,11 +102,11 @@ export const authConfig: NextAuthConfig = {
       clientId: process.env.AUTH_GITLAB_ID,
       clientSecret: process.env.AUTH_GITLAB_SECRET,
       authorization: {
-        url: `${gitlabUrl()}/oauth/authorize`,
+        url: `${env.GITLAB_URL}/oauth/authorize`,
         params: { scope: "api" },
       },
-      token: `${gitlabUrl()}/oauth/token`,
-      userinfo: `${gitlabUrl()}${GITLAB_API_VERSION_PATH}/user`,
+      token: `${env.GITLAB_URL}/oauth/token`,
+      userinfo: `${env.GITLAB_URL}${GITLAB_API_VERSION_PATH}/user`,
       profile(profile) {
         return {
           id: String(profile.id),
