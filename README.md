@@ -116,6 +116,46 @@ npm start
 
 The Next.js config uses `output: "standalone"`, so the build output in `.next/standalone` is self-contained and suitable for containerized deployments.
 
+### Docker
+
+Pull the latest image from GitHub Container Registry:
+
+```bash
+docker pull ghcr.io/trbroyles1/shipyard:latest
+```
+
+Run with an env file:
+
+```bash
+docker run -d \
+  --name shipyard \
+  -p 3000:3000 \
+  --env-file .env.local \
+  ghcr.io/trbroyles1/shipyard:latest
+```
+
+Or pass environment variables directly:
+
+```bash
+docker run -d \
+  --name shipyard \
+  -p 3000:3000 \
+  -e AUTH_SECRET="$(openssl rand -base64 32)" \
+  -e AUTH_GITLAB_ID=your_application_id \
+  -e AUTH_GITLAB_SECRET=your_application_secret \
+  -e GITLAB_GROUP_ID=your_group_id \
+  ghcr.io/trbroyles1/shipyard:latest
+```
+
+Optional environment variables:
+
+| Variable | Default | Description |
+|---|---|---|
+| `GITLAB_URL` | `https://gitlab.com` | GitLab instance URL |
+| `LOG_LEVEL` | `INFO` | `DEBUG`, `INFO`, `WARN`, or `ERROR` |
+| `MR_POLL_INTERVAL` | `25` | Seconds between GitLab polls for the viewed MR |
+| `PORT` | `3000` | Port the server listens on |
+
 ## Theming
 
 Shipyard ships with five themes, all dark-mode:
