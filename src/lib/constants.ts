@@ -10,6 +10,10 @@ export const MR_API_BASE_PATH = "/api/gitlab/merge-requests";
 /** GitLab REST API version prefix. */
 export const GITLAB_API_VERSION_PATH = "/api/v4";
 
+export const GITLAB_API_PATH_PREFIX = "/api/gitlab";
+export const SSE_API_PATH_PREFIX = "/api/sse";
+export const AUTH_API_PATH_PREFIX = "/api/auth";
+
 // ---------------------------------------------------------------------------
 // Auth
 // ---------------------------------------------------------------------------

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { type NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
 import type { JWT } from "next-auth/jwt";
+import type { ZodError, ZodType } from "zod";
 import { auth, refreshAccessToken } from "./auth";
 import { env } from "./env";
 import {
@@ -68,8 +69,22 @@ export async function getAccessToken(req: NextRequest): Promise<string> {
 
 const DEFAULT_MAX_BYTES = 1_048_576; // 1 MB
 
-export async function parseBody<T = Record<string, unknown>>(
+function validationErrorResponse(zodError: ZodError): NextResponse {
+  const message = zodError.issues
+    .map((issue) => {
+      const path = issue.path.join(".");
+      return path ? `${path}: ${issue.message}` : issue.message;
+    })
+    .join("; ");
+  return NextResponse.json(
+    { error: message || "Invalid request body", code: "validation_error" },
+    { status: 400 },
+  );
+}
+
+export async function parseBody<T>(
   req: Request,
+  schema: ZodType<T>,
   maxBytes: number = DEFAULT_MAX_BYTES,
 ): Promise<{ data: T } | { error: NextResponse }> {
   const contentLength = req.headers.get("content-length");
@@ -85,16 +100,27 @@ export async function parseBody<T = Record<string, unknown>>(
   }
 
   if (!text || text.trim() === "") {
-    return { data: {} as T };
+    const result = schema.safeParse({});
+    if (!result.success) {
+      return { error: validationErrorResponse(result.error) };
+    }
+    return { data: result.data };
   }
 
   if (text.length > maxBytes) {
     return { error: NextResponse.json({ error: "Request body too large" }, { status: 413 }) };
   }
 
+  let raw: unknown;
   try {
-    return { data: JSON.parse(text) as T };
+    raw = JSON.parse(text);
   } catch {
     return { error: NextResponse.json({ error: "Invalid JSON" }, { status: 400 }) };
   }
+
+  const result = schema.safeParse(raw);
+  if (!result.success) {
+    return { error: validationErrorResponse(result.error) };
+  }
+  return { data: result.data };
 }

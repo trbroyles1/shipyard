@@ -4,6 +4,7 @@ import { gitlabFetch } from "@/lib/gitlab-client";
 import { validateNumericId, validateDiscussionId } from "@/lib/validation";
 import { createLogger } from "@/lib/logger";
 import { handleApiRouteError } from "@/lib/api-error-handler";
+import { resolveDiscussionBodySchema } from "@/lib/schemas";
 
 const log = createLogger("api/mr-discussion-resolve");
 
@@ -19,7 +20,7 @@ export async function PUT(
     const iid = validateNumericId(params.iid, "iid");
     const discussionId = validateDiscussionId(params.discussionId);
 
-    const parsed = await parseBody<{ resolved?: boolean }>(req);
+    const parsed = await parseBody(req, resolveDiscussionBodySchema);
     if ("error" in parsed) return parsed.error;
     const body = parsed.data;
 

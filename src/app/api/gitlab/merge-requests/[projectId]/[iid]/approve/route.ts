@@ -4,6 +4,7 @@ import { gitlabFetch } from "@/lib/gitlab-client";
 import { validateNumericId } from "@/lib/validation";
 import { createLogger } from "@/lib/logger";
 import { handleApiRouteError } from "@/lib/api-error-handler";
+import { approveBodySchema } from "@/lib/schemas";
 
 const log = createLogger("api/mr-approve");
 
@@ -18,7 +19,7 @@ export async function POST(
     const projectId = validateNumericId(params.projectId, "projectId");
     const iid = validateNumericId(params.iid, "iid");
 
-    const parsed = await parseBody<{ sha?: string }>(req);
+    const parsed = await parseBody(req, approveBodySchema);
     if ("error" in parsed) return parsed.error;
     const body = parsed.data;
 

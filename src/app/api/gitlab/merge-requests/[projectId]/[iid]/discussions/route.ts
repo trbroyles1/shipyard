@@ -4,6 +4,7 @@ import { gitlabFetch, gitlabFetchAllPages } from "@/lib/gitlab-client";
 import { validateNumericId } from "@/lib/validation";
 import { createLogger } from "@/lib/logger";
 import { handleApiRouteError } from "@/lib/api-error-handler";
+import { createDiscussionBodySchema } from "@/lib/schemas";
 import type { GitLabDiscussion } from "@/lib/types/gitlab";
 
 const log = createLogger("api/mr-discussions");
@@ -43,12 +44,9 @@ export async function POST(
     const projectId = validateNumericId(params.projectId, "projectId");
     const iid = validateNumericId(params.iid, "iid");
 
-    const parsed = await parseBody<{ body?: string; position?: unknown }>(req);
+    const parsed = await parseBody(req, createDiscussionBodySchema);
     if ("error" in parsed) return parsed.error;
     const body = parsed.data;
-    if (!body.body) {
-      return NextResponse.json({ error: "body is required" }, { status: 400 });
-    }
 
     log.info(`Creating discussion: project=${projectId} iid=${iid}`);
 

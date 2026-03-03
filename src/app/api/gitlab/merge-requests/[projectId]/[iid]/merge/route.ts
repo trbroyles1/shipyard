@@ -4,6 +4,7 @@ import { gitlabFetch } from "@/lib/gitlab-client";
 import { validateNumericId } from "@/lib/validation";
 import { createLogger } from "@/lib/logger";
 import { handleApiRouteError } from "@/lib/api-error-handler";
+import { mergeBodySchema } from "@/lib/schemas";
 
 const log = createLogger("api/mr-merge");
 
@@ -18,12 +19,9 @@ export async function PUT(
     const projectId = validateNumericId(params.projectId, "projectId");
     const iid = validateNumericId(params.iid, "iid");
 
-    const parsed = await parseBody<{ sha?: string; squash?: boolean; should_remove_source_branch?: boolean; merge_when_pipeline_succeeds?: boolean }>(req);
+    const parsed = await parseBody(req, mergeBodySchema);
     if ("error" in parsed) return parsed.error;
     const body = parsed.data;
-    if (!body.sha) {
-      return NextResponse.json({ error: "sha is required" }, { status: 400 });
-    }
 
     log.info(`Merging MR: project=${projectId} iid=${iid}`);
 
