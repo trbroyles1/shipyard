@@ -38,6 +38,7 @@
   font-weight: 500;
   cursor: pointer;
   font-family: var(--sans), sans-serif;
+  box-shadow: var(--btn-shadow);
 }
 
 .retryBtn:hover {

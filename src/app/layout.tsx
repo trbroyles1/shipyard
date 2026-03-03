@@ -7,6 +7,17 @@ import { DEFAULT_PREFERENCES, isTheme } from "@/lib/types/preferences";
 import type { Theme } from "@/lib/types/preferences";
 import "./globals.css";
 
+/**
+ * Theme-specific font override pattern:
+ * 1. Import from next/font/google (or next/font/local)
+ * 2. Assign a `variable` option (e.g. "--font-my-sans")
+ * 3. Append `.variable` to the <html> className below
+ * 4. Override --sans or --mono in the theme CSS file using var(--font-my-sans, ...)
+ *
+ * All theme fonts load unconditionally via @font-face at build time; the browser
+ * only downloads woff2 files when a CSS rule actually references the font family,
+ * so unused fonts cost nothing.
+ */
 const outfit = Outfit({
   subsets: ["latin"],
   variable: "--font-outfit",

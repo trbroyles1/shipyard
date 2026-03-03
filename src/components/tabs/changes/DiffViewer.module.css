@@ -158,6 +158,7 @@
   cursor: pointer;
   white-space: nowrap;
   transition: all var(--dur-base);
+  box-shadow: var(--btn-shadow);
 }
 
 .loadBtn:hover:not(:disabled) {
@@ -303,6 +304,7 @@
   font-size: var(--fs-2);
   font-family: var(--sans);
   cursor: pointer;
+  box-shadow: var(--btn-shadow);
 }
 
 .commentFormCancel:hover {
@@ -319,6 +321,7 @@
   font-weight: var(--fw-sb);
   font-family: var(--sans);
   cursor: pointer;
+  box-shadow: var(--btn-shadow);
 }
 
 .commentFormSubmit:hover:not(:disabled) {

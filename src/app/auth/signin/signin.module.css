@@ -56,6 +56,7 @@
   font-family: var(--sans);
   cursor: pointer;
   transition: background var(--dur-base);
+  box-shadow: var(--btn-shadow);
 }
 
 .button:hover {

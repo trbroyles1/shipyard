@@ -37,6 +37,7 @@
   --scrollbar-thumb: var(--brd);
   --scrollbar-thumb-hover: var(--tm);
   --focus-glow: none;
+  --btn-shadow: none;
 }
 
 /* Border widths */

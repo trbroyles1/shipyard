@@ -19,6 +19,7 @@
   gap: var(--sp-2);
   transition: all var(--dur-base);
   text-decoration: none;
+  box-shadow: var(--btn-shadow);
 }
 
 .btn:hover { background: var(--bg-sh); border-color: var(--tm); }

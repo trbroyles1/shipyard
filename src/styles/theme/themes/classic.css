@@ -82,6 +82,7 @@
   --card-inset: 0 0 0 0 transparent;
   --tab-glow: none;
   --focus-glow: none;
+  --btn-shadow: none;
   --scrollbar-thumb: var(--brd);
   --scrollbar-thumb-hover: var(--tm);
 
@@ -90,6 +91,10 @@
   --shell-gap: 0;
   --body-gap: 0;
   --panel-r: 0;
+
+  /* Font families (theme-overridable) */
+  --sans: var(--font-outfit, 'Outfit', sans-serif);
+  --mono: var(--font-jetbrains, 'JetBrains Mono', monospace);
 
   /* highlight.js tokens */
   --hljs-keyword: #c792ea;

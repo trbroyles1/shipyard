@@ -103,12 +103,19 @@
   /* Input focus — brass ring */
   --focus-glow: 0 0 0 1px var(--acc), 0 0 8px rgba(216, 152, 48, 0.12);
 
+  /* Button shadow */
+  --btn-shadow: none;
+
   /* Solid background (opaque equivalent) */
   --solid-bg: #14120f;
 
   /* Scrollbar — warm bronze */
   --scrollbar-thumb: rgba(110, 95, 65, 0.40);
   --scrollbar-thumb-hover: rgba(140, 120, 80, 0.55);
+
+  /* Font families (theme-overridable) */
+  --sans: var(--font-outfit, 'Outfit', sans-serif);
+  --mono: var(--font-jetbrains, 'JetBrains Mono', monospace);
 
   /* highlight.js tokens */
   --hljs-keyword: #cc8854;

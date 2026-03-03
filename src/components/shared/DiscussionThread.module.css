@@ -211,6 +211,7 @@
   color: var(--t2);
   cursor: pointer;
   font-family: var(--sans);
+  box-shadow: var(--btn-shadow);
 }
 
 .resolveBtn:hover:not(:disabled) {
@@ -277,6 +278,7 @@
   font-family: var(--sans);
   cursor: pointer;
   flex-shrink: 0;
+  box-shadow: var(--btn-shadow);
 }
 
 .replyBtn:hover:not(:disabled) {

@@ -103,12 +103,19 @@
   /* Input focus — ocean ring */
   --focus-glow: 0 0 0 1px var(--acc), 0 0 10px rgba(8, 145, 178, 0.15);
 
+  /* Button shadow */
+  --btn-shadow: none;
+
   /* Solid background (opaque equivalent) */
   --solid-bg: #f6f3ee;
 
   /* Scrollbar — warm stone */
   --scrollbar-thumb: rgba(160, 148, 130, 0.45);
   --scrollbar-thumb-hover: rgba(140, 126, 108, 0.60);
+
+  /* Font families (theme-overridable) */
+  --sans: var(--font-outfit, 'Outfit', sans-serif);
+  --mono: var(--font-jetbrains, 'JetBrains Mono', monospace);
 
   /* highlight.js tokens */
   --hljs-keyword: #8b3a8b;
