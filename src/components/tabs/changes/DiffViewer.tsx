@@ -8,6 +8,7 @@ import { mrApiPath } from "@/lib/api-path";
 import { DiscussionThread } from "@/components/shared/DiscussionThread";
 import { useGutterLineSelect, buildPosition } from "@/hooks/use-gutter-line-select";
 import { apiFetch } from "@/lib/client-errors";
+import { ChevronRightIcon, DocumentIcon, CommentIcon } from "@/components/shared/icons";
 import styles from "./DiffViewer.module.css";
 import "react-diff-view/style/index.css";
 
@@ -296,21 +297,18 @@ export function DiffViewer({ file: initialFile, discussions, projectId, iid, dif
         className={styles.fileHeader}
         onClick={() => setCollapsed(!collapsed)}
       >
-        <svg
-          width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-          strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+        <ChevronRightIcon
+          size={12}
           className={`${styles.chevron} ${collapsed ? "" : styles.chevronOpen}`}
-        >
-          <polyline points="9 6 15 12 9 18"/>
-        </svg>
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+        />
+        <DocumentIcon size={12} />
         <span className={styles.filePath}>{path}</span>
         {initialFile.renamed_file && initialFile.old_path !== initialFile.new_path && (
           <span className={styles.rename}>{initialFile.old_path} &rarr;</span>
         )}
         {fileDiscussions.length > 0 && (
           <span className={styles.commentBadge} title={`${fileDiscussions.length} discussion${fileDiscussions.length > 1 ? "s" : ""}`}>
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <CommentIcon size={11} />
             {fileDiscussions.length}
           </span>
         )}
