@@ -114,6 +114,7 @@
 
   /* Solid background (opaque equivalent) */
   --solid-bg: #14120f;
+  --dialog-bg: var(--bg-s);
 
   /* Scrollbar — warm bronze */
   --scrollbar-thumb: rgba(110, 95, 65, 0.40);

@@ -76,6 +76,17 @@ It defaults to `none` in `src/styles/theme/effects.css` and is consumed by every
 button-bearing CSS module. Themes can set it to a box-shadow value for tactile
 button styling (e.g. Myrtille uses a multi-layer navy-tinted shadow).
 
+## Dialog Background
+The `--dialog-bg` token controls dialog/modal panel backgrounds. It defaults to
+`var(--bg-s)` in `src/styles/theme/effects.css`, which is correct for opaque themes
+where `--bg-s` is already solid. Glass-effect themes (Brinjal, Myrtille) override it
+with a high-opacity variant of their `--bg-s` colour (~86–88% opacity) so that dialog
+content remains readable over dense page content while preserving a subtle frosted
+glass appearance from the existing `backdrop-filter` blur.
+
+Consumed by `src/components/shared/Modal.module.css` and
+`src/components/overview/MergeDialog.module.css`.
+
 ## Font Overrides
 Each theme declares `--sans` and `--mono` tokens that control the application font
 families. The pattern uses CSS `var()` fallback chains referencing `next/font` CSS
@@ -104,7 +115,7 @@ so unused fonts cost nothing.
 1. Add a new entry to `THEMES` in `src/lib/types/preferences.ts`.
 2. Create `src/styles/theme/themes/<theme-id>.css` with:
    - `[data-theme="<theme-id>"]` selector
-   - full app token set (including `--btn-shadow`, `--sans`, `--mono`, per-panel tokens)
+   - full app token set (including `--dialog-bg`, `--btn-shadow`, `--sans`, `--mono`, per-panel tokens)
    - full `--hljs-*` token set
    - explicit `color-scheme`
 3. If the theme needs a custom font, add it to `src/app/layout.tsx` (see Font Overrides above).

@@ -112,6 +112,7 @@
 
   /* Solid background (opaque equivalent of --bg-root for knobs, badges, etc.) */
   --solid-bg: #080c18;
+  --dialog-bg: rgba(16, 24, 46, 0.86);
 
   /* Glass-coherent scrollbar */
   --scrollbar-thumb: rgba(80, 120, 200, 0.30);

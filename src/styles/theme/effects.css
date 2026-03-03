@@ -38,6 +38,7 @@
   --scrollbar-thumb-hover: var(--tm);
   --focus-glow: none;
   --btn-shadow: none;
+  --dialog-bg: var(--bg-s);
 }
 
 /* Border widths */

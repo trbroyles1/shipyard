@@ -1,7 +1,7 @@
 .dialog {
   margin: auto;
   padding: 0;
-  background: var(--bg-s);
+  background: var(--dialog-bg);
   border: var(--bw) solid var(--brd);
   border-radius: var(--rl);
   box-shadow: var(--sh-lg);
