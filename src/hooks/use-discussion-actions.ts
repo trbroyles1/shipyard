@@ -10,7 +10,7 @@ interface UseDiscussionActionsOptions {
   projectId: number;
   iid: number;
   onRefetch: () => Promise<void>;
-  addToast: (title: string, message: string, variant: string) => void;
+  addToast: (title: string, message: string, type?: "info" | "success" | "warning" | "error") => void;
 }
 
 /**
