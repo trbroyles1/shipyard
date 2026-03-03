@@ -10,8 +10,9 @@ const log = createLogger("api/mr-discussions");
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { projectId: string; iid: string } },
+  props: { params: Promise<{ projectId: string; iid: string }> }
 ) {
+  const params = await props.params;
   try {
     await getAuthenticatedSession();
     const token = await getAccessToken(req);
@@ -33,8 +34,9 @@ export async function GET(
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { projectId: string; iid: string } },
+  props: { params: Promise<{ projectId: string; iid: string }> }
 ) {
+  const params = await props.params;
   try {
     await getAuthenticatedSession();
     const token = await getAccessToken(req);

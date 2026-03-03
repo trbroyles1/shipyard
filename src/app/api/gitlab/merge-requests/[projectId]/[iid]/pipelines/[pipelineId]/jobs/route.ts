@@ -10,8 +10,9 @@ const log = createLogger("api/pipeline-jobs");
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { projectId: string; pipelineId: string } },
+  props: { params: Promise<{ projectId: string; pipelineId: string }> }
 ) {
+  const params = await props.params;
   try {
     await getAuthenticatedSession();
     const token = await getAccessToken(req);

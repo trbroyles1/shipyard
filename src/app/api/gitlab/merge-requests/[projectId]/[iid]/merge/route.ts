@@ -9,8 +9,9 @@ const log = createLogger("api/mr-merge");
 
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { projectId: string; iid: string } },
+  props: { params: Promise<{ projectId: string; iid: string }> }
 ) {
+  const params = await props.params;
   try {
     await getAuthenticatedSession();
     const token = await getAccessToken(req);

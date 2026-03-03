@@ -134,7 +134,8 @@ export function useMRDetail(selected: MRSummary | null, detailVersion = 0) {
 
   // Full fetch when the selected MR changes (keyed on ID only so object
   // identity changes from SSE patches don't trigger a full reload).
-  // eslint-disable-next-line react-hooks/exhaustive-deps — intentionally depend on `selected?.id` not `selected`
+  // Intentionally depend on `selected?.id` instead of `selected` object identity.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (selected) {
       fetchDetail(selected);

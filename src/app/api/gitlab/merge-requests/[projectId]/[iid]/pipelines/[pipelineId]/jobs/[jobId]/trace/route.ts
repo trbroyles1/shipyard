@@ -12,8 +12,9 @@ const RANGE_PATTERN = /^bytes=\d+-\d*$/;
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { projectId: string; jobId: string } },
+  props: { params: Promise<{ projectId: string; jobId: string }> }
 ) {
+  const params = await props.params;
   try {
     await getAuthenticatedSession();
     const token = await getAccessToken(req);

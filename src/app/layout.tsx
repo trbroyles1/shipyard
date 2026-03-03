@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   description: "GitLab merge request review dashboard",
 };
 
-function readThemeFromCookie(cookieStore: ReturnType<typeof cookies>): Theme {
+function readThemeFromCookie(cookieStore: Awaited<ReturnType<typeof cookies>>): Theme {
   const raw = cookieStore.get("shipyard_prefs")?.value;
   if (!raw) return DEFAULT_PREFERENCES.theme;
   try {
@@ -35,12 +35,14 @@ function readThemeFromCookie(cookieStore: ReturnType<typeof cookies>): Theme {
   }
 }
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  const cookieStore = cookies();
+export default async function RootLayout(
+  {
+    children,
+  }: {
+    children: React.ReactNode;
+  }
+) {
+  const cookieStore = await cookies();
   const theme = readThemeFromCookie(cookieStore);
 
   return (

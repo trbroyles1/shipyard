@@ -26,12 +26,9 @@ export function DiscussionThread({ discussion, defaultExpanded = false, compact 
   const [replying, setReplying] = useState(false);
   const [resolving, setResolving] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-
-  if (notes.length === 0) return null;
-
   const firstNote = notes[0];
   const replyCount = notes.length - 1;
-  const isResolved = firstNote.resolvable && firstNote.resolved;
+  const isResolved = !!firstNote?.resolvable && !!firstNote.resolved;
 
   const rootClass = [
     styles.thread,
@@ -66,6 +63,8 @@ export function DiscussionThread({ discussion, defaultExpanded = false, compact 
       setResolving(false);
     }
   }, [onResolve, discussion.id, isResolved]);
+
+  if (!firstNote) return null;
 
   return (
     <div className={rootClass}>

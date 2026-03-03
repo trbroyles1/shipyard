@@ -9,8 +9,9 @@ const log = createLogger("api/mr-discussion-resolve");
 
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { projectId: string; iid: string; discussionId: string } },
+  props: { params: Promise<{ projectId: string; iid: string; discussionId: string }> }
 ) {
+  const params = await props.params;
   try {
     await getAuthenticatedSession();
     const token = await getAccessToken(req);
