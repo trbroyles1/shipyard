@@ -1,5 +1,6 @@
 "use client";
 
+import type * as MermaidNs from "mermaid";
 import { useEffect, useRef, useState, useId } from "react";
 import styles from "./MermaidBlock.module.css";
 
@@ -7,7 +8,7 @@ interface Props {
   code: string;
 }
 
-let mermaidPromise: Promise<typeof import("mermaid")> | null = null;
+let mermaidPromise: Promise<typeof MermaidNs> | null = null;
 let mermaidCounter = 0;
 
 function loadMermaid() {

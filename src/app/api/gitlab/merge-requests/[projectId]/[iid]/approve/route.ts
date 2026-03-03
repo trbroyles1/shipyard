@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 import { getAuthenticatedSession, getAccessToken, parseBody } from "@/lib/auth-helpers";
 import { gitlabFetch } from "@/lib/gitlab-client";
 import { validateNumericId } from "@/lib/validation";

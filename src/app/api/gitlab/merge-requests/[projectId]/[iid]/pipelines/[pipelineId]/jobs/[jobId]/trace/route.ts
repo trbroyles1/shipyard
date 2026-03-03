@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 import { getAuthenticatedSession, getAccessToken } from "@/lib/auth-helpers";
 import { env } from "@/lib/env";
 import { acquire } from "@/lib/rate-limiter";

@@ -19,7 +19,7 @@ interface ViewedMR {
 const globalKey = "__shipyard_viewed_mrs" as const;
 
 declare global {
-  // eslint-disable-next-line no-var
+   
   var __shipyard_viewed_mrs: Map<number, ViewedMR> | undefined;
 }
 

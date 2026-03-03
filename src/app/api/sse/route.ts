@@ -1,4 +1,4 @@
-import { NextRequest } from "next/server";
+import { type NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
 import { createLogger } from "@/lib/logger";
 import { startPoller } from "@/lib/mr-poller";

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import styles from "./Avatar.module.css";
 
 const FALLBACK_FONT_RATIO = 0.38;
@@ -20,7 +21,7 @@ function getInitials(name: string): string {
 export function Avatar({ name, avatarUrl, size = 24 }: AvatarProps) {
   if (avatarUrl) {
     return (
-      <img
+      <Image
         className={styles.avatar}
         src={avatarUrl}
         alt={name}

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { GitLabApiError } from "./gitlab-client";
 import { ValidationError } from "./validation";
-import { createLogger } from "./logger";
+import { type createLogger } from "./logger";
 
 type Logger = ReturnType<typeof createLogger>;
 

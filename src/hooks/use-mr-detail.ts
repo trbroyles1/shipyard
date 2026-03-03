@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useAppState } from "@/components/providers/AppStateProvider";
 import { apiFetch } from "@/lib/client-errors";
+import { createLogger } from "@/lib/logger";
 import type { MRSummary } from "@/lib/types/mr";
 import type {
   GitLabMergeRequest,
@@ -24,6 +25,8 @@ export interface MRDetailData {
   notes: GitLabNote[];
   partialErrors?: string[];
 }
+
+const log = createLogger("use-mr-detail");
 
 export function useMRDetail(selected: MRSummary | null, detailVersion = 0) {
   const { detailPatchVersion, consumeAllDetailPatches } = useAppState();
@@ -135,7 +138,7 @@ export function useMRDetail(selected: MRSummary | null, detailVersion = 0) {
   // Full fetch when the selected MR changes (keyed on ID only so object
   // identity changes from SSE patches don't trigger a full reload).
   // Intentionally depend on `selected?.id` instead of `selected` object identity.
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+   
   useEffect(() => {
     if (selected) {
       fetchDetail(selected);
@@ -156,14 +159,14 @@ export function useMRDetail(selected: MRSummary | null, detailVersion = 0) {
   useEffect(() => {
     if (detailPatchVersion === 0) return;
     const patches = consumeAllDetailPatches();
-    console.debug(
-      `[use-mr-detail] detailPatchVersion=${detailPatchVersion}, patches=${patches.length}`,
+    log.debug(
+      `detailPatchVersion=${detailPatchVersion}, patches=${patches.length}`,
     );
     if (patches.length === 0) return;
     // Apply the latest patch for snappy approval state updates
     const latest = patches[patches.length - 1];
-    console.debug(
-      `[use-mr-detail] Applying patch: approved_by=${latest.approvals.approved_by.map((a) => a.user.id)}`,
+    log.debug(
+      `Applying patch: approved_by=${latest.approvals.approved_by.map((a) => a.user.id)}`,
     );
     setData((prev) => (prev ? { ...prev, mr: latest.mr, approvals: latest.approvals } : prev));
     // Full refetch to pick up discussion/note changes (e.g. new replies)

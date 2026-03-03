@@ -16,7 +16,10 @@ import { useMRList, type MREvent } from "@/hooks/use-mr-list";
 import { useNotifications } from "@/hooks/use-notifications";
 import { useAudio } from "@/hooks/use-audio";
 import { SessionDisplacedOverlay } from "@/components/SessionDisplacedOverlay";
+import { createLogger } from "@/lib/logger";
 import styles from "./Dashboard.module.css";
+
+const log = createLogger("Dashboard");
 
 const SIGN_IN_URL = "/auth/signin";
 
@@ -63,7 +66,7 @@ function DashboardInner() {
           break;
         }
         case "mr-detail-update": {
-          console.debug("[Dashboard] mr-detail-update received, approved_by:", event.data.approvals.approved_by.map(a => a.user.id));
+          log.debug(`mr-detail-update received, approved_by: ${event.data.approvals.approved_by.map((a: { user: { id: number } }) => a.user.id)}`);
           pushDetailPatch(event.data);
           break;
         }

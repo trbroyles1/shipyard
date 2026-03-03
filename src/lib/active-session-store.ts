@@ -20,7 +20,7 @@ interface ActiveSession {
 const globalKey = "__shipyard_active_sessions" as const;
 
 declare global {
-  // eslint-disable-next-line no-var
+   
   var __shipyard_active_sessions: Map<number, ActiveSession> | undefined;
 }
 

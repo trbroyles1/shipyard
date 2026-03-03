@@ -49,12 +49,12 @@ for (const [themeId, filePath] of themeFiles) {
   if (themeId === "classic") {
     if (!css.includes(":root") || !css.includes('[data-theme="classic"]')) {
       errors.push(
-        `Theme ${themeId} must include both :root and [data-theme=\"classic\"] selectors in ${path.relative(repoRoot, filePath)}.`,
+        `Theme ${themeId} must include both :root and [data-theme="classic"] selectors in ${path.relative(repoRoot, filePath)}.`,
       );
     }
   } else if (!css.includes(`[data-theme="${themeId}"]`)) {
     errors.push(
-      `Theme ${themeId} is missing selector [data-theme=\"${themeId}\"] in ${path.relative(repoRoot, filePath)}.`,
+      `Theme ${themeId} is missing selector [data-theme="${themeId}"] in ${path.relative(repoRoot, filePath)}.`,
     );
   }
 

@@ -31,7 +31,7 @@ export function createLogger(module: string) {
     debug(message: string, ...args: unknown[]) {
       if (!shouldLog("DEBUG")) return;
       if (isServer) {
-        process.stdout.write(formatMessage("DEBUG", module, message) + "\n");
+        process.stdout.write(`${formatMessage("DEBUG", module, message)  }\n`);
       } else {
         console.debug(formatMessage("DEBUG", module, message), ...args);
       }
@@ -39,7 +39,7 @@ export function createLogger(module: string) {
     info(message: string, ...args: unknown[]) {
       if (!shouldLog("INFO")) return;
       if (isServer) {
-        process.stdout.write(formatMessage("INFO", module, message) + "\n");
+        process.stdout.write(`${formatMessage("INFO", module, message)  }\n`);
       } else {
         console.info(formatMessage("INFO", module, message), ...args);
       }
@@ -47,7 +47,7 @@ export function createLogger(module: string) {
     warn(message: string, ...args: unknown[]) {
       if (!shouldLog("WARN")) return;
       if (isServer) {
-        process.stdout.write(formatMessage("WARN", module, message) + "\n");
+        process.stdout.write(`${formatMessage("WARN", module, message)  }\n`);
       } else {
         console.warn(formatMessage("WARN", module, message), ...args);
       }
@@ -55,7 +55,7 @@ export function createLogger(module: string) {
     error(message: string, ...args: unknown[]) {
       if (!shouldLog("ERROR")) return;
       if (isServer) {
-        process.stderr.write(formatMessage("ERROR", module, message) + "\n");
+        process.stderr.write(`${formatMessage("ERROR", module, message)  }\n`);
       } else {
         console.error(formatMessage("ERROR", module, message), ...args);
       }
