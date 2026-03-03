@@ -1,11 +1,15 @@
 "use client";
 
 import { useMemo } from "react";
-import type { FileWithStats } from "./diff-stats";
+import type { EnrichedDiffFile } from "@/lib/types/gitlab";
 import styles from "./FileTree.module.css";
 
+const FILE_PADDING_BASE = 12;
+const DIR_PADDING_BASE = 8;
+const DEPTH_INDENT = 14;
+
 interface Props {
-  files: FileWithStats[];
+  files: EnrichedDiffFile[];
   selectedFile: string | null;
   onSelect: (path: string | null) => void;
   onClose: () => void;
@@ -13,14 +17,14 @@ interface Props {
 
 // A tree node is either a directory (children map) or a file leaf
 interface TreeDir {
-  [key: string]: TreeDir | FileWithStats;
+  [key: string]: TreeDir | EnrichedDiffFile;
 }
 
-function isFile(node: TreeDir | FileWithStats): node is FileWithStats {
+function isFile(node: TreeDir | EnrichedDiffFile): node is EnrichedDiffFile {
   return "new_path" in node || "old_path" in node;
 }
 
-function buildTree(files: FileWithStats[]): TreeDir {
+function buildTree(files: EnrichedDiffFile[]): TreeDir {
   const root: TreeDir = {};
   for (const f of files) {
     const path = f.new_path || f.old_path;
@@ -87,7 +91,7 @@ function renderNodes(
         <button
           key={path}
           className={`${styles.file} ${selectedFile === path ? styles.selected : ""}`}
-          style={{ paddingLeft: 12 + depth * 14 }}
+          style={{ paddingLeft: FILE_PADDING_BASE + depth * DEPTH_INDENT }}
           onClick={() => onSelect(path)}
           title={path}
         >
@@ -102,7 +106,7 @@ function renderNodes(
     } else {
       result.push(
         <div key={`dir-${depth}-${name}`} className={styles.folder}>
-          <div className={styles.folderLabel} style={{ paddingLeft: 8 + depth * 14 }}>
+          <div className={styles.folderLabel} style={{ paddingLeft: DIR_PADDING_BASE + depth * DEPTH_INDENT }}>
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
             <span>{name}</span>
           </div>

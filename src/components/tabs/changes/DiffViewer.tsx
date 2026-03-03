@@ -3,22 +3,16 @@
 import { useMemo, useState, useCallback, useEffect, useRef, type ReactNode, type KeyboardEvent } from "react";
 import { parseDiff, Diff, Hunk, getChangeKey, findChangeByNewLineNumber, computeNewLineNumber } from "react-diff-view";
 import type { ChangeData } from "react-diff-view";
-import type { GitLabDiscussion, GitLabDiffPosition } from "@/lib/types/gitlab";
-import type { FileWithStats } from "./diff-stats";
+import type { GitLabDiscussion, GitLabDiffPosition, DiffRefs, EnrichedDiffFile } from "@/lib/types/gitlab";
+import { mrApiPath } from "@/lib/api-path";
 import { DiscussionThread } from "@/components/shared/DiscussionThread";
 import { useGutterLineSelect, buildPosition } from "@/hooks/use-gutter-line-select";
 import { apiFetch } from "@/lib/client-errors";
 import styles from "./DiffViewer.module.css";
 import "react-diff-view/style/index.css";
 
-interface DiffRefs {
-  base_sha: string;
-  head_sha: string;
-  start_sha: string;
-}
-
 interface Props {
-  file: FileWithStats;
+  file: EnrichedDiffFile;
   discussions: GitLabDiscussion[];
   projectId: number;
   iid: number;
@@ -267,7 +261,7 @@ export function DiffViewer({ file: initialFile, discussions, projectId, iid, dif
     setLoading(true);
     setLoadError(null);
     try {
-      const base = `/api/gitlab/merge-requests/${projectId}/${iid}/changes/file`;
+      const base = `${mrApiPath(projectId, iid)}/changes/file`;
       const res = await apiFetch(`${base}?path=${encodeURIComponent(path)}`);
       if (!res.ok) {
         const body = await res.json().catch(() => ({}));

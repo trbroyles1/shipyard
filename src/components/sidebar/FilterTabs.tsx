@@ -1,6 +1,6 @@
 "use client";
 
-import { useAppState, type FilterMode } from "@/components/providers/AppStateProvider";
+import { useFilterSort, type FilterMode } from "@/components/providers/FilterSortProvider";
 import styles from "./FilterTabs.module.css";
 
 const TABS: { value: FilterMode; label: string }[] = [
@@ -10,7 +10,7 @@ const TABS: { value: FilterMode; label: string }[] = [
 ];
 
 export function FilterTabs() {
-  const { filter, setFilter } = useAppState();
+  const { filter, setFilter } = useFilterSort();
 
   return (
     <div className={styles.tabs}>

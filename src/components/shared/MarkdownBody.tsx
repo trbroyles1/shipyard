@@ -68,29 +68,37 @@ function processJiraInChildren(children: ReactNode, baseUrl: string | undefined)
 
 const MERMAID_LANG = "language-mermaid";
 
+type HeadingTag = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+
+/** Factory for heading overrides that apply the corresponding CSS module class. */
+function headingOverride(tag: HeadingTag) {
+  const Tag = tag;
+  return ({ children }: ComponentPropsWithoutRef<typeof Tag>) => (
+    <Tag className={styles[tag]}>{children}</Tag>
+  );
+}
+
+/** Wraps a simple tag component so its children are processed for JIRA tickets. */
+function withJira(
+  tag: keyof JSX.IntrinsicElements,
+  styleClass: string,
+  jiraBaseUrl: string | undefined,
+) {
+  const Tag = tag;
+  return ({ children }: { children?: ReactNode }) => (
+    <Tag className={styleClass}>{processJiraInChildren(children, jiraBaseUrl)}</Tag>
+  );
+}
+
 function buildComponentMap(jiraBaseUrl: string | undefined) {
   return {
-    h1: ({ children }: ComponentPropsWithoutRef<"h1">) => (
-      <h1 className={styles.h1}>{children}</h1>
-    ),
-    h2: ({ children }: ComponentPropsWithoutRef<"h2">) => (
-      <h2 className={styles.h2}>{children}</h2>
-    ),
-    h3: ({ children }: ComponentPropsWithoutRef<"h3">) => (
-      <h3 className={styles.h3}>{children}</h3>
-    ),
-    h4: ({ children }: ComponentPropsWithoutRef<"h4">) => (
-      <h4 className={styles.h4}>{children}</h4>
-    ),
-    h5: ({ children }: ComponentPropsWithoutRef<"h5">) => (
-      <h5 className={styles.h5}>{children}</h5>
-    ),
-    h6: ({ children }: ComponentPropsWithoutRef<"h6">) => (
-      <h6 className={styles.h6}>{children}</h6>
-    ),
-    p: ({ children }: ComponentPropsWithoutRef<"p">) => (
-      <p className={styles.p}>{processJiraInChildren(children, jiraBaseUrl)}</p>
-    ),
+    h1: headingOverride("h1"),
+    h2: headingOverride("h2"),
+    h3: headingOverride("h3"),
+    h4: headingOverride("h4"),
+    h5: headingOverride("h5"),
+    h6: headingOverride("h6"),
+    p: withJira("p", styles.p, jiraBaseUrl),
     a: ({ href, children }: ComponentPropsWithoutRef<"a">) => (
       <a
         className={styles.link}
@@ -115,29 +123,19 @@ function buildComponentMap(jiraBaseUrl: string | undefined) {
       }
       return <code className={styles.inlineCode} {...rest}>{children}</code>;
     },
-    blockquote: ({ children }: ComponentPropsWithoutRef<"blockquote">) => (
-      <blockquote className={styles.blockquote}>
-        {processJiraInChildren(children, jiraBaseUrl)}
-      </blockquote>
-    ),
+    blockquote: withJira("blockquote", styles.blockquote, jiraBaseUrl),
     table: ({ children }: ComponentPropsWithoutRef<"table">) => (
       <table className={styles.table}>{children}</table>
     ),
-    th: ({ children }: ComponentPropsWithoutRef<"th">) => (
-      <th className={styles.th}>{processJiraInChildren(children, jiraBaseUrl)}</th>
-    ),
-    td: ({ children }: ComponentPropsWithoutRef<"td">) => (
-      <td className={styles.td}>{processJiraInChildren(children, jiraBaseUrl)}</td>
-    ),
+    th: withJira("th", styles.th, jiraBaseUrl),
+    td: withJira("td", styles.td, jiraBaseUrl),
     ul: ({ children }: ComponentPropsWithoutRef<"ul">) => (
       <ul className={styles.ul}>{children}</ul>
     ),
     ol: ({ children }: ComponentPropsWithoutRef<"ol">) => (
       <ol className={styles.ol}>{children}</ol>
     ),
-    li: ({ children }: ComponentPropsWithoutRef<"li">) => (
-      <li className={styles.li}>{processJiraInChildren(children, jiraBaseUrl)}</li>
-    ),
+    li: withJira("li", styles.li, jiraBaseUrl),
     hr: () => <hr className={styles.hr} />,
     img: ({ src, alt }: ComponentPropsWithoutRef<"img">) => (
       // eslint-disable-next-line @next/next/no-img-element

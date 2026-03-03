@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useRef } from "react";
+import { COOKIE_MAX_AGE_1Y } from "@/lib/constants";
 
 export interface Notification {
   id: number;
@@ -35,7 +36,7 @@ export function useNotifications() {
   const markAllRead = useCallback(() => {
     const now = Date.now();
     setReadAt(now);
-    document.cookie = `notificationsReadAt=${now};path=/;max-age=${60 * 60 * 24 * 365};SameSite=Lax`;
+    document.cookie = `notificationsReadAt=${now};path=/;max-age=${COOKIE_MAX_AGE_1Y};SameSite=Lax`;
   }, []);
 
   return { notifications, unreadCount, addNotification, markAllRead };

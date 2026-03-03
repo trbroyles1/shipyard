@@ -2,12 +2,12 @@ import { env } from "./env";
 import { createLogger } from "./logger";
 import { acquire } from "./rate-limiter";
 import { GitLabApiError, isTransientError } from "./errors";
+import { GITLAB_DEFAULT_PER_PAGE, GITLAB_FETCH_TIMEOUT_MS, GITLAB_API_VERSION_PATH } from "./constants";
 
 export { GitLabApiError } from "./errors";
 
 const log = createLogger("gitlab-client");
 
-const DEFAULT_TIMEOUT_MS = 30_000;
 const MAX_RETRIES = 2;
 const INITIAL_BACKOFF_MS = 1_000;
 const MAX_BACKOFF_MS = 10_000;
@@ -36,7 +36,7 @@ async function fetchWithRetry(
       throw callerSignal.reason ?? new DOMException("Aborted", "AbortError");
     }
 
-    const timeoutSignal = AbortSignal.timeout(DEFAULT_TIMEOUT_MS);
+    const timeoutSignal = AbortSignal.timeout(GITLAB_FETCH_TIMEOUT_MS);
     const signal = callerSignal
       ? AbortSignal.any([callerSignal, timeoutSignal])
       : timeoutSignal;
@@ -112,7 +112,7 @@ export async function gitlabFetch<T = unknown>(
 ): Promise<T> {
   await acquire();
 
-  const url = `${env.GITLAB_URL}/api/v4${path}`;
+  const url = `${env.GITLAB_URL}${GITLAB_API_VERSION_PATH}${path}`;
   const { method = "GET", body, headers = {}, signal } = options;
 
   log.debug(`${method} ${path}`);
@@ -153,8 +153,8 @@ export async function gitlabFetchAllPages<T>(
   while (true) {
     await acquire();
 
-    const searchParams = new URLSearchParams({ ...params, page: String(page), per_page: "100" });
-    const url = `${env.GITLAB_URL}/api/v4${path}?${searchParams}`;
+    const searchParams = new URLSearchParams({ ...params, page: String(page), per_page: String(GITLAB_DEFAULT_PER_PAGE) });
+    const url = `${env.GITLAB_URL}${GITLAB_API_VERSION_PATH}${path}?${searchParams}`;
 
     log.debug(`GET ${path} (page ${page})`);
 

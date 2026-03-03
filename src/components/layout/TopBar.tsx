@@ -2,6 +2,7 @@
 
 import { useState, useRef, useCallback } from "react";
 import { signOut, useSession } from "next-auth/react";
+import { SIGN_IN_PATH } from "@/lib/constants";
 import { useClickOutside } from "@/hooks/use-click-outside";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { NotificationPanel } from "@/components/notifications/NotificationPanel";
@@ -73,7 +74,7 @@ export function TopBar({ notifications, unreadCount, onMarkRead }: Props) {
               </button>
               <button
                 className={styles.userMenuItem}
-                onClick={() => signOut({ callbackUrl: "/auth/signin" })}
+                onClick={() => signOut({ callbackUrl: SIGN_IN_PATH })}
               >
                 <SignOutIcon />
                 Sign Out

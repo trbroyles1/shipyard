@@ -2,13 +2,14 @@ import { NextResponse } from "next/server";
 import { type NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
 import { auth } from "./auth";
+import { REFRESH_TOKEN_ERROR } from "./constants";
 
 export async function getAuthenticatedSession() {
   const session = await auth();
   if (!session) {
     throw new Error("Not authenticated");
   }
-  if (session.error === "RefreshAccessTokenError") {
+  if (session.error === REFRESH_TOKEN_ERROR) {
     throw new Error("Token refresh failed — re-authentication required");
   }
   return session;

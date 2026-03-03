@@ -2,7 +2,7 @@
 
 import { useMemo } from "react";
 import { useSession } from "next-auth/react";
-import { useAppState } from "@/components/providers/AppStateProvider";
+import { useFilterSort } from "@/components/providers/FilterSortProvider";
 import { MRCard } from "./MRCard";
 import type { MRSummary } from "@/lib/types/mr";
 import styles from "./MRList.module.css";
@@ -14,7 +14,7 @@ interface MRListProps {
 
 export function MRList({ mrs, isLoading }: MRListProps) {
   const { data: session } = useSession();
-  const { filter, sortField, sortDirection } = useAppState();
+  const { filter, sortField, sortDirection } = useFilterSort();
 
   const currentUserId = session?.gitlabUserId;
 

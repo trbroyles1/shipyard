@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { GitLabApiError } from "./gitlab-client";
 import { ValidationError } from "./validation";
 import { type createLogger } from "./logger";
+import { AUTH_ERROR_MESSAGES, TOKEN_REFRESH_FAILURE_MESSAGE } from "./constants";
 
 type Logger = ReturnType<typeof createLogger>;
 
@@ -75,9 +76,6 @@ function mapGitLabError(
   }
 }
 
-const AUTH_ERROR_SUBSTRINGS = ["Not authenticated", "No access token"] as const;
-const TOKEN_REFRESH_SUBSTRING = "Token refresh failed";
-
 export function handleApiRouteError(error: unknown, log: Logger): NextResponse {
   if (error instanceof ValidationError) {
     log.warn(`Validation error: ${error.message}`);
@@ -97,7 +95,7 @@ export function handleApiRouteError(error: unknown, log: Logger): NextResponse {
   }
 
   if (error instanceof Error) {
-    if (error.message.includes(TOKEN_REFRESH_SUBSTRING)) {
+    if (error.message.includes(TOKEN_REFRESH_FAILURE_MESSAGE)) {
       log.warn(`Auth error: ${error.message}`);
       return NextResponse.json(
         { error: MSG_SESSION_EXPIRED, code: CODE_TOKEN_EXPIRED },
@@ -105,7 +103,7 @@ export function handleApiRouteError(error: unknown, log: Logger): NextResponse {
       );
     }
 
-    for (const substring of AUTH_ERROR_SUBSTRINGS) {
+    for (const substring of AUTH_ERROR_MESSAGES) {
       if (error.message.includes(substring)) {
         log.warn(`Auth error: ${error.message}`);
         return NextResponse.json(

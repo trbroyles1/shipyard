@@ -4,12 +4,12 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { AnsiUp } from "ansi_up";
 import DOMPurify from "dompurify";
 import { apiFetch } from "@/lib/client-errors";
+import { HEADER_JOB_STATUS } from "@/lib/constants";
 import styles from "./JobLogModal.module.css";
 
 interface Props {
   jobName: string;
   projectId: number;
-  pipelineId: number;
   jobId: number;
   jobStatus: string;
   onClose: () => void;
@@ -21,17 +21,21 @@ ansi.use_classes = false;
 const POLL_INTERVAL = 3000;
 const ACTIVE_STATUSES = new Set(["created", "pending", "running", "preparing", "waiting_for_resource"]);
 
-export function JobLogModal({ jobName, projectId, pipelineId, jobId, jobStatus, onClose }: Props) {
+export function JobLogModal({ jobName, projectId, jobId, jobStatus, onClose }: Props) {
   const [log, setLog] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [maximized, setMaximized] = useState(false);
   const [liveStatus, setLiveStatus] = useState(jobStatus);
+  const liveStatusRef = useRef(jobStatus);
   const contentRef = useRef<HTMLDivElement>(null);
   const byteOffsetRef = useRef(0);
   const autoScrollRef = useRef(true);
 
-  const traceUrl = `/api/gitlab/merge-requests/${projectId}/0/pipelines/${pipelineId}/jobs/${jobId}/trace`;
+  // Keep ref in sync so fetchTrace can read current status without being a dep
+  liveStatusRef.current = liveStatus;
+
+  const traceUrl = `/api/gitlab/projects/${projectId}/jobs/${jobId}/trace`;
 
   // Track whether user has scrolled up (disable auto-scroll)
   const handleScroll = useCallback(() => {
@@ -55,7 +59,7 @@ export function JobLogModal({ jobName, projectId, pipelineId, jobId, jobStatus, 
     }
 
     const text = await res.text();
-    const status = res.headers.get("X-Job-Status") || liveStatus;
+    const status = res.headers.get(HEADER_JOB_STATUS) || liveStatusRef.current;
 
     // Parse content-range to track byte offset
     const contentRange = res.headers.get("Content-Range");
@@ -71,7 +75,7 @@ export function JobLogModal({ jobName, projectId, pipelineId, jobId, jobStatus, 
     }
 
     return { text, status, incremental: res.status === 206 };
-  }, [traceUrl, liveStatus]);
+  }, [traceUrl]);
 
   // Initial fetch
   useEffect(() => {

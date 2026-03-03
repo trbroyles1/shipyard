@@ -4,13 +4,9 @@ import { gitlabFetch } from "@/lib/gitlab-client";
 import { validateNumericId } from "@/lib/validation";
 import { createLogger } from "@/lib/logger";
 import { handleApiRouteError } from "@/lib/api-error-handler";
-import type { GitLabDiffFile } from "@/lib/types/gitlab";
+import type { GitLabChangesResponse } from "@/lib/types/gitlab";
 
 const log = createLogger("api/mr-changes-file");
-
-interface ChangesResponse {
-  changes: GitLabDiffFile[];
-}
 
 /**
  * Fetch the raw diff for a single file in an MR.
@@ -36,7 +32,7 @@ export async function GET(
 
     log.info(`Fetching single file diff: project=${projectId} iid=${iid} path=${filePath}`);
 
-    const result = await gitlabFetch<ChangesResponse>(
+    const result = await gitlabFetch<GitLabChangesResponse>(
       `/projects/${projectId}/merge_requests/${iid}/changes?access_raw_diffs=true`,
       token,
     );

@@ -1,5 +1,6 @@
 "use client";
 
+import type { ReactElement } from "react";
 import { JIRA_TICKET_RE, normalizeJiraBaseUrl, jiraTicketUrl } from "@/lib/jira-utils";
 import styles from "./JiraText.module.css";
 
@@ -10,7 +11,7 @@ interface Props {
 }
 
 export function JiraText({ text, jiraBaseUrl, className }: Props) {
-  const parts: (string | JSX.Element)[] = [];
+  const parts: (string | ReactElement)[] = [];
   let last = 0;
   let match: RegExpExecArray | null;
   const baseUrl = normalizeJiraBaseUrl(jiraBaseUrl);

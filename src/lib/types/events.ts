@@ -62,8 +62,3 @@ export interface WarningEvent {
   type: "warning";
   data: { code: string; message: string };
 }
-
-export interface SessionDisplacedEvent {
-  type: "session-displaced";
-  data: { code: string; message: string };
-}

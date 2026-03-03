@@ -4,7 +4,8 @@ import { gitlabFetch } from "@/lib/gitlab-client";
 import { validateNumericId } from "@/lib/validation";
 import { createLogger } from "@/lib/logger";
 import { handleApiRouteError } from "@/lib/api-error-handler";
-import type { GitLabDiffFile, EnrichedDiffFile } from "@/lib/types/gitlab";
+import { GITLAB_DEFAULT_PER_PAGE } from "@/lib/constants";
+import type { GitLabDiffFile, EnrichedDiffFile, GitLabChangesResponse } from "@/lib/types/gitlab";
 
 const log = createLogger("api/mr-changes");
 
@@ -50,15 +51,6 @@ function enrichDiff(diff: GitLabDiffFile): EnrichedDiffFile {
   return { ...diff, ...stats, truncated: false, binary: false };
 }
 
-/**
- * GitLab's /changes endpoint returns the MR object with a `changes` array.
- * We use access_raw_diffs=true so GitLab doesn't collapse generated or large files.
- */
-interface ChangesResponse {
-  changes: GitLabDiffFile[];
-  overflow: boolean;
-}
-
 export async function GET(
   req: NextRequest,
   props: { params: Promise<{ projectId: string; iid: string }> }
@@ -72,8 +64,8 @@ export async function GET(
 
     log.info(`Fetching MR changes: project=${projectId} iid=${iid}`);
 
-    const result = await gitlabFetch<ChangesResponse>(
-      `/projects/${projectId}/merge_requests/${iid}/changes?access_raw_diffs=true&per_page=100`,
+    const result = await gitlabFetch<GitLabChangesResponse>(
+      `/projects/${projectId}/merge_requests/${iid}/changes?access_raw_diffs=true&per_page=${GITLAB_DEFAULT_PER_PAGE}`,
       token,
     );
 

@@ -12,8 +12,8 @@ interface RelativeTimeProps {
   className?: string;
 }
 
-function timeAgo(dateStr: string): string {
-  const d = Date.now() - new Date(dateStr).getTime();
+export function timeAgo(dateInput: string | number): string {
+  const d = Date.now() - (typeof dateInput === "string" ? new Date(dateInput).getTime() : dateInput);
   const minutes = Math.floor(d / MS_PER_MINUTE);
   const hours = Math.floor(d / MS_PER_HOUR);
   const days = Math.floor(d / MS_PER_DAY);
@@ -27,6 +27,8 @@ function timeAgo(dateStr: string): string {
 export function RelativeTime({ date, className }: RelativeTimeProps) {
   const [text, setText] = useState(() => timeAgo(date));
 
+  // Re-sync display when the `date` prop changes (not redundant with the initial
+  // useState — that only runs on mount, not on prop updates).
   useEffect(() => {
     setText(timeAgo(date));
     const interval = setInterval(() => setText(timeAgo(date)), UPDATE_INTERVAL_MS);

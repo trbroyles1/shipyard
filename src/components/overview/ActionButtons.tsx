@@ -3,6 +3,8 @@
 import { useState, useCallback } from "react";
 import type { GitLabMergeRequest, GitLabApprovals } from "@/lib/types/gitlab";
 import { apiFetch } from "@/lib/client-errors";
+import { mrApiPath } from "@/lib/api-path";
+import { MERGE_STATUS_MERGEABLE } from "@/lib/constants";
 import { useToastContext } from "@/components/providers/ToastProvider";
 import { CheckIcon, DoubleCheckIcon, XIcon, MergeIcon, ExternalLinkIcon } from "@/components/shared/icons";
 import { MergeDialog } from "./MergeDialog";
@@ -21,8 +23,8 @@ export function ActionButtons({ mr, approvals, currentUserId, onRefetch }: Props
   const [mergeOpen, setMergeOpen] = useState(false);
 
   const hasApproved = currentUserId != null && approvals.approved_by.some((a) => a.user.id === currentUserId);
-  const mergeable = mr.detailed_merge_status === "mergeable" && !mr.draft;
-  const base = `/api/gitlab/merge-requests/${mr.project_id}/${mr.iid}`;
+  const mergeable = mr.detailed_merge_status === MERGE_STATUS_MERGEABLE && !mr.draft;
+  const base = mrApiPath(mr.project_id, mr.iid);
 
   const handleApproveToggle = useCallback(async () => {
     setApproving(true);

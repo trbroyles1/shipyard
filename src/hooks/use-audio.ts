@@ -1,9 +1,28 @@
 "use client";
 
-import { useRef, useCallback } from "react";
+import { useRef, useCallback, useEffect } from "react";
+
+const FREQ_A5 = 880;
+const FREQ_C6_SHARP = 1100;
+const FREQ_E5 = 660;
+
+const GAIN_DEFAULT = 0.15;
+const GAIN_SILENT = 0.001;
+
+const DURATION_SHORT = 0.15;
+const DURATION_MEDIUM = 0.25;
+const DURATION_LONG = 0.4;
+const NOTE_GAP = 0.18;
 
 export function useAudio() {
   const ctxRef = useRef<AudioContext | null>(null);
+
+  useEffect(() => {
+    return () => {
+      void ctxRef.current?.close().catch(() => {});
+      ctxRef.current = null;
+    };
+  }, []);
 
   const getCtx = useCallback((): AudioContext | null => {
     if (!ctxRef.current) {
@@ -15,7 +34,7 @@ export function useAudio() {
     }
     const ctx = ctxRef.current;
     if (ctx.state === "suspended") {
-      ctx.resume();
+      void ctx.resume().catch(() => {});
     }
     return ctx;
   }, []);
@@ -26,29 +45,28 @@ export function useAudio() {
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
     osc.type = "sine";
-    osc.frequency.value = 880;
-    gain.gain.setValueAtTime(0.15, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.25);
+    osc.frequency.value = FREQ_A5;
+    gain.gain.setValueAtTime(GAIN_DEFAULT, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(GAIN_SILENT, ctx.currentTime + DURATION_MEDIUM);
     osc.connect(gain).connect(ctx.destination);
     osc.start(ctx.currentTime);
-    osc.stop(ctx.currentTime + 0.25);
+    osc.stop(ctx.currentTime + DURATION_MEDIUM);
   }, [getCtx]);
 
   const playAssignedToMe = useCallback(() => {
     const ctx = getCtx();
     if (!ctx) return;
-    // Two-tone: 880Hz then 1100Hz
     for (let i = 0; i < 2; i++) {
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
       osc.type = "sine";
-      osc.frequency.value = i === 0 ? 880 : 1100;
-      const start = ctx.currentTime + i * 0.18;
-      gain.gain.setValueAtTime(0.15, start);
-      gain.gain.exponentialRampToValueAtTime(0.001, start + 0.15);
+      osc.frequency.value = i === 0 ? FREQ_A5 : FREQ_C6_SHARP;
+      const start = ctx.currentTime + i * NOTE_GAP;
+      gain.gain.setValueAtTime(GAIN_DEFAULT, start);
+      gain.gain.exponentialRampToValueAtTime(GAIN_SILENT, start + DURATION_SHORT);
       osc.connect(gain).connect(ctx.destination);
       osc.start(start);
-      osc.stop(start + 0.15);
+      osc.stop(start + DURATION_SHORT);
     }
   }, [getCtx]);
 
@@ -58,12 +76,12 @@ export function useAudio() {
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
     osc.type = "triangle";
-    osc.frequency.value = 660;
-    gain.gain.setValueAtTime(0.15, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+    osc.frequency.value = FREQ_E5;
+    gain.gain.setValueAtTime(GAIN_DEFAULT, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(GAIN_SILENT, ctx.currentTime + DURATION_LONG);
     osc.connect(gain).connect(ctx.destination);
     osc.start(ctx.currentTime);
-    osc.stop(ctx.currentTime + 0.4);
+    osc.stop(ctx.currentTime + DURATION_LONG);
   }, [getCtx]);
 
   return { playNewMR, playAssignedToMe, playReadyToMerge };

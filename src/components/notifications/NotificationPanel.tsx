@@ -2,22 +2,13 @@
 
 import { useEffect, useRef } from "react";
 import type { Notification } from "@/hooks/use-notifications";
+import { timeAgo } from "@/components/shared/RelativeTime";
 import styles from "./NotificationPanel.module.css";
 
 interface Props {
   notifications: Notification[];
   onClose: () => void;
   onMarkRead: () => void;
-}
-
-function timeAgo(ts: number): string {
-  const d = Date.now() - ts;
-  const minutes = Math.floor(d / 60000);
-  const hours = Math.floor(d / 3600000);
-  if (minutes < 1) return "just now";
-  if (hours < 1) return `${minutes}m ago`;
-  if (hours < 24) return `${hours}h ago`;
-  return `${Math.floor(hours / 24)}d ago`;
 }
 
 export function NotificationPanel({ notifications, onClose, onMarkRead }: Props) {

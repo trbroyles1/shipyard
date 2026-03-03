@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import type { GitLabPipeline, GitLabMergeRequest, GitLabJob } from "@/lib/types/gitlab";
 import { RelativeTime } from "@/components/shared/RelativeTime";
 import { apiFetch } from "@/lib/client-errors";
@@ -27,7 +27,6 @@ interface LogTarget {
   jobId: number;
   jobName: string;
   jobStatus: string;
-  pipelineId: number;
 }
 
 export function PipelineTab({ pipelines, mr }: Props) {
@@ -45,7 +44,7 @@ export function PipelineTab({ pipelines, mr }: Props) {
           pipeline={pipeline}
           projectId={mr.project_id}
           onViewLog={(jobId, jobName, status) =>
-            setLogTarget({ jobId, jobName, jobStatus: status, pipelineId: pipeline.id })
+            setLogTarget({ jobId, jobName, jobStatus: status })
           }
         />
       ))}
@@ -53,7 +52,6 @@ export function PipelineTab({ pipelines, mr }: Props) {
         <JobLogModal
           jobName={logTarget.jobName}
           projectId={mr.project_id}
-          pipelineId={logTarget.pipelineId}
           jobId={logTarget.jobId}
           jobStatus={logTarget.jobStatus}
           onClose={() => setLogTarget(null)}
@@ -67,20 +65,18 @@ function PipelineRow({ pipeline, projectId, onViewLog }: { pipeline: GitLabPipel
   const [expanded, setExpanded] = useState(false);
   const [jobs, setJobs] = useState<GitLabJob[]>([]);
   const [loadingJobs, setLoadingJobs] = useState(false);
-  const lastFetchedStatusRef = useRef(pipeline.status);
 
   // Clear cached jobs when pipeline status changes so the fetch effect re-runs
-  if (lastFetchedStatusRef.current !== pipeline.status) {
-    lastFetchedStatusRef.current = pipeline.status;
+  useEffect(() => {
     setJobs([]);
-  }
+  }, [pipeline.status]);
 
   const statusInfo = STATUS_ICON[pipeline.status] || STATUS_ICON.created;
 
   useEffect(() => {
     if (!expanded || jobs.length > 0) return;
     setLoadingJobs(true);
-    apiFetch(`/api/gitlab/merge-requests/${projectId}/0/pipelines/${pipeline.id}/jobs`)
+    apiFetch(`/api/gitlab/projects/${projectId}/pipelines/${pipeline.id}/jobs`)
       .then((r) => r.ok ? r.json() : [])
       .then((data: GitLabJob[]) => setJobs(data))
       .catch(() => setJobs([]))

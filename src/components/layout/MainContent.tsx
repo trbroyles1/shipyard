@@ -1,6 +1,6 @@
 "use client";
 
-import { useAppState } from "@/components/providers/AppStateProvider";
+import { useMRSelection } from "@/components/providers/MRSelectionProvider";
 import { useMRDetail } from "@/hooks/use-mr-detail";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { MROverview } from "@/components/overview/MROverview";
@@ -9,7 +9,7 @@ import { TabContent } from "@/components/tabs/TabContent";
 import styles from "./MainContent.module.css";
 
 export function MainContent() {
-  const { selectedMR, detailVersion } = useAppState();
+  const { selectedMR, detailVersion } = useMRSelection();
   const { data, isLoading, error, refetch } = useMRDetail(selectedMR, detailVersion);
 
   if (!selectedMR) {

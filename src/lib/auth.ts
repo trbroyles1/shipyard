@@ -2,6 +2,7 @@ import NextAuth from "next-auth";
 import type { NextAuthConfig } from "next-auth";
 import type { JWT } from "next-auth/jwt";
 import { createLogger } from "./logger";
+import { REFRESH_TOKEN_ERROR, SIGN_IN_PATH, GITLAB_API_VERSION_PATH } from "./constants";
 
 const log = createLogger("auth");
 
@@ -52,7 +53,7 @@ async function attemptTokenRefresh(token: JWT): Promise<JWT> {
       throw new Error(`Transient token refresh failure: ${response.status}`);
     }
     log.error(`Token refresh failed: ${response.status} error=${data.error} description=${data.error_description}`);
-    return { ...token, error: "RefreshAccessTokenError" };
+    return { ...token, error: REFRESH_TOKEN_ERROR };
   }
 
   log.info("Access token refreshed successfully");
@@ -82,11 +83,11 @@ async function refreshAccessToken(token: JWT): Promise<JWT> {
           return await attemptTokenRefresh(token);
         } catch (retryError) {
           log.error(`Token refresh retry failed: ${retryError}`);
-          return { ...token, error: "RefreshAccessTokenError" };
+          return { ...token, error: REFRESH_TOKEN_ERROR };
         }
       }
       log.error(`Token refresh error: ${error}`);
-      return { ...token, error: "RefreshAccessTokenError" };
+      return { ...token, error: REFRESH_TOKEN_ERROR };
     } finally {
       refreshPromise = null;
     }
@@ -104,11 +105,11 @@ export const authConfig: NextAuthConfig = {
       clientId: process.env.AUTH_GITLAB_ID,
       clientSecret: process.env.AUTH_GITLAB_SECRET,
       authorization: {
-        url: `${process.env.GITLAB_URL || "https://gitlab.com"}/oauth/authorize`,
+        url: `${gitlabUrl()}/oauth/authorize`,
         params: { scope: "api" },
       },
-      token: `${process.env.GITLAB_URL || "https://gitlab.com"}/oauth/token`,
-      userinfo: `${process.env.GITLAB_URL || "https://gitlab.com"}/api/v4/user`,
+      token: `${gitlabUrl()}/oauth/token`,
+      userinfo: `${gitlabUrl()}${GITLAB_API_VERSION_PATH}/user`,
       profile(profile) {
         return {
           id: String(profile.id),
@@ -132,6 +133,7 @@ export const authConfig: NextAuthConfig = {
           accessToken: account.access_token,
           refreshToken: account.refresh_token,
           expiresAt: account.expires_at,
+          // GitLab OAuth provider guarantees `id` (number) and `username` (string) on the profile
           gitlabUserId: (profile as unknown as { id: number })?.id,
           gitlabUsername: (profile as unknown as { username: string })?.username,
         };
@@ -153,7 +155,7 @@ export const authConfig: NextAuthConfig = {
     },
   },
   pages: {
-    signIn: "/auth/signin",
+    signIn: SIGN_IN_PATH,
   },
 };
 

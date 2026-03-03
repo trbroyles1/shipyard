@@ -2,16 +2,20 @@
 
 import { useCallback, useEffect, useRef } from "react";
 import { useSession, signOut } from "next-auth/react";
-import { AppStateProvider } from "@/components/providers/AppStateProvider";
+import { MRSelectionProvider, useMRSelection } from "@/components/providers/MRSelectionProvider";
+import { DetailPatchProvider, useDetailPatch } from "@/components/providers/DetailPatchProvider";
+import { FilterSortProvider } from "@/components/providers/FilterSortProvider";
+import { UIPanelProvider } from "@/components/providers/UIPanelProvider";
 import { PreferencesProvider, usePreferencesContext } from "@/components/providers/PreferencesProvider";
 import { ToastProvider, useToastContext } from "@/components/providers/ToastProvider";
 import { TopBar } from "@/components/layout/TopBar";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { MainContent } from "@/components/layout/MainContent";
 import { ToastContainer } from "@/components/notifications/ToastContainer";
-import { useAppState } from "@/components/providers/AppStateProvider";
 import { AUTH_EXPIRED_EVENT } from "@/lib/client-errors";
 import { SSE_ERROR_AUTH_EXPIRED } from "@/lib/errors";
+import { SIGN_IN_PATH } from "@/lib/constants";
+import type { MRSummary } from "@/lib/types/mr";
 import { useMRList, type MREvent } from "@/hooks/use-mr-list";
 import { useNotifications } from "@/hooks/use-notifications";
 import { useAudio } from "@/hooks/use-audio";
@@ -21,11 +25,10 @@ import styles from "./Dashboard.module.css";
 
 const log = createLogger("Dashboard");
 
-const SIGN_IN_URL = "/auth/signin";
-
 function DashboardInner() {
   const { data: session } = useSession();
-  const { updateSelectedMR, pushDetailPatch } = useAppState();
+  const { updateSelectedMR } = useMRSelection();
+  const { pushDetailPatch } = useDetailPatch();
   const { notifications, unreadCount, addNotification, markAllRead } = useNotifications();
   const { toasts, addToast, dismiss } = useToastContext();
   const { preferences } = usePreferencesContext();
@@ -37,28 +40,45 @@ function DashboardInner() {
   // Global 401 handling — any apiFetch that gets a 401 dispatches this event
   useEffect(() => {
     const handleAuthExpired = () => {
-      signOut({ callbackUrl: SIGN_IN_URL });
+      signOut({ callbackUrl: SIGN_IN_PATH });
     };
     window.addEventListener(AUTH_EXPIRED_EVENT, handleAuthExpired);
     return () => window.removeEventListener(AUTH_EXPIRED_EVENT, handleAuthExpired);
   }, []);
 
+  const handleNewMR = useCallback(
+    (mr: MRSummary) => {
+      const isAssigned = currentUserId && mr.reviewers.some((r) => r.id === currentUserId);
+
+      if (isAssigned && preferences.notifyAssigned) {
+        addNotification("Assigned to you", `!${mr.iid} ${mr.title}`);
+        addToast("Assigned to you", `!${mr.iid} ${mr.title}`, "info");
+        if (preferences.soundNewMR) playAssignedToMe();
+      } else if (preferences.notifyNewMR) {
+        addNotification("New MR", `!${mr.iid} ${mr.title}`);
+        addToast("New MR", `!${mr.iid} ${mr.title}`, "info");
+        if (preferences.soundNewMR) playNewMR();
+      }
+    },
+    [currentUserId, preferences, addNotification, addToast, playAssignedToMe, playNewMR],
+  );
+
+  const handleReadyToMerge = useCallback(
+    (mr: MRSummary) => {
+      if (preferences.notifyReadyToMerge && currentUserId && mr.author.id === currentUserId) {
+        addNotification("Ready to merge", `!${mr.iid} ${mr.title}`);
+        addToast("Ready to merge", `!${mr.iid} ${mr.title}`, "success");
+        playReadyToMerge();
+      }
+    },
+    [currentUserId, preferences, addNotification, addToast, playReadyToMerge],
+  );
+
   const handleMREvent = useCallback(
     (event: MREvent) => {
       switch (event.type) {
         case "mr-new": {
-          const mr = event.data;
-          const isAssigned = currentUserId && mr.reviewers.some((r) => r.id === currentUserId);
-
-          if (isAssigned && preferences.notifyAssigned) {
-            addNotification("Assigned to you", `!${mr.iid} ${mr.title}`);
-            addToast("Assigned to you", `!${mr.iid} ${mr.title}`, "info");
-            if (preferences.soundNewMR) playAssignedToMe();
-          } else if (preferences.notifyNewMR) {
-            addNotification("New MR", `!${mr.iid} ${mr.title}`);
-            addToast("New MR", `!${mr.iid} ${mr.title}`, "info");
-            if (preferences.soundNewMR) playNewMR();
-          }
+          handleNewMR(event.data);
           break;
         }
         case "mr-update": {
@@ -71,18 +91,13 @@ function DashboardInner() {
           break;
         }
         case "mr-ready-to-merge": {
-          const mr = event.data;
-          if (preferences.notifyReadyToMerge && currentUserId && mr.author.id === currentUserId) {
-            addNotification("Ready to merge", `!${mr.iid} ${mr.title}`);
-            addToast("Ready to merge", `!${mr.iid} ${mr.title}`, "success");
-            playReadyToMerge();
-          }
+          handleReadyToMerge(event.data);
           break;
         }
         case "error": {
           const { code } = event.data;
           if (code === SSE_ERROR_AUTH_EXPIRED) {
-            signOut({ callbackUrl: SIGN_IN_URL });
+            signOut({ callbackUrl: SIGN_IN_PATH });
           }
           break;
         }
@@ -95,7 +110,7 @@ function DashboardInner() {
         }
       }
     },
-    [currentUserId, preferences, updateSelectedMR, pushDetailPatch, addNotification, addToast, playNewMR, playAssignedToMe, playReadyToMerge],
+    [handleNewMR, handleReadyToMerge, updateSelectedMR, pushDetailPatch, addToast],
   );
 
   const { mrs, isLoading, connectionHealth, isDisplaced } = useMRList(handleMREvent);
@@ -136,12 +151,18 @@ function DashboardInner() {
 
 export function Dashboard() {
   return (
-    <AppStateProvider>
-      <PreferencesProvider>
-        <ToastProvider>
-          <DashboardInner />
-        </ToastProvider>
-      </PreferencesProvider>
-    </AppStateProvider>
+    <MRSelectionProvider>
+      <DetailPatchProvider>
+        <FilterSortProvider>
+          <UIPanelProvider>
+            <PreferencesProvider>
+              <ToastProvider>
+                <DashboardInner />
+              </ToastProvider>
+            </PreferencesProvider>
+          </UIPanelProvider>
+        </FilterSortProvider>
+      </DetailPatchProvider>
+    </MRSelectionProvider>
   );
 }

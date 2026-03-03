@@ -12,6 +12,7 @@ import {
   SSE_ERROR_SESSION_DISPLACED,
   SSE_EVENT_SESSION_DISPLACED,
 } from "@/lib/errors";
+import { SSE_RESPONSE_HEADERS } from "@/lib/constants";
 
 const log = createLogger("api/sse");
 
@@ -32,7 +33,7 @@ export async function GET(req: NextRequest) {
 
   const token = jwt.accessToken as string;
   const userId = jwt.gitlabUserId as number | undefined;
-  const expiresAt = jwt.expiresAt as number;
+  const expiresAt = typeof jwt.expiresAt === "number" ? jwt.expiresAt : 0;
 
   log.info(`SSE connection opened for user ${userId}, tab ${tabId}`);
 
@@ -83,11 +84,6 @@ export async function GET(req: NextRequest) {
   });
 
   return new Response(stream, {
-    headers: {
-      "Content-Type": "text/event-stream",
-      "Cache-Control": "no-cache, no-transform",
-      Connection: "keep-alive",
-      "X-Accel-Buffering": "no",
-    },
+    headers: SSE_RESPONSE_HEADERS,
   });
 }

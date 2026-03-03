@@ -1,6 +1,6 @@
 "use client";
 
-import { useAppState, type TabId } from "@/components/providers/AppStateProvider";
+import { useUIPanel, type TabId } from "@/components/providers/UIPanelProvider";
 import styles from "./TabBar.module.css";
 
 interface TabDef {
@@ -18,7 +18,7 @@ interface Props {
 }
 
 export function TabBar({ changesCount, commitsCount, discussionsCount, pipelinesCount, notesCount }: Props) {
-  const { activeTab, setActiveTab } = useAppState();
+  const { activeTab, setActiveTab } = useUIPanel();
 
   const tabs: TabDef[] = [
     { id: "changes", label: "Changes", count: changesCount },

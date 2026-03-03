@@ -2,13 +2,11 @@
 
 import { useState, useCallback, useEffect } from "react";
 import { DEFAULT_PREFERENCES, isTheme, type UserPreferences } from "@/lib/types/preferences";
-
-const COOKIE_NAME = "shipyard_prefs";
-const MAX_AGE = 60 * 60 * 24 * 365; // 1 year
+import { PREFS_COOKIE_NAME, COOKIE_MAX_AGE_1Y } from "@/lib/constants";
 
 function readCookie(): UserPreferences {
   if (typeof document === "undefined") return DEFAULT_PREFERENCES;
-  const match = document.cookie.match(new RegExp(`${COOKIE_NAME}=([^;]+)`));
+  const match = document.cookie.match(new RegExp(`${PREFS_COOKIE_NAME}=([^;]+)`));
   if (!match) return DEFAULT_PREFERENCES;
   try {
     const parsed = JSON.parse(decodeURIComponent(match[1])) as Partial<UserPreferences>;
@@ -24,7 +22,7 @@ function readCookie(): UserPreferences {
 
 function writeCookie(prefs: UserPreferences): void {
   const value = encodeURIComponent(JSON.stringify(prefs));
-  document.cookie = `${COOKIE_NAME}=${value};path=/;max-age=${MAX_AGE};SameSite=Lax`;
+  document.cookie = `${PREFS_COOKIE_NAME}=${value};path=/;max-age=${COOKIE_MAX_AGE_1Y};SameSite=Lax`;
 }
 
 export function usePreferences() {

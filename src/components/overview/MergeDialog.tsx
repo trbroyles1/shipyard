@@ -3,6 +3,8 @@
 import { useState, useCallback, useEffect, useRef } from "react";
 import type { GitLabMergeRequest } from "@/lib/types/gitlab";
 import { apiFetch } from "@/lib/client-errors";
+import { mrApiPath } from "@/lib/api-path";
+import { FALLBACK_ERROR_MESSAGE } from "@/lib/constants";
 import { useToastContext } from "@/components/providers/ToastProvider";
 import styles from "./MergeDialog.module.css";
 
@@ -43,7 +45,7 @@ export function MergeDialog({ mr, onClose, onRefetch }: Props) {
     }
     setMerging(true);
     try {
-      const base = `/api/gitlab/merge-requests/${mr.project_id}/${mr.iid}/merge`;
+      const base = `${mrApiPath(mr.project_id, mr.iid)}/merge`;
       const res = await apiFetch(base, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -62,7 +64,7 @@ export function MergeDialog({ mr, onClose, onRefetch }: Props) {
       onClose();
       await onRefetch();
     } catch (err) {
-      addToast("Merge failed", err instanceof Error ? err.message : "Unknown error", "error");
+      addToast("Merge failed", err instanceof Error ? err.message : FALLBACK_ERROR_MESSAGE, "error");
     } finally {
       setMerging(false);
     }

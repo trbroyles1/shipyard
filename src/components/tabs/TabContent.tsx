@@ -1,6 +1,6 @@
 "use client";
 
-import { useAppState } from "@/components/providers/AppStateProvider";
+import { useUIPanel } from "@/components/providers/UIPanelProvider";
 import type { MRDetailData } from "@/hooks/use-mr-detail";
 import { ChangesTab } from "./ChangesTab";
 import { CommitsTab } from "./CommitsTab";
@@ -15,7 +15,7 @@ interface Props {
 }
 
 export function TabContent({ data, onRefetch }: Props) {
-  const { activeTab } = useAppState();
+  const { activeTab } = useUIPanel();
 
   return (
     <div className={styles.tabContent}>

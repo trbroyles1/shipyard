@@ -1,6 +1,6 @@
 "use client";
 
-import { useAppState } from "@/components/providers/AppStateProvider";
+import { useFilterSort } from "@/components/providers/FilterSortProvider";
 import styles from "./SortControl.module.css";
 
 interface SortControlProps {
@@ -8,7 +8,7 @@ interface SortControlProps {
 }
 
 export function SortControl({ count }: SortControlProps) {
-  const { sortField, sortDirection, toggleSort } = useAppState();
+  const { sortField, sortDirection, toggleSort } = useFilterSort();
 
   const label = sortField === "age" ? "Age" : "Repo";
 

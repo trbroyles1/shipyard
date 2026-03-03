@@ -3,7 +3,9 @@
 import { useState, useCallback, type KeyboardEvent } from "react";
 import type { GitLabDiscussion } from "@/lib/types/gitlab";
 import { apiFetch } from "@/lib/client-errors";
-import { useAppState } from "@/components/providers/AppStateProvider";
+import { mrApiPath } from "@/lib/api-path";
+import { FALLBACK_ERROR_MESSAGE } from "@/lib/constants";
+import { useUIPanel } from "@/components/providers/UIPanelProvider";
 import { useToastContext } from "@/components/providers/ToastProvider";
 import { DiscussionThread } from "@/components/shared/DiscussionThread";
 import styles from "./DiscussionsTab.module.css";
@@ -55,13 +57,13 @@ function buildFileLink(discussion: GitLabDiscussion): { label: string; title: st
 }
 
 export function DiscussionsTab({ discussions, projectId, iid, onRefetch }: Props) {
-  const { setActiveTab, setScrollToFile } = useAppState();
+  const { setActiveTab, setScrollToFile } = useUIPanel();
   const { addToast } = useToastContext();
   const [commentOpen, setCommentOpen] = useState(false);
   const [commentText, setCommentText] = useState("");
   const [commenting, setCommenting] = useState(false);
 
-  const base = `/api/gitlab/merge-requests/${projectId}/${iid}`;
+  const base = mrApiPath(projectId, iid);
 
   const handleReply = useCallback(async (discussionId: string, body: string) => {
     try {
@@ -76,7 +78,7 @@ export function DiscussionsTab({ discussions, projectId, iid, onRefetch }: Props
       }
       await onRefetch();
     } catch (err) {
-      addToast("Reply failed", err instanceof Error ? err.message : "Unknown error", "error");
+      addToast("Reply failed", err instanceof Error ? err.message : FALLBACK_ERROR_MESSAGE, "error");
       throw err;
     }
   }, [base, onRefetch, addToast]);
@@ -94,7 +96,7 @@ export function DiscussionsTab({ discussions, projectId, iid, onRefetch }: Props
       }
       await onRefetch();
     } catch (err) {
-      addToast("Resolve failed", err instanceof Error ? err.message : "Unknown error", "error");
+      addToast("Resolve failed", err instanceof Error ? err.message : FALLBACK_ERROR_MESSAGE, "error");
     }
   }, [base, onRefetch, addToast]);
 
@@ -115,7 +117,7 @@ export function DiscussionsTab({ discussions, projectId, iid, onRefetch }: Props
       setCommentOpen(false);
       await onRefetch();
     } catch (err) {
-      addToast("Comment failed", err instanceof Error ? err.message : "Unknown error", "error");
+      addToast("Comment failed", err instanceof Error ? err.message : FALLBACK_ERROR_MESSAGE, "error");
     } finally {
       setCommenting(false);
     }

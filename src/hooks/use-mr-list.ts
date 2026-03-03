@@ -34,6 +34,8 @@ export function useMRList(onMREvent?: (event: MREvent) => void) {
   const onMREventRef = useRef(onMREvent);
   onMREventRef.current = onMREvent;
 
+  // The `data as X` casts below are safe because the data originates from
+  // same-origin SSE events emitted by our own server with known schemas.
   const handleSSE = useCallback((type: SSEEventType, data: unknown) => {
     switch (type) {
       case "status": {

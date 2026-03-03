@@ -34,8 +34,3 @@ export async function acquire(): Promise<void> {
 
   tokens -= 1;
 }
-
-export function remainingTokens(): number {
-  refill();
-  return Math.floor(tokens);
-}

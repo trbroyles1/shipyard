@@ -5,6 +5,11 @@ import { acquire } from "@/lib/rate-limiter";
 import { validateNumericId } from "@/lib/validation";
 import { createLogger } from "@/lib/logger";
 import { handleApiRouteError } from "@/lib/api-error-handler";
+import {
+  GITLAB_FETCH_TIMEOUT_MS,
+  HEADER_JOB_STATUS,
+  GITLAB_API_VERSION_PATH,
+} from "@/lib/constants";
 
 const log = createLogger("api/job-trace");
 
@@ -35,8 +40,8 @@ export async function GET(
     }
 
     const response = await fetch(
-      `${env.GITLAB_URL}/api/v4/projects/${projectId}/jobs/${jobId}/trace`,
-      { headers, signal: AbortSignal.timeout(30_000) },
+      `${env.GITLAB_URL}${GITLAB_API_VERSION_PATH}/projects/${projectId}/jobs/${jobId}/trace`,
+      { headers, signal: AbortSignal.timeout(GITLAB_FETCH_TIMEOUT_MS) },
     );
 
     if (!response.ok && response.status !== 206) {
@@ -56,14 +61,14 @@ export async function GET(
     // Fetch job status in parallel (we already acquired a rate-limit token)
     await acquire();
     const jobRes = await fetch(
-      `${env.GITLAB_URL}/api/v4/projects/${projectId}/jobs/${jobId}`,
-      { headers: { Authorization: `Bearer ${token}` }, signal: AbortSignal.timeout(30_000) },
+      `${env.GITLAB_URL}${GITLAB_API_VERSION_PATH}/projects/${projectId}/jobs/${jobId}`,
+      { headers: { Authorization: `Bearer ${token}` }, signal: AbortSignal.timeout(GITLAB_FETCH_TIMEOUT_MS) },
     );
     const jobStatus = jobRes.ok ? (await jobRes.json()).status : "unknown";
 
     const resHeaders: Record<string, string> = {
       "Content-Type": "text/plain",
-      "X-Job-Status": jobStatus,
+      [HEADER_JOB_STATUS]: jobStatus,
     };
     if (contentRange) {
       resHeaders["Content-Range"] = contentRange;

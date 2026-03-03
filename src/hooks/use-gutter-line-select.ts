@@ -1,17 +1,11 @@
 import { useState, useRef, useCallback, useMemo } from "react";
 import { getChangeKey } from "react-diff-view";
 import type { HunkData, ChangeData, ChangeEventArgs, EventMap } from "react-diff-view";
-import type { GitLabDiffPosition } from "@/lib/types/gitlab";
+import type { GitLabDiffPosition, DiffRefs } from "@/lib/types/gitlab";
 
 export interface GutterSelection {
   changes: ChangeData[];
   keys: string[];
-}
-
-interface DiffRefs {
-  base_sha: string;
-  head_sha: string;
-  start_sha: string;
 }
 
 function lineType(c: ChangeData): "new" | "old" {

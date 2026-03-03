@@ -9,6 +9,8 @@ interface Props {
 }
 
 let mermaidPromise: Promise<typeof MermaidNs> | null = null;
+// Required for Mermaid's render() cache uniqueness — each render call needs a
+// unique ID, so we increment this counter to avoid collisions.
 let mermaidCounter = 0;
 
 function loadMermaid() {

@@ -1,20 +1,15 @@
 "use client";
 
 import { useState, useMemo, useEffect, useRef, useCallback } from "react";
-import type { EnrichedDiffFile, GitLabDiscussion, GitLabDiffPosition } from "@/lib/types/gitlab";
-import type { FileWithStats } from "./changes/diff-stats";
+import type { EnrichedDiffFile, GitLabDiscussion, GitLabDiffPosition, DiffRefs } from "@/lib/types/gitlab";
 import { apiFetch } from "@/lib/client-errors";
-import { useAppState } from "@/components/providers/AppStateProvider";
+import { mrApiPath } from "@/lib/api-path";
+import { FALLBACK_ERROR_MESSAGE } from "@/lib/constants";
+import { useUIPanel } from "@/components/providers/UIPanelProvider";
 import { useToastContext } from "@/components/providers/ToastProvider";
 import { FileTree } from "./changes/FileTree";
 import { DiffViewer } from "./changes/DiffViewer";
 import styles from "./ChangesTab.module.css";
-
-interface DiffRefs {
-  base_sha: string;
-  head_sha: string;
-  start_sha: string;
-}
 
 interface Props {
   diffs: EnrichedDiffFile[];
@@ -26,10 +21,10 @@ interface Props {
 }
 
 export function ChangesTab({ diffs, discussions, projectId, iid, diffRefs, onRefetch }: Props) {
-  const { scrollToFile, setScrollToFile } = useAppState();
+  const { scrollToFile, setScrollToFile } = useUIPanel();
   const { addToast } = useToastContext();
 
-  const base = `/api/gitlab/merge-requests/${projectId}/${iid}`;
+  const base = mrApiPath(projectId, iid);
 
   const handleReply = useCallback(async (discussionId: string, body: string) => {
     try {
@@ -44,7 +39,7 @@ export function ChangesTab({ diffs, discussions, projectId, iid, diffRefs, onRef
       }
       await onRefetch();
     } catch (err) {
-      addToast("Reply failed", err instanceof Error ? err.message : "Unknown error", "error");
+      addToast("Reply failed", err instanceof Error ? err.message : FALLBACK_ERROR_MESSAGE, "error");
       throw err;
     }
   }, [base, onRefetch, addToast]);
@@ -62,7 +57,7 @@ export function ChangesTab({ diffs, discussions, projectId, iid, diffRefs, onRef
       }
       await onRefetch();
     } catch (err) {
-      addToast("Resolve failed", err instanceof Error ? err.message : "Unknown error", "error");
+      addToast("Resolve failed", err instanceof Error ? err.message : FALLBACK_ERROR_MESSAGE, "error");
     }
   }, [base, onRefetch, addToast]);
 
@@ -81,7 +76,7 @@ export function ChangesTab({ diffs, discussions, projectId, iid, diffRefs, onRef
       }
       await onRefetch();
     } catch (err) {
-      addToast("Comment failed", err instanceof Error ? err.message : "Unknown error", "error");
+      addToast("Comment failed", err instanceof Error ? err.message : FALLBACK_ERROR_MESSAGE, "error");
       throw err;
     }
   }, [base, onRefetch, addToast]);
@@ -91,7 +86,7 @@ export function ChangesTab({ diffs, discussions, projectId, iid, diffRefs, onRef
   const diffAreaRef = useRef<HTMLDivElement>(null);
 
   const fileMap = useMemo(() => {
-    const map = new Map<string, FileWithStats>();
+    const map = new Map<string, EnrichedDiffFile>();
     for (const d of diffs) {
       map.set(d.new_path || d.old_path, d);
     }
@@ -152,7 +147,7 @@ export function ChangesTab({ diffs, discussions, projectId, iid, diffRefs, onRef
 }
 
 function DiffAllFiles({ files, discussions, projectId, iid, diffRefs, onReply, onResolve, onNewComment }: {
-  files: FileWithStats[];
+  files: EnrichedDiffFile[];
   discussions: GitLabDiscussion[];
   projectId: number;
   iid: number;

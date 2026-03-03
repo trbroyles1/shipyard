@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { useAppState } from "@/components/providers/AppStateProvider";
+import { useDetailPatch } from "@/components/providers/DetailPatchProvider";
 import { apiFetch } from "@/lib/client-errors";
+import { mrApiPath } from "@/lib/api-path";
 import { createLogger } from "@/lib/logger";
 import type { MRSummary } from "@/lib/types/mr";
 import type {
@@ -28,8 +29,81 @@ export interface MRDetailData {
 
 const log = createLogger("use-mr-detail");
 
+const DETAIL_FAILED_MSG = "Failed to load MR details";
+
+/** Extracts the critical MR detail + approvals from index 0. Throws on failure. */
+async function fetchCriticalDetail(
+  results: PromiseSettledResult<Response>[],
+): Promise<{ mr: GitLabMergeRequest; approvals: GitLabApprovals }> {
+  const detailResult = results[0];
+  if (detailResult.status === "rejected") {
+    throw new Error(detailResult.reason?.message || DETAIL_FAILED_MSG);
+  }
+  const detailRes = detailResult.value;
+  if (!detailRes.ok) {
+    const body = await detailRes.json().catch(() => ({}));
+    throw new Error(body.error || `HTTP ${detailRes.status}`);
+  }
+  return (await detailRes.json()) as {
+    mr: GitLabMergeRequest;
+    approvals: GitLabApprovals;
+  };
+}
+
+const TAB_NAMES = ["changes", "discussions", "commits", "pipelines", "notes"] as const;
+
+/** Extracts tab data from indices 1-5 with graceful degradation for failures. */
+async function fetchTabData(
+  results: PromiseSettledResult<Response>[],
+): Promise<{
+  diffs: EnrichedDiffFile[];
+  discussions: GitLabDiscussion[];
+  commits: GitLabCommit[];
+  pipelines: GitLabPipeline[];
+  notes: GitLabNote[];
+  partialErrors: string[] | undefined;
+}> {
+  const errors: string[] = [];
+
+  async function extract<T>(index: number, name: string, fallback: T): Promise<T> {
+    const result = results[index];
+    if (result.status === "rejected") {
+      errors.push(`Failed to load ${name}`);
+      return fallback;
+    }
+    const res = result.value;
+    if (!res.ok) {
+      errors.push(`Failed to load ${name}`);
+      return fallback;
+    }
+    try {
+      return (await res.json()) as T;
+    } catch {
+      errors.push(`Failed to parse ${name}`);
+      return fallback;
+    }
+  }
+
+  const [diffs, discussions, commits, pipelines, notes] = await Promise.all([
+    extract<EnrichedDiffFile[]>(1, TAB_NAMES[0], []),
+    extract<GitLabDiscussion[]>(2, TAB_NAMES[1], []),
+    extract<GitLabCommit[]>(3, TAB_NAMES[2], []),
+    extract<GitLabPipeline[]>(4, TAB_NAMES[3], []),
+    extract<GitLabNote[]>(5, TAB_NAMES[4], []),
+  ]);
+
+  return {
+    diffs,
+    discussions,
+    commits,
+    pipelines,
+    notes,
+    partialErrors: errors.length > 0 ? errors : undefined,
+  };
+}
+
 export function useMRDetail(selected: MRSummary | null, detailVersion = 0) {
-  const { detailPatchVersion, consumeAllDetailPatches } = useAppState();
+  const { detailPatchVersion, consumeAllDetailPatches } = useDetailPatch();
   const [data, setData] = useState<MRDetailData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -40,7 +114,7 @@ export function useMRDetail(selected: MRSummary | null, detailVersion = 0) {
   selectedRef.current = selected;
 
   const fetchAll = useCallback(async (mr: MRSummary): Promise<MRDetailData> => {
-    const base = `/api/gitlab/merge-requests/${mr.projectId}/${mr.iid}`;
+    const base = mrApiPath(mr.projectId, mr.iid);
 
     const results = await Promise.allSettled([
       apiFetch(base),
@@ -51,62 +125,10 @@ export function useMRDetail(selected: MRSummary | null, detailVersion = 0) {
       apiFetch(`${base}/notes`),
     ]);
 
-    // Detail (index 0) is critical
-    const detailResult = results[0];
-    if (detailResult.status === "rejected") {
-      throw new Error(detailResult.reason?.message || "Failed to load MR details");
-    }
-    const detailRes = detailResult.value;
-    if (!detailRes.ok) {
-      const body = await detailRes.json().catch(() => ({}));
-      throw new Error(body.error || `HTTP ${detailRes.status}`);
-    }
-    const detail = (await detailRes.json()) as {
-      mr: GitLabMergeRequest;
-      approvals: GitLabApprovals;
-    };
+    const { mr: detailMR, approvals } = await fetchCriticalDetail(results);
+    const tabData = await fetchTabData(results);
 
-    // Tab endpoints — graceful degradation
-    const partialErrors: string[] = [];
-    const TAB_NAMES = ["changes", "discussions", "commits", "pipelines", "notes"] as const;
-
-    async function extractTabData<T>(index: number, name: string, fallback: T): Promise<T> {
-      const result = results[index];
-      if (result.status === "rejected") {
-        partialErrors.push(`Failed to load ${name}`);
-        return fallback;
-      }
-      const res = result.value;
-      if (!res.ok) {
-        partialErrors.push(`Failed to load ${name}`);
-        return fallback;
-      }
-      try {
-        return (await res.json()) as T;
-      } catch {
-        partialErrors.push(`Failed to parse ${name}`);
-        return fallback;
-      }
-    }
-
-    const [diffs, discussions, commits, pipelines, notes] = await Promise.all([
-      extractTabData<EnrichedDiffFile[]>(1, TAB_NAMES[0], []),
-      extractTabData<GitLabDiscussion[]>(2, TAB_NAMES[1], []),
-      extractTabData<GitLabCommit[]>(3, TAB_NAMES[2], []),
-      extractTabData<GitLabPipeline[]>(4, TAB_NAMES[3], []),
-      extractTabData<GitLabNote[]>(5, TAB_NAMES[4], []),
-    ]);
-
-    return {
-      mr: detail.mr,
-      approvals: detail.approvals,
-      diffs,
-      discussions,
-      commits,
-      pipelines,
-      notes,
-      partialErrors: partialErrors.length > 0 ? partialErrors : undefined,
-    };
+    return { mr: detailMR, approvals, ...tabData };
   }, []);
 
   const fetchDetail = useCallback(
@@ -116,7 +138,7 @@ export function useMRDetail(selected: MRSummary | null, detailVersion = 0) {
       try {
         setData(await fetchAll(mr));
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Failed to load MR details");
+        setError(err instanceof Error ? err.message : DETAIL_FAILED_MSG);
       } finally {
         setIsLoading(false);
       }
@@ -138,7 +160,7 @@ export function useMRDetail(selected: MRSummary | null, detailVersion = 0) {
   // Full fetch when the selected MR changes (keyed on ID only so object
   // identity changes from SSE patches don't trigger a full reload).
   // Intentionally depend on `selected?.id` instead of `selected` object identity.
-   
+
   useEffect(() => {
     if (selected) {
       fetchDetail(selected);

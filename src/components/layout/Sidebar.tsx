@@ -1,6 +1,6 @@
 "use client";
 
-import { useAppState } from "@/components/providers/AppStateProvider";
+import { useUIPanel } from "@/components/providers/UIPanelProvider";
 import { MRList } from "@/components/sidebar/MRList";
 import { FilterTabs } from "@/components/sidebar/FilterTabs";
 import { SortControl } from "@/components/sidebar/SortControl";
@@ -13,7 +13,7 @@ interface SidebarProps {
 }
 
 export function Sidebar({ mrs, isLoading }: SidebarProps) {
-  const { sidebarOpen, setSidebarOpen } = useAppState();
+  const { sidebarOpen, setSidebarOpen } = useUIPanel();
 
   return (
     <>

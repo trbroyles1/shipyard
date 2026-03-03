@@ -19,6 +19,12 @@ export interface GitLabPipeline {
   updated_at: string;
 }
 
+export interface DiffRefs {
+  base_sha: string;
+  head_sha: string;
+  start_sha: string;
+}
+
 export interface GitLabMergeRequest {
   id: number;
   iid: number;
@@ -45,11 +51,7 @@ export interface GitLabMergeRequest {
   project_id: number;
   source_project_id: number;
   target_project_id: number;
-  diff_refs: {
-    base_sha: string;
-    head_sha: string;
-    start_sha: string;
-  } | null;
+  diff_refs: DiffRefs | null;
   references: {
     full: string;
     relative: string;
@@ -161,10 +163,7 @@ export interface GitLabJob {
   finished_at: string | null;
 }
 
-export interface GitLabProject {
-  id: number;
-  name: string;
-  path: string;
-  path_with_namespace: string;
-  web_url: string;
+export interface GitLabChangesResponse {
+  changes: GitLabDiffFile[];
+  overflow: boolean;
 }

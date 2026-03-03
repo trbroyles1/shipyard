@@ -1,6 +1,6 @@
 "use client";
 
-import { useAppState } from "@/components/providers/AppStateProvider";
+import { useMRSelection } from "@/components/providers/MRSelectionProvider";
 import { usePreferencesContext } from "@/components/providers/PreferencesProvider";
 import { StatusDot } from "@/components/shared/StatusDot";
 import { CheckIcon } from "@/components/shared/icons";
@@ -8,6 +8,7 @@ import { RelativeTime, hoursOld } from "@/components/shared/RelativeTime";
 import { GitLabLink } from "@/components/shared/GitLabLink";
 import { JiraText } from "@/components/shared/JiraText";
 import type { MRSummary } from "@/lib/types/mr";
+import { MERGE_STATUS_MERGEABLE } from "@/lib/constants";
 import styles from "./MRCard.module.css";
 
 interface MRCardProps {
@@ -25,10 +26,10 @@ function cardBackground(createdAt: string, warningHours: number, criticalHours: 
 }
 
 export function MRCard({ mr }: MRCardProps) {
-  const { selectedMR, selectMR } = useAppState();
+  const { selectedMR, selectMR } = useMRSelection();
   const { preferences } = usePreferencesContext();
   const isSelected = selectedMR?.id === mr.id;
-  const isMergeable = mr.detailedMergeStatus === "mergeable" && !mr.draft;
+  const isMergeable = mr.detailedMergeStatus === MERGE_STATUS_MERGEABLE && !mr.draft;
 
   return (
     <div

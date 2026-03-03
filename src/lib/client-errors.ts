@@ -18,3 +18,12 @@ export function userFriendlyMessage(body: Record<string, unknown>, fallback: str
   if (typeof body.error === "string" && body.error.length > 0) return body.error;
   return fallback;
 }
+
+/**
+ * Read an error payload from a non-ok Response and throw it as an Error.
+ * Replaces the repeated `res.json().catch(() => ({})) + throw` pattern.
+ */
+export async function throwResponseError(res: Response, fallback?: string): Promise<never> {
+  const data: Record<string, unknown> = await res.json().catch(() => ({}));
+  throw new Error(userFriendlyMessage(data, fallback ?? `HTTP ${res.status}`));
+}

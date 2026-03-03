@@ -4,6 +4,8 @@ import { createLogger } from "./logger";
 import { isAuthError, SSE_ERROR_AUTH_EXPIRED, SSE_WARNING_POLL_FAILED } from "./errors";
 import { MRStore } from "./mr-store";
 import { getViewedMR } from "./viewed-mr-store";
+import { extractRepoSlug } from "./gitlab-utils";
+import { MERGE_STATUS_MERGEABLE } from "./constants";
 import type { GitLabMergeRequest, GitLabApprovals } from "./types/gitlab";
 import type { MRSummary } from "./types/mr";
 import { mapMRSummary } from "./types/mr";
@@ -36,17 +38,6 @@ type SSEEventPayload =
   | ErrorEvent
   | WarningEvent;
 
-function extractRepoSlug(webUrl: string): { slug: string; repoUrl: string } {
-  const match = webUrl.match(/^(https?:\/\/[^/]+\/(.+))\/-\/merge_requests\/\d+$/);
-  if (match) {
-    const repoUrl = match[1];
-    const fullPath = match[2];
-    const slug = fullPath.split("/").pop() || fullPath;
-    return { slug, repoUrl };
-  }
-  return { slug: "unknown", repoUrl: "" };
-}
-
 function hasChanged(a: MRSummary, b: MRSummary): boolean {
   return a.updatedAt !== b.updatedAt
     || a.detailedMergeStatus !== b.detailedMergeStatus
@@ -58,6 +49,38 @@ function hasChanged(a: MRSummary, b: MRSummary): boolean {
 
 export interface PollerHandle {
   stop: () => void;
+}
+
+/** Diffs the store against a fresh MR map, mutates the store, and returns events to emit. */
+function diffMRLists(store: MRStore, freshMap: Map<number, MRSummary>): SSEEventPayload[] {
+  const events: SSEEventPayload[] = [];
+
+  freshMap.forEach((freshMR) => {
+    const existing = store.get(freshMR.id);
+    if (!existing) {
+      store.upsert(freshMR);
+      events.push({ type: "mr-new", data: freshMR });
+    } else if (hasChanged(existing, freshMR)) {
+      if (
+        existing.detailedMergeStatus !== MERGE_STATUS_MERGEABLE &&
+        freshMR.detailedMergeStatus === MERGE_STATUS_MERGEABLE &&
+        !freshMR.draft
+      ) {
+        events.push({ type: "mr-ready-to-merge", data: freshMR });
+      }
+      store.upsert(freshMR);
+      events.push({ type: "mr-update", data: freshMR });
+    }
+  });
+
+  for (const existing of store.getAll()) {
+    if (!freshMap.has(existing.id)) {
+      store.remove(existing.id);
+      events.push({ type: "mr-removed", data: { id: existing.id } });
+    }
+  }
+
+  return events;
 }
 
 async function pollMRList(
@@ -87,35 +110,7 @@ async function pollMRList(
     return;
   }
 
-  // Diff against store
-  const events: SSEEventPayload[] = [];
-
-  // Detect new and updated MRs
-  freshMap.forEach((freshMR) => {
-    const existing = store.get(freshMR.id);
-    if (!existing) {
-      store.upsert(freshMR);
-      events.push({ type: "mr-new", data: freshMR });
-    } else if (hasChanged(existing, freshMR)) {
-      if (
-        existing.detailedMergeStatus !== "mergeable" &&
-        freshMR.detailedMergeStatus === "mergeable" &&
-        !freshMR.draft
-      ) {
-        events.push({ type: "mr-ready-to-merge", data: freshMR });
-      }
-      store.upsert(freshMR);
-      events.push({ type: "mr-update", data: freshMR });
-    }
-  });
-
-  // Detect removed MRs
-  for (const existing of store.getAll()) {
-    if (!freshMap.has(existing.id)) {
-      store.remove(existing.id);
-      events.push({ type: "mr-removed", data: { id: existing.id } });
-    }
-  }
+  const events = diffMRLists(store, freshMap);
 
   for (const event of events) {
     emit(event);
