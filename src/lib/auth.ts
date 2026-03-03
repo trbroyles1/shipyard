@@ -63,7 +63,7 @@ async function attemptTokenRefresh(token: JWT): Promise<JWT> {
   };
 }
 
-async function refreshAccessToken(token: JWT): Promise<JWT> {
+export async function refreshAccessToken(token: JWT): Promise<JWT> {
   if (refreshPromise) {
     return refreshPromise;
   }

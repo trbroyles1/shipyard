@@ -4,6 +4,7 @@ import { useState, useCallback, useRef } from "react";
 import type { MRSummary } from "@/lib/types/mr";
 import type { GitLabMergeRequest, GitLabApprovals } from "@/lib/types/gitlab";
 import type { SSEEventType } from "@/lib/types/events";
+import { SSE_ERROR_GITLAB_GROUP_UNAVAILABLE } from "@/lib/errors";
 import { useSSE } from "./use-sse";
 
 export type ConnectionHealth = "connected" | "degraded" | "error";
@@ -85,7 +86,11 @@ export function useMRList(onMREvent?: (event: MREvent) => void) {
       }
       case "error": {
         const errorData = data as { code: string; message: string };
-        setError(errorData.message);
+        const message = errorData.code === SSE_ERROR_GITLAB_GROUP_UNAVAILABLE
+          ? "Could not load merge requests because the configured GitLab group is not accessible. Verify GITLAB_GROUP_ID and your GitLab permissions."
+          : errorData.message;
+        setError(message);
+        setIsLoading(false);
         setConnectionHealth("error");
         onMREventRef.current?.({ type: "error", data: errorData });
         break;

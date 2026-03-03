@@ -1,9 +1,54 @@
 import { NextResponse } from "next/server";
 import { type NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
-import { auth } from "./auth";
+import type { JWT } from "next-auth/jwt";
+import { auth, refreshAccessToken } from "./auth";
 import { env } from "./env";
-import { REFRESH_TOKEN_ERROR, NOT_AUTHENTICATED_MESSAGE } from "./constants";
+import {
+  REFRESH_TOKEN_ERROR,
+  NOT_AUTHENTICATED_MESSAGE,
+  TOKEN_REFRESH_FAILURE_MESSAGE,
+} from "./constants";
+
+const TOKEN_REFRESH_BUFFER_SECONDS = 60;
+
+export interface ServerAuthContext {
+  accessToken: string;
+  userId: number | undefined;
+  expiresAt: number;
+}
+
+function shouldRefreshToken(jwt: JWT): boolean {
+  if (typeof jwt.expiresAt !== "number") return false;
+  return Date.now() / 1000 >= jwt.expiresAt - TOKEN_REFRESH_BUFFER_SECONDS;
+}
+
+async function resolveJWT(req: NextRequest): Promise<JWT> {
+  const jwt = await getToken({ req, secret: env.AUTH_SECRET });
+  if (!jwt?.accessToken) {
+    throw new Error(NOT_AUTHENTICATED_MESSAGE);
+  }
+
+  if (!shouldRefreshToken(jwt)) {
+    return jwt;
+  }
+
+  const refreshed = await refreshAccessToken(jwt);
+  if (!refreshed.accessToken || refreshed.error === REFRESH_TOKEN_ERROR) {
+    throw new Error(`${TOKEN_REFRESH_FAILURE_MESSAGE} — re-authentication required`);
+  }
+
+  return refreshed;
+}
+
+export async function resolveServerAuth(req: NextRequest): Promise<ServerAuthContext> {
+  const jwt = await resolveJWT(req);
+  return {
+    accessToken: jwt.accessToken as string,
+    userId: jwt.gitlabUserId as number | undefined,
+    expiresAt: typeof jwt.expiresAt === "number" ? jwt.expiresAt : 0,
+  };
+}
 
 export async function getAuthenticatedSession() {
   const session = await auth();
@@ -17,11 +62,8 @@ export async function getAuthenticatedSession() {
 }
 
 export async function getAccessToken(req: NextRequest): Promise<string> {
-  const jwt = await getToken({ req, secret: env.AUTH_SECRET });
-  if (!jwt?.accessToken) {
-    throw new Error(NOT_AUTHENTICATED_MESSAGE);
-  }
-  return jwt.accessToken as string;
+  const resolved = await resolveServerAuth(req);
+  return resolved.accessToken;
 }
 
 const DEFAULT_MAX_BYTES = 1_048_576; // 1 MB

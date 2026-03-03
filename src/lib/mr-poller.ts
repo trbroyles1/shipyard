@@ -1,7 +1,13 @@
 import { gitlabFetch, gitlabFetchAllPages } from "./gitlab-client";
 import { env } from "./env";
 import { createLogger } from "./logger";
-import { isAuthError, SSE_ERROR_AUTH_EXPIRED, SSE_WARNING_POLL_FAILED } from "./errors";
+import {
+  GitLabApiError,
+  isAuthError,
+  SSE_ERROR_AUTH_EXPIRED,
+  SSE_ERROR_GITLAB_GROUP_UNAVAILABLE,
+  SSE_WARNING_POLL_FAILED,
+} from "./errors";
 import { MRStore } from "./mr-store";
 import { getViewedMR } from "./viewed-mr-store";
 import { extractRepoSlug } from "./gitlab-utils";
@@ -204,6 +210,18 @@ export function startPoller(
     } catch (err) {
       if (isAuthError(err)) {
         emit({ type: "error", data: { code: SSE_ERROR_AUTH_EXPIRED, message: "Your session has expired. Please sign in again." } });
+        stopped = true;
+        return;
+      }
+      if (err instanceof GitLabApiError && err.status === 404) {
+        log.error("Poll error: configured GitLab group is unavailable or inaccessible");
+        emit({
+          type: "error",
+          data: {
+            code: SSE_ERROR_GITLAB_GROUP_UNAVAILABLE,
+            message: "Configured GitLab group is unavailable or inaccessible. Check GITLAB_GROUP_ID and your GitLab access.",
+          },
+        });
         stopped = true;
         return;
       }

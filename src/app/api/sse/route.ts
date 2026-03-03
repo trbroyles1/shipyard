@@ -1,9 +1,8 @@
 import { type NextRequest } from "next/server";
-import { getToken } from "next-auth/jwt";
-import { env } from "@/lib/env";
 import { createLogger } from "@/lib/logger";
 import { startPoller } from "@/lib/mr-poller";
 import { clearViewedMR } from "@/lib/viewed-mr-store";
+import { resolveServerAuth } from "@/lib/auth-helpers";
 import {
   registerSession,
   unregisterSession,
@@ -27,14 +26,12 @@ export async function GET(req: NextRequest) {
     return new Response("Missing required tabId parameter", { status: 400 });
   }
 
-  const jwt = await getToken({ req, secret: env.AUTH_SECRET });
-  if (!jwt?.accessToken) {
+  const authContext = await resolveServerAuth(req).catch(() => null);
+  if (!authContext) {
     return new Response("Unauthorized", { status: 401 });
   }
 
-  const token = jwt.accessToken as string;
-  const userId = jwt.gitlabUserId as number | undefined;
-  const expiresAt = typeof jwt.expiresAt === "number" ? jwt.expiresAt : 0;
+  const { accessToken: token, userId, expiresAt } = authContext;
 
   log.info(`SSE connection opened for user ${userId}, tab ${tabId}`);
 
