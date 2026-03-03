@@ -110,7 +110,11 @@ shipyard/
 
     styles/
       theme/
-        tokens.css, colors.css, typography.css, spacing.css
+        colors.css, typography.css, spacing.css, effects.css, layout.css
+        tokens.css                 # Imports per-theme files in theme order
+        themes/
+          classic.css, brinjal.css, drydock.css, bermude.css
+      hljs-shipyard.css            # highlight.js class mappings (theme vars live in theme files)
       components/
         *.module.css               # Per-component CSS modules
 ```
@@ -145,9 +149,11 @@ shipyard/
 - `src/app/api/gitlab/merge-requests/route.ts`: GET → calls `GET /groups/:id/merge_requests?state=opened&scope=all&include_subgroups=true&per_page=100`, maps to `MRSummary[]`.
 
 ### 1.5 Dark theme foundation + root layout
-- `src/styles/theme/tokens.css`: CSS custom properties from mockup `:root` (colors, spacing, radii).
-- `src/styles/theme/colors.css`, `typography.css`, `spacing.css`: extended definitions.
-- `src/app/globals.css`: imports theme files, resets, dark background, scrollbar.
+- `src/styles/theme/themes/*.css`: one file per theme, each containing complete app token + `--hljs-*` values.
+- `src/styles/theme/tokens.css`: aggregator that imports all per-theme files in deterministic order.
+- `src/styles/hljs-shipyard.css`: highlight.js class mappings only; theme token values resolved from active theme file.
+- `src/styles/theme/colors.css`, `typography.css`, `spacing.css`, `effects.css`, `layout.css`: shared primitives.
+- `src/app/globals.css`: imports shared primitives + highlight mappings + theme aggregator, then resets/scrollbar.
 - `src/app/layout.tsx`: fonts via `next/font/google` (Outfit, JetBrains Mono), `<SessionProvider>`, imports globals.css.
 
 ### 1.6 App shell components

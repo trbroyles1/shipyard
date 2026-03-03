@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
-import { DEFAULT_PREFERENCES, type UserPreferences } from "@/lib/types/preferences";
+import { DEFAULT_PREFERENCES, isTheme, type UserPreferences } from "@/lib/types/preferences";
 
 const COOKIE_NAME = "shipyard_prefs";
 const MAX_AGE = 60 * 60 * 24 * 365; // 1 year
@@ -11,8 +11,12 @@ function readCookie(): UserPreferences {
   const match = document.cookie.match(new RegExp(`${COOKIE_NAME}=([^;]+)`));
   if (!match) return DEFAULT_PREFERENCES;
   try {
-    const parsed = JSON.parse(decodeURIComponent(match[1]));
-    return { ...DEFAULT_PREFERENCES, ...parsed };
+    const parsed = JSON.parse(decodeURIComponent(match[1])) as Partial<UserPreferences>;
+    const merged = { ...DEFAULT_PREFERENCES, ...parsed };
+    if (!isTheme(merged.theme)) {
+      merged.theme = DEFAULT_PREFERENCES.theme;
+    }
+    return merged;
   } catch {
     return DEFAULT_PREFERENCES;
   }

@@ -1,0 +1,128 @@
+/* Brinjal theme */
+[data-theme="brinjal"] {
+  color-scheme: dark;
+
+  /* Canvas */
+  --bg-canvas: #130a1a;
+
+  /* Backgrounds (semi-transparent for glass) */
+  --bg-root: rgba(25, 15, 31, 0.52);
+  --bg-s: rgba(30, 18, 38, 0.40);
+  --bg-sr: rgba(37, 22, 48, 0.50);
+  --bg-sh: rgba(46, 28, 58, 0.56);
+  --bg-sa: rgba(57, 35, 72, 0.64);
+
+  /* Borders */
+  --brd: rgba(138, 80, 180, 0.30);
+  --brd-s: rgba(115, 68, 150, 0.22);
+
+  /* Text */
+  --t1: #ede8f5;
+  --t2: #a68ab8;
+  --tm: #745588;
+
+  /* Accent (lime green) */
+  --acc: #92e83a;
+  --acc-h: #a6ee60;
+  --acc-d: rgba(146, 232, 58, 0.18);
+  --acc-g: rgba(146, 232, 58, 0.10);
+  --acc-txt: #130a1a;
+  --acc-purple: #d08ce8;
+
+  /* Semantic colors */
+  --grn: #5ee8a0;
+  --grn-d: rgba(94, 232, 160, 0.15);
+  --grn-g: rgba(94, 232, 160, 0.08);
+  --grn-dd: rgba(94, 232, 160, 0.12);
+  --yel: #f0d060;
+  --yel-d: rgba(240, 208, 96, 0.12);
+  --red: #f07070;
+  --red-d: rgba(240, 112, 112, 0.12);
+  --red-g: rgba(240, 112, 112, 0.08);
+  --red-brd: rgba(240, 112, 112, 0.3);
+  --org: #f0a050;
+  --org-d: rgba(240, 160, 80, 0.12);
+
+  /* Overlays & terminal */
+  --overlay: rgba(12, 5, 18, 0.55);
+  --overlay-heavy: rgba(12, 5, 18, 0.7);
+  --bg-terminal: #110816;
+  --t-terminal: #dacde0;
+
+  /* Selection */
+  --sel: rgba(146, 232, 58, 0.18);
+  --sel-g: rgba(146, 232, 58, 0.10);
+
+  /* Shadows (purple-tinted) */
+  --sh-sm: 0 1px 4px rgba(12, 5, 18, 0.4);
+  --sh-md: 0 4px 20px rgba(12, 5, 18, 0.5);
+  --sh-lg: 0 8px 32px rgba(12, 5, 18, 0.5);
+  --sh-xl: 0 20px 60px rgba(12, 5, 18, 0.6);
+  --panel-sh:
+    0 8px 32px rgba(12, 5, 18, 0.60),
+    0 0 0 1px rgba(175, 125, 200, 0.14),
+    inset 0 1px 0 0 rgba(210, 165, 240, 0.16);
+
+  /* Radii (slightly rounder) */
+  --rxs: 4px;
+  --rs: 6px;
+  --r: 10px;
+  --rl: 14px;
+
+  /* Glass */
+  --glass-blur: 28px;
+  --glass-sat: 165%;
+
+  /* Layout (floating panels) */
+  --shell-p: 14px;
+  --shell-gap: 14px;
+  --body-gap: 14px;
+  --panel-r: 14px;
+
+  /* Canvas gradient — 4 blobs with varied hue for glass to blur over */
+  --canvas-bg-image:
+    radial-gradient(ellipse 80% 50% at 10% 15%, rgba(105, 35, 160, 0.28) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 60% at 85% 80%, rgba(52, 20, 105, 0.24) 0%, transparent 70%),
+    radial-gradient(ellipse 70% 40% at 60% 40%, rgba(68, 24, 132, 0.16) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 50% at 30% 85%, rgba(115, 38, 142, 0.18) 0%, transparent 60%);
+
+  /* Floating panels — remove inter-panel borders */
+  --panel-separator: none;
+
+  /* Inner component glass highlight */
+  --card-inset: inset 0 1px 0 0 rgba(210, 165, 240, 0.14);
+
+  /* Active tab luminous glow */
+  --tab-glow: 0 2px 10px rgba(146, 232, 58, 0.25);
+
+  /* Input focus glow */
+  --focus-glow: 0 0 0 1px var(--acc), 0 0 12px rgba(146, 232, 58, 0.15);
+
+  /* Solid background (opaque equivalent of --bg-root for knobs, badges, etc.) */
+  --solid-bg: #130a1a;
+
+  /* Glass-coherent scrollbar */
+  --scrollbar-thumb: rgba(155, 100, 200, 0.35);
+  --scrollbar-thumb-hover: rgba(175, 118, 220, 0.50);
+
+  /* highlight.js tokens */
+  --hljs-keyword: #d08ce8;
+  --hljs-string: #92e83a;
+  --hljs-number: #f0a050;
+  --hljs-comment: #745588;
+  --hljs-function: #82aaff;
+  --hljs-variable: #f07070;
+  --hljs-type: #f0d060;
+  --hljs-built-in: #5ee8a0;
+  --hljs-attr: #f0d060;
+  --hljs-literal: #f07070;
+  --hljs-title: #82aaff;
+  --hljs-params: #dacde0;
+  --hljs-meta: #745588;
+  --hljs-regexp: #5ee8a0;
+  --hljs-addition: #92e83a;
+  --hljs-deletion: #f07070;
+  --hljs-punctuation: #5ee8a0;
+  --hljs-selector: #d08ce8;
+  --hljs-property: #f0a050;
+}

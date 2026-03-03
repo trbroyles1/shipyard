@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import { Outfit, JetBrains_Mono } from "next/font/google";
 import { SessionProvider } from "@/components/providers/SessionProvider";
-import { DEFAULT_PREFERENCES } from "@/lib/types/preferences";
+import { DEFAULT_PREFERENCES, isTheme } from "@/lib/types/preferences";
 import type { Theme } from "@/lib/types/preferences";
 import "./globals.css";
 
@@ -27,8 +27,9 @@ function readThemeFromCookie(cookieStore: ReturnType<typeof cookies>): Theme {
   const raw = cookieStore.get("shipyard_prefs")?.value;
   if (!raw) return DEFAULT_PREFERENCES.theme;
   try {
-    const parsed = JSON.parse(decodeURIComponent(raw));
-    return parsed.theme ?? DEFAULT_PREFERENCES.theme;
+    const parsed: unknown = JSON.parse(decodeURIComponent(raw));
+    const theme = typeof parsed === "object" && parsed !== null ? (parsed as { theme?: unknown }).theme : undefined;
+    return isTheme(theme) ? theme : DEFAULT_PREFERENCES.theme;
   } catch {
     return DEFAULT_PREFERENCES.theme;
   }

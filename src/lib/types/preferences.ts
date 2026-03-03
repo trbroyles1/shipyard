@@ -1,11 +1,17 @@
-export type Theme = "classic" | "brinjal" | "drydock" | "bermude";
-
-export const THEMES: { value: Theme; label: string }[] = [
+export const THEMES = [
   { value: "classic", label: "Classic" },
   { value: "brinjal", label: "Brinjal" },
   { value: "drydock", label: "Drydock" },
   { value: "bermude", label: "Bermude" },
-];
+] as const;
+
+export type Theme = (typeof THEMES)[number]["value"];
+
+const THEME_VALUES = THEMES.map((theme) => theme.value);
+
+export function isTheme(value: unknown): value is Theme {
+  return typeof value === "string" && THEME_VALUES.includes(value as Theme);
+}
 
 export interface UserPreferences {
   warningHours: number;

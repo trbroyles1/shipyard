@@ -1,0 +1,114 @@
+/* Classic theme */
+:root,
+[data-theme="classic"] {
+  color-scheme: dark;
+
+  /* Canvas (behind floating panels — aliases --bg-root in Classic) */
+  --bg-canvas: var(--bg-root);
+
+  /* Backgrounds */
+  --bg-root: #0a0c10;
+  --bg-s: #12151c;
+  --bg-sr: #181c26;
+  --bg-sh: #1e2330;
+  --bg-sa: #242a38;
+
+  /* Borders */
+  --brd: #2a3040;
+  --brd-s: #1e2430;
+
+  /* Text */
+  --t1: #e2e8f0;
+  --t2: #94a3b8;
+  --tm: #5a6577;
+
+  /* Accent (cyan/sky) */
+  --acc: #38bdf8;
+  --acc-d: rgba(56, 189, 248, 0.15);
+  --acc-g: rgba(56, 189, 248, 0.08);
+
+  /* Semantic colors */
+  --grn: #34d399;
+  --grn-d: rgba(52, 211, 153, 0.15);
+  --grn-g: rgba(52, 211, 153, 0.08);
+  --yel: #facc15;
+  --yel-d: rgba(250, 204, 21, 0.12);
+  --red: #f87171;
+  --red-d: rgba(248, 113, 113, 0.12);
+  --red-g: rgba(248, 113, 113, 0.08);
+  --org: #fb923c;
+  --org-d: rgba(251, 146, 60, 0.12);
+
+  /* Accent variants */
+  --acc-h: #5cc8f8;
+  --acc-txt: #0a0c10;
+  --acc-purple: #a78bfa;
+
+  /* Overlays & terminal */
+  --overlay: rgba(0, 0, 0, 0.5);
+  --overlay-heavy: rgba(0, 0, 0, 0.6);
+  --bg-terminal: #0d0d0d;
+  --t-terminal: #d4d4d4;
+
+  /* Diff gutter tints */
+  --grn-dd: rgba(52, 211, 153, 0.12);
+
+  /* Diff selection highlights */
+  --sel: rgba(79, 172, 254, 0.18);
+  --sel-g: rgba(79, 172, 254, 0.10);
+
+  /* Error border tint */
+  --red-brd: rgba(248, 113, 113, 0.3);
+
+  /* Shadows */
+  --sh-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --sh-md: 0 4px 20px rgba(0, 0, 0, 0.4);
+  --sh-lg: 0 8px 32px rgba(0, 0, 0, 0.4);
+  --sh-xl: 0 20px 60px rgba(0, 0, 0, 0.5);
+
+  /* Radii */
+  --rxs: 3px;
+  --rs: 5px;
+  --r: 8px;
+  --rl: 12px;
+
+  /* Glass / panel effects (classic defaults) */
+  --glass-blur: 0;
+  --glass-sat: 100%;
+  --panel-sh: none;
+  --solid-bg: var(--bg-root);
+  --canvas-bg-image: none;
+  --panel-separator: var(--bw) solid var(--brd);
+  --card-inset: 0 0 0 0 transparent;
+  --tab-glow: none;
+  --focus-glow: none;
+  --scrollbar-thumb: var(--brd);
+  --scrollbar-thumb-hover: var(--tm);
+
+  /* Shell / panel layout (classic defaults) */
+  --shell-p: 0;
+  --shell-gap: 0;
+  --body-gap: 0;
+  --panel-r: 0;
+
+  /* highlight.js tokens */
+  --hljs-keyword: #c792ea;
+  --hljs-string: #c3e88d;
+  --hljs-number: #f78c6c;
+  --hljs-comment: #546e7a;
+  --hljs-function: #82aaff;
+  --hljs-variable: #f07178;
+  --hljs-type: #ffcb6b;
+  --hljs-built-in: #89ddff;
+  --hljs-attr: #ffcb6b;
+  --hljs-literal: #ff5370;
+  --hljs-title: #82aaff;
+  --hljs-params: #d8dee9;
+  --hljs-meta: #546e7a;
+  --hljs-regexp: #89ddff;
+  --hljs-addition: #c3e88d;
+  --hljs-deletion: #f07178;
+  --hljs-punctuation: #89ddff;
+  --hljs-selector: #c792ea;
+  --hljs-property: #f78c6c;
+}

@@ -6,11 +6,13 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "check:themes": "node scripts/validate-theme-css.mjs"
   },
   "dependencies": {
     "ansi_up": "^6.0.6",
     "dompurify": "^3.3.1",
+    "eslint": "^10.0.2",
     "highlight.js": "^11.11.1",
     "mermaid": "^11.12.3",
     "next": "^14.2.29",
@@ -28,6 +30,7 @@
     "@types/node": "^22.13.0",
     "@types/react": "^18.3.18",
     "@types/react-dom": "^18.3.5",
+    "eslint-config-next": "16.1.6",
     "typescript": "^5.7.3"
   }
 }
