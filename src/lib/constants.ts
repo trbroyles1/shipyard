@@ -26,6 +26,8 @@ export const SIGN_IN_PATH = "/auth/signin";
  */
 export const AUTH_ERROR_MESSAGES = ["Not authenticated", "No access token"] as const;
 
+export const NOT_AUTHENTICATED_MESSAGE = AUTH_ERROR_MESSAGES[0];
+
 /** Error message prefix for token-refresh failures. */
 export const TOKEN_REFRESH_FAILURE_MESSAGE = "Token refresh failed";
 

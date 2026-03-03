@@ -11,13 +11,13 @@
 .heading {
   font-size: var(--fs-5, 1.5rem);
   font-weight: 600;
-  color: var(--fg-1);
+  color: var(--t1);
   margin: 0 0 var(--sp-3, 0.75rem);
 }
 
 .message {
   font-size: var(--fs-2, 0.875rem);
-  color: var(--fg-3);
+  color: var(--tm);
   margin: 0 0 var(--sp-7, 1.5rem);
 }
 

@@ -1,5 +1,6 @@
 import { type NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
+import { env } from "@/lib/env";
 import { createLogger } from "@/lib/logger";
 import { startPoller } from "@/lib/mr-poller";
 import { clearViewedMR } from "@/lib/viewed-mr-store";
@@ -26,7 +27,7 @@ export async function GET(req: NextRequest) {
     return new Response("Missing required tabId parameter", { status: 400 });
   }
 
-  const jwt = await getToken({ req, secret: process.env.AUTH_SECRET });
+  const jwt = await getToken({ req, secret: env.AUTH_SECRET });
   if (!jwt?.accessToken) {
     return new Response("Unauthorized", { status: 401 });
   }
