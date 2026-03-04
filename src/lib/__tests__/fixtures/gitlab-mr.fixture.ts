@@ -1,0 +1,100 @@
+import { type GitLabUser, type GitLabPipeline, type GitLabMergeRequest } from "@/lib/types/gitlab";
+
+export const MOCK_USER: GitLabUser = {
+  id: 1,
+  username: "jdoe",
+  name: "Jane Doe",
+  avatar_url: "https://gitlab.example.com/uploads/-/system/user/avatar/1/avatar.png",
+  web_url: "https://gitlab.example.com/jdoe",
+};
+
+export const MOCK_REVIEWER: GitLabUser = {
+  id: 2,
+  username: "rsmith",
+  name: "Robert Smith",
+  avatar_url: "https://gitlab.example.com/uploads/-/system/user/avatar/2/avatar.png",
+  web_url: "https://gitlab.example.com/rsmith",
+};
+
+export const MOCK_PIPELINE: GitLabPipeline = {
+  id: 100,
+  iid: 50,
+  status: "success",
+  ref: "feature-branch",
+  sha: "abc123def456abc123def456abc123def456abc1",
+  web_url: "https://gitlab.example.com/org/project/-/pipelines/100",
+  created_at: "2025-01-15T10:00:00Z",
+  updated_at: "2025-01-15T10:05:00Z",
+};
+
+export const MOCK_MERGE_REQUEST: GitLabMergeRequest = {
+  id: 1001,
+  iid: 17,
+  title: "Add user preferences panel",
+  description: "Implements the user preferences panel with theme switching.",
+  state: "opened",
+  draft: false,
+  created_at: "2025-01-14T09:00:00Z",
+  updated_at: "2025-01-15T11:00:00Z",
+  source_branch: "feature/preferences",
+  target_branch: "main",
+  author: MOCK_USER,
+  assignees: [MOCK_USER],
+  reviewers: [MOCK_REVIEWER],
+  labels: ["enhancement", "frontend"],
+  milestone: { id: 10, title: "v1.0" },
+  has_conflicts: false,
+  merge_status: "can_be_merged",
+  detailed_merge_status: "mergeable",
+  head_pipeline: MOCK_PIPELINE,
+  web_url: "https://gitlab.example.com/org/project/-/merge_requests/17",
+  changes_count: "5",
+  user_notes_count: 3,
+  project_id: 42,
+  source_project_id: 42,
+  target_project_id: 42,
+  diff_refs: {
+    base_sha: "aaa111aaa111aaa111aaa111aaa111aaa111aaa1",
+    head_sha: "bbb222bbb222bbb222bbb222bbb222bbb222bbb2",
+    start_sha: "ccc333ccc333ccc333ccc333ccc333ccc333ccc3",
+  },
+  references: {
+    full: "org/project!17",
+    relative: "!17",
+    short: "!17",
+  },
+};
+
+export const MOCK_MERGE_REQUEST_MINIMAL: GitLabMergeRequest = {
+  id: 1002,
+  iid: 18,
+  title: "WIP: Draft fix",
+  description: null,
+  state: "opened",
+  draft: true,
+  created_at: "2025-01-16T08:00:00Z",
+  updated_at: "2025-01-16T08:30:00Z",
+  source_branch: "fix/broken-thing",
+  target_branch: "main",
+  author: MOCK_USER,
+  assignees: [],
+  reviewers: [],
+  labels: [],
+  milestone: null,
+  has_conflicts: true,
+  merge_status: "cannot_be_merged",
+  detailed_merge_status: "broken_status",
+  head_pipeline: null,
+  web_url: "https://gitlab.example.com/org/project/-/merge_requests/18",
+  changes_count: null,
+  user_notes_count: 0,
+  project_id: 42,
+  source_project_id: 42,
+  target_project_id: 42,
+  diff_refs: null,
+  references: {
+    full: "org/project!18",
+    relative: "!18",
+    short: "!18",
+  },
+};
