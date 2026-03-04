@@ -52,7 +52,7 @@ export function FileTree({ files, selectedFile, onSelect, onClose }: Props) {
   return (
     <div className={styles.tree}>
       <div className={styles.header}>
-        <span className={styles.headerLabel}>Files ({files.length})</span>
+        <span>Files ({files.length})</span>
         <button className={styles.close} onClick={onClose} title="Hide file tree">
           <XIcon size={12} />
         </button>
@@ -106,7 +106,7 @@ function renderNodes(
       );
     } else {
       result.push(
-        <div key={`dir-${depth}-${name}`} className={styles.folder}>
+        <div key={`dir-${depth}-${name}`}>
           <div className={styles.folderLabel} style={{ paddingLeft: DIR_PADDING_BASE + depth * DEPTH_INDENT }}>
             <FolderIcon size={12} />
             <span>{name}</span>

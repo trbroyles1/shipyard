@@ -1,35 +1,27 @@
-/* Shadows */
 :root {
+  /* Shadows */
   --sh-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
   --sh-md: 0 4px 20px rgba(0, 0, 0, 0.4);
   --sh-lg: 0 8px 32px rgba(0, 0, 0, 0.4);
   --sh-xl: 0 20px 60px rgba(0, 0, 0, 0.5);
   --sh-selected: 0 0 0 1px var(--acc), inset 0 0 12px var(--acc-g);
-}
 
-/* Transition durations */
-:root {
+  /* Transition durations */
   --dur-fast: 0.1s;
   --dur-base: 0.15s;
   --dur-slow: 0.2s;
   --dur-layout: 0.25s;
   --dur-expand: 0.3s;
-}
 
-/* Glass / panel effects (inert in Classic) */
-:root {
+  /* Glass / panel effects (inert in Classic) */
   --glass-blur: 0;
   --glass-sat: 100%;
   --panel-sh: none;
-}
 
-/* Solid background (for elements that must stay opaque) */
-:root {
+  /* Solid background (for elements that must stay opaque) */
   --solid-bg: var(--bg-root);
-}
 
-/* Glass-enhanced tokens (inert in Classic) */
-:root {
+  /* Glass-enhanced tokens (inert in Classic) */
   --canvas-bg-image: none;
   --panel-separator: var(--bw) solid var(--brd);
   --card-inset: 0 0 0 0 transparent;
@@ -39,10 +31,8 @@
   --focus-glow: none;
   --btn-shadow: none;
   --dialog-bg: var(--bg-s);
-}
 
-/* Border widths */
-:root {
+  /* Border widths */
   --bw: 1px;
   --bw-thick: 2px;
   --bw-accent: 3px;
