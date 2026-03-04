@@ -33,7 +33,7 @@ function getStore(): Map<number, ViewedMR> {
 export function setViewedMR(userId: number, projectId: number, iid: number): void {
   const store = getStore();
   const prev = store.get(userId);
-  if (!prev || prev.projectId !== projectId || prev.iid !== iid) {
+  if (prev?.projectId !== projectId || prev?.iid !== iid) {
     log.debug(`setViewedMR(user=${userId}, project=${projectId}, iid=${iid})`);
   }
   store.set(userId, { projectId, iid });

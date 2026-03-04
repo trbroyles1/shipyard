@@ -50,7 +50,7 @@ async function fetchWithRetry(
 
       const errorBody = await response.text();
       const retryAfterHeader = response.headers.get("retry-after");
-      const retryAfter = retryAfterHeader ? parseInt(retryAfterHeader, 10) : undefined;
+      const retryAfter = retryAfterHeader ? Number.parseInt(retryAfterHeader, 10) : undefined;
 
       const error = new GitLabApiError(
         response.status,
@@ -169,7 +169,7 @@ export async function gitlabFetchAllPages<T>(
     const data = safeParseJSON<T[]>(text);
     results.push(...data);
 
-    const totalPages = parseInt(response.headers.get("x-total-pages") || "1", 10);
+    const totalPages = Number.parseInt(response.headers.get("x-total-pages") || "1", 10);
     if (page >= totalPages) break;
     page++;
     if (page > maxPages) {

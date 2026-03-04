@@ -66,6 +66,10 @@ export function DiscussionThread({ discussion, defaultExpanded = false, compact 
 
   if (!firstNote) return null;
 
+  let resolveLabel = "Resolve";
+  if (resolving) resolveLabel = "\u2026";
+  else if (isResolved) resolveLabel = "Unresolve";
+
   return (
     <div className={rootClass}>
       {/* Header bar — always visible */}
@@ -95,7 +99,7 @@ export function DiscussionThread({ discussion, defaultExpanded = false, compact 
               onClick={(e) => { e.stopPropagation(); handleResolve(); }}
               disabled={resolving}
             >
-              {resolving ? "..." : isResolved ? "Unresolve" : "Resolve"}
+              {resolveLabel}
             </button>
           )}
           {replyCount > 0 && (

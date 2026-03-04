@@ -12,7 +12,7 @@ export function validateNumericId(value: string, name: string): number {
   if (!NUMERIC_ID_PATTERN.test(value)) {
     throw new ValidationError(`Invalid ${name}: must be a numeric ID`);
   }
-  return parseInt(value, 10);
+  return Number.parseInt(value, 10);
 }
 
 export function validateDiscussionId(value: string): string {

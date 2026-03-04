@@ -68,7 +68,7 @@ export function JobLogModal({ jobName, projectId, jobId, jobStatus, onClose }: P
       // Format: bytes start-end/total
       const match = contentRange.match(/bytes \d+-(\d+)\/(\d+)/);
       if (match) {
-        byteOffsetRef.current = parseInt(match[1], 10) + 1;
+        byteOffsetRef.current = Number.parseInt(match[1], 10) + 1;
       }
     } else if (text.length > 0) {
       // No range support — we got the full content
