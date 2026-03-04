@@ -36,7 +36,7 @@ describe("rate-limiter", () => {
 
   it("resolves immediately when tokens are available", async () => {
     const { acquire } = await loadModule();
-    await acquire();
+    await expect(acquire()).resolves.toBeUndefined();
   });
 
   it("delays when all 2000 tokens are consumed", async () => {
@@ -68,7 +68,7 @@ describe("rate-limiter", () => {
 
     vi.advanceTimersByTime(60_000);
 
-    await acquire();
+    await expect(acquire()).resolves.toBeUndefined();
   });
 
   it("partially refills tokens proportionally over time", async () => {
@@ -80,9 +80,13 @@ describe("rate-limiter", () => {
 
     vi.advanceTimersByTime(30_000);
 
-    for (let i = 0; i < 1000; i++) {
+    // ~1000 tokens should have refilled. Consuming 999 should succeed
+    // without triggering the blocking wait branch.
+    for (let i = 0; i < 999; i++) {
       await acquire();
     }
+
+    await expect(acquire()).resolves.toBeUndefined();
   });
 
   it("logs a warning at 80% utilization", async () => {
