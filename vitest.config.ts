@@ -11,5 +11,6 @@ export default defineConfig({
     include: ["src/**/__tests__/**/*.test.{ts,tsx}"],
     environment: "node",
     restoreMocks: true,
+    css: { modules: { classNameStrategy: "non-scoped" } },
   },
 });
