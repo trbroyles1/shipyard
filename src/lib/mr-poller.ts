@@ -156,7 +156,7 @@ async function pollViewedMRApprovals(
   const approvalKey = JSON.stringify({
     approved: approvals.approved,
     approvals_left: approvals.approvals_left,
-    approved_by: approvals.approved_by.map((a) => a.user.id).sort(),
+    approved_by: approvals.approved_by.map((a) => a.user.id).sort((a, b) => a - b),
     merge_status: mr.detailed_merge_status,
     state: mr.state,
     user_notes_count: mr.user_notes_count,
@@ -174,6 +174,37 @@ async function pollViewedMRApprovals(
     log.debug(`Approval key unchanged for project=${viewed.projectId} iid=${viewed.iid}`);
   }
   lastKeyRef.value = approvalKey;
+}
+
+function handlePollError(
+  err: unknown,
+  errorCount: number,
+  emit: (event: SSEEventPayload) => void,
+): { shouldStop: boolean; errorCount: number } {
+  if (isAuthError(err)) {
+    emit({ type: "error", data: { code: SSE_ERROR_AUTH_EXPIRED, message: "Your session has expired. Please sign in again." } });
+    return { shouldStop: true, errorCount };
+  }
+
+  if (err instanceof GitLabApiError && err.status === 404) {
+    log.error("Poll error: configured GitLab group is unavailable or inaccessible");
+    emit({
+      type: "error",
+      data: {
+        code: SSE_ERROR_GITLAB_GROUP_UNAVAILABLE,
+        message: "Configured GitLab group is unavailable or inaccessible. Check GITLAB_GROUP_ID and your GitLab access.",
+      },
+    });
+    return { shouldStop: true, errorCount };
+  }
+
+  const newCount = errorCount + 1;
+  log.error(`Poll error (${newCount}): ${err}`);
+  emit({ type: "warning", data: { code: SSE_WARNING_POLL_FAILED, message: "Temporary issue reaching GitLab. Retrying..." } });
+  if (newCount >= DEGRADED_THRESHOLD) {
+    emit({ type: "status", data: { state: "degraded" } });
+  }
+  return { shouldStop: false, errorCount: newCount };
 }
 
 /**
@@ -208,29 +239,9 @@ export function startPoller(
       }
       consecutiveErrors = 0;
     } catch (err) {
-      if (isAuthError(err)) {
-        emit({ type: "error", data: { code: SSE_ERROR_AUTH_EXPIRED, message: "Your session has expired. Please sign in again." } });
-        stopped = true;
-        return;
-      }
-      if (err instanceof GitLabApiError && err.status === 404) {
-        log.error("Poll error: configured GitLab group is unavailable or inaccessible");
-        emit({
-          type: "error",
-          data: {
-            code: SSE_ERROR_GITLAB_GROUP_UNAVAILABLE,
-            message: "Configured GitLab group is unavailable or inaccessible. Check GITLAB_GROUP_ID and your GitLab access.",
-          },
-        });
-        stopped = true;
-        return;
-      }
-      consecutiveErrors++;
-      log.error(`Poll error (${consecutiveErrors}): ${err}`);
-      emit({ type: "warning", data: { code: SSE_WARNING_POLL_FAILED, message: "Temporary issue reaching GitLab. Retrying..." } });
-      if (consecutiveErrors >= DEGRADED_THRESHOLD) {
-        emit({ type: "status", data: { state: "degraded" } });
-      }
+      const result = handlePollError(err, consecutiveErrors, emit);
+      consecutiveErrors = result.errorCount;
+      if (result.shouldStop) { stopped = true; return; }
     }
 
     if (userId && !stopped) {

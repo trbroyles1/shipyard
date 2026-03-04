@@ -44,7 +44,7 @@ function InlineCommentForm({
   onCancel,
 }: {
   lineCount: number;
-  onSubmit: (body: string) => void;
+  onSubmit: (body: string) => void | Promise<void>;
   onCancel: () => void;
 }) {
   const [text, setText] = useState("");

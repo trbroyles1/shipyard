@@ -97,22 +97,22 @@ export function JobLogModal({ jobName, projectId, jobId, jobStatus, onClose }: P
   useEffect(() => {
     if (!ACTIVE_STATUSES.has(liveStatus)) return;
 
+    function handlePollResult({ text, status, incremental }: { text: string; status: string; incremental: boolean }) {
+      if (text.length > 0) {
+        if (incremental) {
+          setLog((prev) => prev + text);
+        } else {
+          // Server didn't support Range — replace full content
+          setLog(text);
+        }
+      }
+      setLiveStatus(status);
+    }
+
     const timer = setInterval(() => {
-      fetchTrace(true)
-        .then(({ text, status, incremental }) => {
-          if (text.length > 0) {
-            if (incremental) {
-              setLog((prev) => prev + text);
-            } else {
-              // Server didn't support Range — replace full content
-              setLog(text);
-            }
-          }
-          setLiveStatus(status);
-        })
-        .catch(() => {
-          // Silently ignore poll errors — will retry next interval
-        });
+      fetchTrace(true).then(handlePollResult).catch(() => {
+        // Silently ignore poll errors — will retry next interval
+      });
     }, POLL_INTERVAL);
 
     return () => clearInterval(timer);

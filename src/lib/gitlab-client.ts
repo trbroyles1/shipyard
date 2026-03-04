@@ -21,6 +21,54 @@ interface FetchOptions {
 }
 
 /**
+ * Computes backoff duration in ms. Honors Retry-After for 429s without
+ * capping — GitLab sets reasonable values and we should respect rate-limit
+ * signals to avoid escalating to longer bans.
+ */
+function calculateBackoff(attempt: number, status?: number, retryAfter?: number): number {
+  if (status === 429 && Number.isFinite(retryAfter)) {
+    return retryAfter! * 1_000;
+  }
+  return Math.min(INITIAL_BACKOFF_MS * Math.pow(2, attempt), MAX_BACKOFF_MS) *
+    (0.5 + Math.random() * 0.5);
+}
+
+async function buildGitLabError(response: Response): Promise<GitLabApiError> {
+  const errorBody = await response.text();
+  const retryAfterHeader = response.headers.get("retry-after");
+  const retryAfter = retryAfterHeader ? parseInt(retryAfterHeader, 10) : undefined;
+  return new GitLabApiError(
+    response.status,
+    response.statusText,
+    errorBody,
+    Number.isFinite(retryAfter) ? retryAfter : undefined,
+  );
+}
+
+/**
+ * If the error is not transient, throws immediately. Otherwise, if retries
+ * remain, logs a warning and waits with exponential backoff before returning.
+ */
+async function handleRetryableError(
+  error: unknown,
+  attempt: number,
+  url: string,
+  method: string,
+): Promise<void> {
+  if (!isTransientError(error)) {
+    throw error;
+  }
+  if (attempt >= MAX_RETRIES) return;
+
+  const status = error instanceof GitLabApiError ? error.status : undefined;
+  const retryAfter = error instanceof GitLabApiError ? error.retryAfter : undefined;
+  const backoff = calculateBackoff(attempt, status, retryAfter);
+  const description = error instanceof Error ? error.message : String(error);
+  log.warn(`${description} on ${method} ${url}, retrying in ${Math.round(backoff)}ms (attempt ${attempt + 1}/${MAX_RETRIES})`);
+  await new Promise((resolve) => setTimeout(resolve, backoff));
+}
+
+/**
  * Executes a fetch with automatic timeout, retry on transient errors,
  * and exponential backoff with jitter. Returns a successful Response.
  */
@@ -30,6 +78,7 @@ async function fetchWithRetry(
   callerSignal?: AbortSignal,
 ): Promise<Response> {
   let lastError: unknown;
+  const method = init.method ?? "GET";
 
   for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
     if (callerSignal?.aborted) {
@@ -43,54 +92,15 @@ async function fetchWithRetry(
 
     try {
       const response = await fetch(url, { ...init, signal });
+      if (response.ok) return response;
 
-      if (response.ok) {
-        return response;
-      }
-
-      const errorBody = await response.text();
-      const retryAfterHeader = response.headers.get("retry-after");
-      const retryAfter = retryAfterHeader ? parseInt(retryAfterHeader, 10) : undefined;
-
-      const error = new GitLabApiError(
-        response.status,
-        response.statusText,
-        errorBody,
-        Number.isFinite(retryAfter) ? retryAfter : undefined,
-      );
-
-      if (!isTransientError(error)) {
-        throw error;
-      }
-
+      const error = await buildGitLabError(response);
       lastError = error;
-
-      if (attempt < MAX_RETRIES) {
-        // Honor server's Retry-After for 429s without capping — GitLab sets reasonable values
-        // and we should respect rate-limit signals to avoid escalating to longer bans.
-        const backoff = response.status === 429 && Number.isFinite(retryAfter)
-          ? retryAfter! * 1_000
-          : Math.min(INITIAL_BACKOFF_MS * Math.pow(2, attempt), MAX_BACKOFF_MS) *
-            (0.5 + Math.random() * 0.5);
-        log.warn(`Transient error ${response.status} on ${init.method ?? "GET"} ${url}, retrying in ${Math.round(backoff)}ms (attempt ${attempt + 1}/${MAX_RETRIES})`);
-        await new Promise((resolve) => setTimeout(resolve, backoff));
-      }
+      await handleRetryableError(error, attempt, url, method);
     } catch (err) {
-      if (err instanceof GitLabApiError && !isTransientError(err)) {
-        throw err;
-      }
-
+      if (err instanceof GitLabApiError && !isTransientError(err)) throw err;
       lastError = err;
-
-      if (attempt < MAX_RETRIES && isTransientError(err)) {
-        const backoff =
-          Math.min(INITIAL_BACKOFF_MS * Math.pow(2, attempt), MAX_BACKOFF_MS) *
-          (0.5 + Math.random() * 0.5);
-        log.warn(`Fetch error (${err instanceof Error ? err.message : err}), retrying in ${Math.round(backoff)}ms (attempt ${attempt + 1}/${MAX_RETRIES})`);
-        await new Promise((resolve) => setTimeout(resolve, backoff));
-      } else if (!isTransientError(err)) {
-        throw err;
-      }
+      await handleRetryableError(err, attempt, url, method);
     }
   }
 

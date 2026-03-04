@@ -19,7 +19,7 @@ export function useAudio() {
 
   useEffect(() => {
     return () => {
-      void ctxRef.current?.close().catch(() => {});
+      ctxRef.current?.close().catch(() => {});
       ctxRef.current = null;
     };
   }, []);
@@ -34,7 +34,7 @@ export function useAudio() {
     }
     const ctx = ctxRef.current;
     if (ctx.state === "suspended") {
-      void ctx.resume().catch(() => {});
+      ctx.resume().catch(() => {});
     }
     return ctx;
   }, []);
