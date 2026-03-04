@@ -86,7 +86,13 @@ function PipelineRow({ pipeline, projectId, onViewLog }: { pipeline: GitLabPipel
 
   return (
     <div className={styles.pipeline}>
-      <div className={styles.pipelineHeader} onClick={() => setExpanded(!expanded)}>
+      <div
+        className={styles.pipelineHeader}
+        onClick={() => setExpanded(!expanded)}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setExpanded(!expanded); } }}
+      >
         <span className={styles.status} style={{ color: statusInfo.color }}>
           {statusInfo.symbol}
         </span>

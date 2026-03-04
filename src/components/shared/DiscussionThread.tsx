@@ -69,7 +69,13 @@ export function DiscussionThread({ discussion, defaultExpanded = false, compact 
   return (
     <div className={rootClass}>
       {/* Header bar — always visible */}
-      <div className={styles.header} onClick={() => setExpanded(!expanded)}>
+      <div
+        className={styles.header}
+        onClick={() => setExpanded(!expanded)}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setExpanded(!expanded); } }}
+      >
         <ChevronRightIcon
           className={`${styles.chevron} ${expanded ? styles.chevronOpen : ""}`}
         />
