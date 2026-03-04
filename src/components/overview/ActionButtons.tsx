@@ -10,6 +10,12 @@ import { CheckIcon, DoubleCheckIcon, XIcon, MergeIcon, ExternalLinkIcon } from "
 import { MergeDialog } from "./MergeDialog";
 import styles from "./ActionButtons.module.css";
 
+function approveButtonIcon(approving: boolean, hasApproved: boolean) {
+  if (approving) return <span className={styles.spinner} />;
+  if (hasApproved) return <DoubleCheckIcon />;
+  return <CheckIcon />;
+}
+
 interface Props {
   mr: GitLabMergeRequest;
   approvals: GitLabApprovals;
@@ -44,6 +50,10 @@ export function ActionButtons({ mr, approvals, currentUserId, onRefetch }: Props
     }
   }, [hasApproved, base, mr.iid, mr.title, addToast, onRefetch]);
 
+  const mergeTitle = mergeable
+    ? "Merge this MR"
+    : `Not mergeable: ${mr.detailed_merge_status}${mr.draft ? " (draft)" : ""}`;
+
   return (
     <div className={styles.actions}>
       <button
@@ -51,13 +61,7 @@ export function ActionButtons({ mr, approvals, currentUserId, onRefetch }: Props
         onClick={handleApproveToggle}
         disabled={approving}
       >
-        {approving ? (
-          <span className={styles.spinner} />
-        ) : hasApproved ? (
-          <DoubleCheckIcon />
-        ) : (
-          <CheckIcon />
-        )}
+        {approveButtonIcon(approving, hasApproved)}
         {hasApproved ? "Unapprove" : "Approve"}
       </button>
       <button className={`${styles.btn} ${styles.requestChanges}`} disabled title="Requires GraphQL — coming soon">
@@ -67,7 +71,7 @@ export function ActionButtons({ mr, approvals, currentUserId, onRefetch }: Props
       <button
         className={`${styles.btn} ${styles.merge}`}
         disabled={!mergeable}
-        title={!mergeable ? `Not mergeable: ${mr.detailed_merge_status}${mr.draft ? " (draft)" : ""}` : "Merge this MR"}
+        title={mergeTitle}
         onClick={() => setMergeOpen(true)}
       >
         <MergeIcon />

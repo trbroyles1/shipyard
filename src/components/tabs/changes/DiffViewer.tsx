@@ -291,6 +291,52 @@ export function DiffViewer({ file: initialFile, discussions, projectId, iid, dif
   const hasWidgets = Object.keys(mergedWidgets).length > 0;
   const selectedKeys = selection?.keys;
 
+  const renderDiffBody = () => {
+    if (initialFile.binary) {
+      return <div className={styles.noContent}>Binary file — no text diff available.</div>;
+    }
+    if (isTruncated) {
+      return (
+        <div className={styles.largeDiff}>
+          <span className={styles.largeDiffText}>
+            Large diff ({initialFile.additions + initialFile.deletions} changed lines). Load it?
+          </span>
+          <button
+            className={styles.loadBtn}
+            onClick={handleLoad}
+            disabled={loading}
+          >
+            {loading ? "Loading..." : "Load diff"}
+          </button>
+          {loadError && <span className={styles.loadError}>{loadError}</span>}
+        </div>
+      );
+    }
+    if (noDiff) {
+      return <div className={styles.noContent}>Empty diff.</div>;
+    }
+    return (
+      <div className={styles.diffContent}>
+        {parsedFiles.map((pf) => (
+          <Diff
+            key={pf.oldRevision + pf.newRevision}
+            viewType="unified"
+            diffType={pf.type}
+            hunks={pf.hunks}
+            widgets={hasWidgets ? mergedWidgets : undefined}
+            selectedChanges={selectedKeys}
+            gutterEvents={canComment ? gutterEvents : undefined}
+            renderGutter={renderGutter}
+          >
+            {(hunks) => hunks.map((hunk) => (
+              <Hunk key={hunk.content} hunk={hunk} />
+            ))}
+          </Diff>
+        ))}
+      </div>
+    );
+  };
+
   return (
     <div className={styles.file}>
       <button
@@ -318,46 +364,7 @@ export function DiffViewer({ file: initialFile, discussions, projectId, iid, dif
           <span className={styles.deletions}>-{initialFile.deletions}</span>
         </span>
       </button>
-      {!collapsed && (
-        initialFile.binary ? (
-          <div className={styles.noContent}>Binary file — no text diff available.</div>
-        ) : isTruncated ? (
-          <div className={styles.largeDiff}>
-            <span className={styles.largeDiffText}>
-              Large diff ({initialFile.additions + initialFile.deletions} changed lines). Load it?
-            </span>
-            <button
-              className={styles.loadBtn}
-              onClick={handleLoad}
-              disabled={loading}
-            >
-              {loading ? "Loading..." : "Load diff"}
-            </button>
-            {loadError && <span className={styles.loadError}>{loadError}</span>}
-          </div>
-        ) : noDiff ? (
-          <div className={styles.noContent}>Empty diff.</div>
-        ) : (
-          <div className={styles.diffContent}>
-            {parsedFiles.map((pf) => (
-              <Diff
-                key={pf.oldRevision + pf.newRevision}
-                viewType="unified"
-                diffType={pf.type}
-                hunks={pf.hunks}
-                widgets={hasWidgets ? mergedWidgets : undefined}
-                selectedChanges={selectedKeys}
-                gutterEvents={canComment ? gutterEvents : undefined}
-                renderGutter={renderGutter}
-              >
-                {(hunks) => hunks.map((hunk) => (
-                  <Hunk key={hunk.content} hunk={hunk} />
-                ))}
-              </Diff>
-            ))}
-          </div>
-        )
-      )}
+      {!collapsed && renderDiffBody()}
     </div>
   );
 }

@@ -22,7 +22,7 @@ export function MRSelectionProvider({ children }: { children: ReactNode }) {
 
   const updateSelectedMR = useCallback((mr: MRSummary) => {
     setSelectedMR((prev) => {
-      if (!prev || prev.id !== mr.id) return prev;
+      if (prev?.id !== mr.id) return prev;
       setDetailVersion((v) => v + 1);
       return mr;
     });

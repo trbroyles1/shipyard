@@ -17,7 +17,7 @@ export function useNotifications() {
   const [readAt, setReadAt] = useState<number>(() => {
     if (typeof document === "undefined") return Date.now();
     const match = document.cookie.match(/notificationsReadAt=(\d+)/);
-    return match ? parseInt(match[1], 10) : 0;
+    return match ? Number.parseInt(match[1], 10) : 0;
   });
   const idRef = useRef(0);
 

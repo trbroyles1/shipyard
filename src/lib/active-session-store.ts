@@ -67,7 +67,7 @@ export function registerSession(
 export function unregisterSession(userId: number, tabId: string): void {
   const store = getStore();
   const existing = store.get(userId);
-  if (existing && existing.tabId === tabId) {
+  if (existing?.tabId === tabId) {
     log.debug(`unregisterSession(user=${userId}, tab=${tabId})`);
     store.delete(userId);
   }

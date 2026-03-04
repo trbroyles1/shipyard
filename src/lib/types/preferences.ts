@@ -8,10 +8,10 @@ export const THEMES = [
 
 export type Theme = (typeof THEMES)[number]["value"];
 
-const THEME_VALUES = THEMES.map((theme) => theme.value);
+const THEME_VALUES = new Set(THEMES.map((theme) => theme.value));
 
 export function isTheme(value: unknown): value is Theme {
-  return typeof value === "string" && THEME_VALUES.includes(value as Theme);
+  return typeof value === "string" && THEME_VALUES.has(value as Theme);
 }
 
 export interface UserPreferences {

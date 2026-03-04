@@ -19,7 +19,7 @@ const DEFAULT_MR_POLL_INTERVAL = 25;
 function optionalPositiveInt(name: string, fallback: number): number {
   const raw = process.env[name];
   if (!raw) return fallback;
-  const parsed = parseInt(raw, 10);
+  const parsed = Number.parseInt(raw, 10);
   if (!Number.isFinite(parsed) || parsed <= 0 || String(parsed) !== raw) {
     log.warn(
       `${name} must be a positive integer — got "${raw}", defaulting to ${fallback}`,

@@ -7,6 +7,9 @@ import { MRCard } from "./MRCard";
 import type { MRSummary } from "@/lib/types/mr";
 import styles from "./MRList.module.css";
 
+const SKELETON_COUNT = 5;
+const SKELETON_KEYS = Array.from({ length: SKELETON_COUNT }, (_, i) => `skeleton-${i}`);
+
 interface MRListProps {
   mrs: MRSummary[];
   isLoading: boolean;
@@ -51,8 +54,8 @@ export function MRList({ mrs, isLoading }: MRListProps) {
   if (isLoading) {
     return (
       <div className={styles.list}>
-        {Array.from({ length: 5 }).map((_, i) => (
-          <div key={i} className={styles.skeleton}>
+        {SKELETON_KEYS.map((key) => (
+          <div key={key} className={styles.skeleton}>
             <div className={styles.skeletonTitle} />
             <div className={styles.skeletonMeta} />
           </div>

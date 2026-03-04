@@ -74,7 +74,7 @@ export function MROverview({ summary, detail, onRefetch }: Props) {
             pipelineStatus={mr.head_pipeline?.status || null}
             approvalsGiven={approvals.approved_by.length}
             approvalsRequired={approvals.approvals_required}
-            changesCount={parseInt(mr.changes_count || "0", 10) || 0}
+            changesCount={Number.parseInt(mr.changes_count || "0", 10) || 0}
             authorUsername={mr.author.username}
             authorUrl={mr.author.web_url}
           />

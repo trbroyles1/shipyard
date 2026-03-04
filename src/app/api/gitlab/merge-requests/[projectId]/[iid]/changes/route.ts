@@ -22,9 +22,10 @@ function countStats(diffText: string): { additions: number; deletions: number } 
   return { additions, deletions };
 }
 
+const TEXT_MODES = new Set(["0", "100644", "100755"]);
+
 function isBinaryMode(diff: GitLabDiffFile): boolean {
-  const textModes = ["0", "100644", "100755"];
-  return !textModes.includes(diff.a_mode) || !textModes.includes(diff.b_mode);
+  return !TEXT_MODES.has(diff.a_mode) || !TEXT_MODES.has(diff.b_mode);
 }
 
 function enrichDiff(diff: GitLabDiffFile): EnrichedDiffFile {

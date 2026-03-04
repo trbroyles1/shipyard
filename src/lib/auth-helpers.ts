@@ -88,7 +88,7 @@ export async function parseBody<T>(
   maxBytes: number = DEFAULT_MAX_BYTES,
 ): Promise<{ data: T } | { error: NextResponse }> {
   const contentLength = req.headers.get("content-length");
-  if (contentLength && parseInt(contentLength, 10) > maxBytes) {
+  if (contentLength && Number.parseInt(contentLength, 10) > maxBytes) {
     return { error: NextResponse.json({ error: "Request body too large" }, { status: 413 }) };
   }
 

@@ -80,7 +80,7 @@ export function mapMRSummary(mr: GitLabMergeRequest, repoSlug: string, repoUrl: 
     pipeline: mapPipeline(mr.head_pipeline),
     approvalsRequired: 0, // populated from approvals endpoint when needed
     approvalsGiven: 0,
-    changesCount: parseInt(mr.changes_count || "0", 10) || 0,
+    changesCount: Number.parseInt(mr.changes_count || "0", 10) || 0,
     webUrl: mr.web_url,
   };
 }
