@@ -32,7 +32,8 @@ export function MRCard({ mr }: MRCardProps) {
   const isMergeable = mr.detailedMergeStatus === MERGE_STATUS_MERGEABLE && !mr.draft;
 
   return (
-    <div
+    <button
+      type="button"
       className={`${styles.card} ${isSelected ? styles.selected : ""}`}
       style={{ background: isSelected ? undefined : cardBackground(mr.createdAt, preferences.warningHours, preferences.criticalHours) }}
       onClick={() => selectMR(mr)}
@@ -67,6 +68,6 @@ export function MRCard({ mr }: MRCardProps) {
           {mr.approvalsGiven}/{mr.approvalsRequired}
         </span>
       </div>
-    </div>
+    </button>
   );
 }

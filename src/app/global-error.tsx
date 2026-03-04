@@ -15,7 +15,7 @@ export default function GlobalError({
   reset: () => void;
 }) {
   return (
-    <html>
+    <html lang="en">
       <body>
         <div className={styles.container}>
           <h1 className={styles.heading}>{HEADING}</h1>

@@ -35,6 +35,9 @@ export function MROverview({ summary, detail, onRefetch }: Props) {
       <div
         className={`${styles.toggle} ${expanded ? styles.toggleExpanded : ""}`}
         onClick={() => setExpanded(!expanded)}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setExpanded(!expanded); } }}
       >
         <h2 className={styles.heading}>
           <MergeIcon />

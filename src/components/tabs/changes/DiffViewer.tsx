@@ -293,7 +293,8 @@ export function DiffViewer({ file: initialFile, discussions, projectId, iid, dif
 
   return (
     <div className={styles.file}>
-      <div
+      <button
+        type="button"
         className={styles.fileHeader}
         onClick={() => setCollapsed(!collapsed)}
       >
@@ -316,7 +317,7 @@ export function DiffViewer({ file: initialFile, discussions, projectId, iid, dif
           <span className={styles.additions}>+{initialFile.additions}</span>
           <span className={styles.deletions}>-{initialFile.deletions}</span>
         </span>
-      </div>
+      </button>
       {!collapsed && (
         initialFile.binary ? (
           <div className={styles.noContent}>Binary file — no text diff available.</div>

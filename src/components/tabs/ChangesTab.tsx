@@ -69,16 +69,14 @@ export function ChangesTab({ diffs, discussions, projectId, iid, diffRefs, onRef
           />
         </div>
       ) : (
-        <div
+        <button
+          type="button"
           className={styles.treeRail}
           onClick={() => setTreeOpen(true)}
           title="Show file tree"
-          role="button"
-          tabIndex={0}
-          onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") setTreeOpen(true); }}
         >
           <span className={styles.treeRailLabel}>Files ({diffs.length})</span>
-        </div>
+        </button>
       )}
       <div className={styles.diffArea} ref={diffAreaRef}>
         {selectedFile && fileMap.has(selectedFile) ? (
