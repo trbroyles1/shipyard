@@ -79,6 +79,8 @@
   user-select: none;
   background: var(--bg-s);
   border-right: var(--bw) solid var(--brd-s);
+  position: relative;
+  cursor: pointer;
 }
 
 .diffContent :global(.diff-code) {
@@ -199,11 +201,6 @@
 }
 
 /* Gutter add-comment icon */
-.diffContent :global(.diff-gutter) {
-  position: relative;
-  cursor: pointer;
-}
-
 .addCommentIcon {
   position: absolute;
   top: 50%;

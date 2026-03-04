@@ -16,8 +16,6 @@
   letter-spacing: 0.05em;
 }
 
-.headerLabel {}
-
 .close {
   background: none;
   border: none;
@@ -31,8 +29,6 @@
 .close:hover { color: var(--t1); }
 
 /* Folder row */
-.folder {}
-
 .folderLabel {
   display: flex;
   align-items: center;

@@ -1,13 +1,11 @@
-/* Border radii */
 :root {
+  /* Border radii */
   --rxs: 3px;
   --rs: 5px;
   --r: 8px;
   --rl: 12px;
-}
 
-/* Spacing scale */
-:root {
+  /* Spacing scale */
   --sp-0: 2px;
   --sp-1: 4px;
   --sp-2: 6px;
