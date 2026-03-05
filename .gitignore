@@ -10,6 +10,9 @@ out/
 .env.local
 .env.*.local
 
+# test coverage
+coverage/
+
 # misc
 .DS_Store
 *.tsbuildinfo

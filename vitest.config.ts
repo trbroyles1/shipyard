@@ -12,5 +12,16 @@ export default defineConfig({
     environment: "node",
     restoreMocks: true,
     css: { modules: { classNameStrategy: "non-scoped" } },
+    coverage: {
+      provider: "v8",
+      reporter: ["text", "lcov"],
+      reportsDirectory: "coverage",
+      include: ["src/**/*.{ts,tsx}"],
+      exclude: [
+        "src/**/__tests__/**",
+        "src/**/*.d.ts",
+        "src/**/*.test.{ts,tsx}",
+      ],
+    },
   },
 });
